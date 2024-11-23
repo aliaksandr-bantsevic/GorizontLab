@@ -1,0 +1,40 @@
+//---------------------------------------------------------------------------
+
+#ifndef FMainH
+#define FMainH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+#include <Vcl.Controls.hpp>
+#include <Vcl.StdCtrls.hpp>
+#include <Vcl.Forms.hpp>
+#include <Vcl.ExtCtrls.hpp>
+#include <Vcl.ComCtrls.hpp>
+#include <Vcl.ToolWin.hpp>
+//---------------------------------------------------------------------------
+class TForm_General : public TForm
+{
+__published:	// IDE-managed Components
+	TToolBar *ToolBar1;
+	TStatusBar *StatusBar1;
+	TPanel *Panel_Browser;
+	TSplitter *Splitter1;
+	TPanel *Panel_Work;
+	TPanel *Panel_Data;
+	TSplitter *Splitter2;
+	TPanel *Panel_Console;
+	TToolButton *ToolButton1;
+
+private:	// User declarations
+public:		// User declarations
+	__fastcall TForm_General(TComponent* Owner);
+
+private:     //Window property management
+
+	void InitMainWindow(void);
+	void DevideMainWindow(int browser_part, int data_part);
+
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TForm_General *Form_General;
+//---------------------------------------------------------------------------
+#endif
