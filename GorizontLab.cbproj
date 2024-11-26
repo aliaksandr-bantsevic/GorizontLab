@@ -127,6 +127,17 @@
             <DependentOn>FMain.h</DependentOn>
             <BuildOrder>2</BuildOrder>
         </CppCompile>
+        <CppCompile Include="GL_Object.cpp">
+            <DependentOn>GL_Object.h</DependentOn>
+            <BuildOrder>5</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="GL_System.cpp">
+            <DependentOn>GL_System.h</DependentOn>
+            <BuildOrder>4</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="GL_Time_utils.cpp">
+            <BuildOrder>3</BuildOrder>
+        </CppCompile>
         <CppCompile Include="GorizontLab.cpp">
             <BuildOrder>0</BuildOrder>
         </CppCompile>
@@ -134,10 +145,6 @@
             <BuildOrder>1</BuildOrder>
             <PCH>true</PCH>
         </PCHCompile>
-        <CppCompile Include="Time.cpp">
-            <DependentOn>Time.h</DependentOn>
-            <BuildOrder>3</BuildOrder>
-        </CppCompile>
         <FormResources Include="FMain.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

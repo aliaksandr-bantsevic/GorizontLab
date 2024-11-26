@@ -13,8 +13,10 @@
 #include <System.ImageList.hpp>
 #include <Vcl.ImgList.hpp>
 
-#include "Time.h"
+#include "GL_Time_utils.h"
 #include <Vcl.Menus.hpp>
+
+#include "GL_System.h"
 //---------------------------------------------------------------------------
 class TForm_General : public TForm
 {

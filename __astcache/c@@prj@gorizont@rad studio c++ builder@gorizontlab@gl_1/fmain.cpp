@@ -14,7 +14,11 @@ __fastcall TForm_General::TForm_General(TComponent* Owner)
 {
 	InitMainWindow();
 }
-//---------------------------------------------------------------------------
+//---------------------GLOBALS-----------------------------------------------
+
+TGLSystem GLSystem;
+
+//--------------------------------------------------------------------------
 
 void TForm_General::InitMainWindow(void)
 {
@@ -36,8 +40,15 @@ void TForm_General::DevideMainWindow(int browser_part, int data_part)
 }
 void __fastcall TForm_General::ToolButton1Click(TObject *Sender)
 {
-	StatusBar->Panels->Items[0]->Text = L"Status Bar";
-	StatusBar->Panels->Items[1]->Text = L"Status Bar message 2";
+	//StatusBar->Panels->Items[0]->Text = L"Status Bar";
+	//StatusBar->Panels->Items[1]->Text = L"Status Bar message 2";
+
+	TGLObject* obj = new TGLObject;
+
+	GLSystem.add_object(obj);
+
+	Sleep(1);
+
 }
 //---------------------------------------------------------------------------
 
