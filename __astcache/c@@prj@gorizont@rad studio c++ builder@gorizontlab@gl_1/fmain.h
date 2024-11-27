@@ -13,10 +13,17 @@
 #include <System.ImageList.hpp>
 #include <Vcl.ImgList.hpp>
 
-#include "GL_Time_utils.h"
 #include <Vcl.Menus.hpp>
+#include <list>
+
+#include "GL_Time_utils.h"
 
 #include "GL_System.h"
+#include "GL_List.h"
+#include "GL_Object.h"
+#include "GL_Obj.h"
+#include "GL_Port.h"
+
 //---------------------------------------------------------------------------
 class TForm_General : public TForm
 {
@@ -45,6 +52,7 @@ __published:	// IDE-managed Components
 	TToolButton *ToolButton6;
 	void __fastcall ToolButton1Click(TObject *Sender);
 	void __fastcall Timer_General_1sTimer(TObject *Sender);
+	void __fastcall ToolButton2Click(TObject *Sender);
 
 private:	// User declarations
 public:		// User declarations

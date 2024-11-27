@@ -5,6 +5,7 @@
 //---------------------------------------------------------------------------
 #include <list>
 #include "GL_Object.h"
+#include "GL_List.h"
 #include <algorithm>
 
 class TGLSystem
@@ -26,7 +27,12 @@ public:
 
 	int add_object(TGLObject* obj);
 	TGLObject* find_object(WideString& nm);
-    int remove_object(WideString& nm);
+	int remove_object(WideString nm);
+	int show_objects(void);
+
+public:
+
+    TGLList<TGLPort> ports_list;
 };
 
 

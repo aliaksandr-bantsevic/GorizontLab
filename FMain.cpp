@@ -38,14 +38,30 @@ void TForm_General::DevideMainWindow(int browser_part, int data_part)
 	this->Panel_Data->Height = data_height;
 
 }
+
+WideString oname(L"obj#1");
+int iname = 1;
+
+TGLList<TGLObject> o_list;
+
 void __fastcall TForm_General::ToolButton1Click(TObject *Sender)
 {
 	//StatusBar->Panels->Items[0]->Text = L"Status Bar";
 	//StatusBar->Panels->Items[1]->Text = L"Status Bar message 2";
 
+
 	TGLObject* obj = new TGLObject;
 
+	oname.printf(L"obj#%d", iname); obj->name = oname; iname++;
+
 	GLSystem.add_object(obj);
+	o_list.add(obj);
+
+	WideString s("");
+
+	//GLSystem.show_objects();
+
+    o_list.show();
 
 	Sleep(1);
 
@@ -56,6 +72,17 @@ void __fastcall TForm_General::Timer_General_1sTimer(TObject *Sender)
 {
 	//Show Current time
    	StatusBar->Panels->Items[0]->Text = GetCurrentTimeStr();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::ToolButton2Click(TObject *Sender)
+{
+	//GLSystem.remove_object(L"obj#2");
+	//GLSystem.show_objects();
+
+	o_list.remove(L"obj#2");
+	o_list.show();
+
 }
 //---------------------------------------------------------------------------
 

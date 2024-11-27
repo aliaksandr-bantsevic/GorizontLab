@@ -56,7 +56,7 @@ TGLObject* TGLSystem::find_object(WideString& nm)
 	return obj;
  }
 
-int TGLSystem::remove_object(WideString& nm)
+int TGLSystem::remove_object(WideString nm)
 {
 
 	std::list<TGLObject*>::iterator it = objects_list.begin();
@@ -66,6 +66,7 @@ int TGLSystem::remove_object(WideString& nm)
 	{
 		 if (it->name == nm)
 		 {
+            delete it;
 			objects_list.remove(it);
 			res = 0;
 			break;
@@ -74,4 +75,23 @@ int TGLSystem::remove_object(WideString& nm)
 
 	return res;
 }
+
+int TGLSystem::show_objects(void)
+{
+
+	std::list<TGLObject*>::iterator it = objects_list.begin();
+	int res = 0;
+
+	WideString ss;
+
+	for (auto it : objects_list)
+	{
+		ss += it->name; ss += L"\r\n";
+	}
+
+	 ShowMessage(ss);
+
+	 return res;
+}
+
 

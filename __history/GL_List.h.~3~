@@ -1,0 +1,31 @@
+//---------------------------------------------------------------------------
+
+#ifndef GL_ListH
+#define GL_ListH
+//---------------------------------------------------------------------------
+#include <list>
+
+//---------------------------------------------------------------------------
+template<typename T>
+class TGLList
+{
+
+public:
+
+	TGLList();
+	virtual ~TGLList();
+
+public:
+
+	int add(T* obj);
+	T* find(WideString nm);
+
+	private:
+
+	std::list<T*> m_list;
+};
+
+
+
+
+#endif
