@@ -9,7 +9,10 @@
 
 TGLObject::TGLObject()
 {
-    name = L"Новый объект";
+	name = L"Новый объект";
+	mark = L"...";
+	node = NULL;
+    num = 0;
 }
 
 TGLObject::~TGLObject()

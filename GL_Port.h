@@ -3,25 +3,35 @@
 #ifndef GL_PortH
 #define GL_PortH
 //---------------------------------------------------------------------------
+#include "GL_List.h"
+#include "GL_Sensor.h"
 
 //---------------------------------------------------------------------------
 
 class TGLPort
 {
-	public:
 
-		TGLPort();
-		~TGLPort();
+public:
 
-		WideString name;
+	TGLPort();
+	~TGLPort();
 
-	public:
+	WideString name;
+	WideString mark;
+	TTreeNode* node;
+	int num;
 
-		void SetBaud(int b);
+public:
 
-	private:
+	std::list<TGLSensor> sensors_list;
 
-		int baud;
+public:
+
+	void SetBaud(int b);
+
+private:
+
+	int baud;
 };
 
 

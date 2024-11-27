@@ -2,8 +2,8 @@ object Form_General: TForm_General
   Left = 0
   Top = 0
   Caption = 'GorizontLab'
-  ClientHeight = 788
-  ClientWidth = 1096
+  ClientHeight = 786
+  ClientWidth = 1088
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -14,7 +14,7 @@ object Form_General: TForm_General
   object Splitter1: TSplitter
     Left = 300
     Top = 40
-    Height = 729
+    Height = 727
     Beveled = True
     ExplicitLeft = 576
     ExplicitTop = 472
@@ -23,7 +23,7 @@ object Form_General: TForm_General
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 1096
+    Width = 1088
     Height = 40
     ButtonHeight = 44
     ButtonWidth = 39
@@ -71,8 +71,8 @@ object Form_General: TForm_General
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 769
-    Width = 1096
+    Top = 767
+    Width = 1088
     Height = 19
     Panels = <
       item
@@ -86,7 +86,7 @@ object Form_General: TForm_General
     Left = 0
     Top = 40
     Width = 300
-    Height = 729
+    Height = 727
     Align = alLeft
     Caption = 'Panel_Browser'
     TabOrder = 2
@@ -94,7 +94,7 @@ object Form_General: TForm_General
       Left = 1
       Top = 1
       Width = 298
-      Height = 727
+      Height = 725
       Align = alClient
       Indent = 19
       PopupMenu = PopupMenu
@@ -104,15 +104,15 @@ object Form_General: TForm_General
   object Panel_Work: TPanel
     Left = 303
     Top = 40
-    Width = 793
-    Height = 729
+    Width = 785
+    Height = 727
     Align = alClient
     Caption = 'Panel_Work'
     TabOrder = 3
     object Splitter2: TSplitter
       Left = 1
       Top = 545
-      Width = 791
+      Width = 783
       Height = 3
       Cursor = crVSplit
       Align = alTop
@@ -122,7 +122,7 @@ object Form_General: TForm_General
     object Panel_Data: TPanel
       Left = 1
       Top = 1
-      Width = 791
+      Width = 783
       Height = 544
       Align = alTop
       Caption = 'Panel_Data'
@@ -130,7 +130,7 @@ object Form_General: TForm_General
       object PageControl_Data: TPageControl
         Left = 1
         Top = 1
-        Width = 789
+        Width = 781
         Height = 542
         Align = alClient
         TabOrder = 0
@@ -139,16 +139,16 @@ object Form_General: TForm_General
     object Panel_Console: TPanel
       Left = 1
       Top = 548
-      Width = 791
-      Height = 180
+      Width = 783
+      Height = 178
       Align = alClient
       Caption = 'Panel_Console'
       TabOrder = 1
       object PageControl_Console: TPageControl
         Left = 1
         Top = 1
-        Width = 789
-        Height = 178
+        Width = 781
+        Height = 176
         Align = alClient
         TabOrder = 0
       end
@@ -1237,5 +1237,11 @@ object Form_General: TForm_General
     object N2: TMenuItem
       Caption = #1059#1076#1072#1083#1080#1090#1100
     end
+  end
+  object Timer_Init_app: TTimer
+    Interval = 100
+    OnTimer = Timer_Init_appTimer
+    Left = 192
+    Top = 136
   end
 end

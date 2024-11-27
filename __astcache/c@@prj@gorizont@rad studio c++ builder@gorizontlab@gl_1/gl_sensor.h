@@ -1,23 +1,25 @@
 ﻿//---------------------------------------------------------------------------
 
-#ifndef GL_ObjectH
-#define GL_ObjectH
+#ifndef GL_SensorH
+#define GL_SensorH
 //---------------------------------------------------------------------------
 
-
-//---------------------------------------------------------------------------
-class TGLObj
+class TGLSensor
 {
 
 public:
 
-	TGLObj();
-	~TGLObj();
+	TGLSensor();
+	~TGLSensor();
 
 public:
 
 	WideString name;
+	WideString mark;
+	TTreeNode* node;
+	int num;
 
 };
+
 
 #endif

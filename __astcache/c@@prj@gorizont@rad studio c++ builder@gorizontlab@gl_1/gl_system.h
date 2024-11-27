@@ -3,10 +3,9 @@
 #ifndef GL_SystemH
 #define GL_SystemH
 //---------------------------------------------------------------------------
-#include <list>
-#include "GL_Object.h"
+
 #include "GL_List.h"
-#include <algorithm>
+#include "GL_Object.h"
 
 class TGLSystem
 {
@@ -20,19 +19,22 @@ public:
 
 private:
 
-	std::list<TGLObject*> objects_list;
-    WideString name;
+public:
+
+	std::list<TGLObject> objects_list;
 
 public:
 
-	int add_object(TGLObject* obj);
-	TGLObject* find_object(WideString& nm);
-	int remove_object(WideString nm);
-	int show_objects(void);
+	WideString name;
+	WideString mark;
+	TTreeNode* node;
 
 public:
 
-    TGLList<TGLPort> ports_list;
+
+public:
+
+
 };
 
 

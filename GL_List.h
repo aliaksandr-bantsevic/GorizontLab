@@ -4,8 +4,11 @@
 #define GL_ListH
 //---------------------------------------------------------------------------
 #include <list>
+#include <algorithm>
+
 #include "GL_Object.h"
 #include "GL_Port.h"
+#include "GL_Sensor.h"
 
 //---------------------------------------------------------------------------
 template<typename T>
@@ -20,11 +23,17 @@ public:
 public:
 
 	int add(T* obj);
-	T* find(WideString nm);
-	int remove(WideString nm);
-    int show(void);
+	int add(WideString nm, TTreeNode* nd, int nn);
 
-	private:
+	T* find(WideString nm);
+	T* find(TTreeNode* nd);
+	T* find(int nn);
+
+	int remove(WideString nm);
+	int show(void);
+
+
+private:
 
 	std::list<T*> m_list;
 };

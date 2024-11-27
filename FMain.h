@@ -16,13 +16,12 @@
 #include <Vcl.Menus.hpp>
 #include <list>
 
-#include "GL_Time_utils.h"
+#include "defs.h"
 
 #include "GL_System.h"
-#include "GL_List.h"
 #include "GL_Object.h"
-#include "GL_Obj.h"
 #include "GL_Port.h"
+#include "GL_Sensor.h"
 
 //---------------------------------------------------------------------------
 class TForm_General : public TForm
@@ -50,9 +49,11 @@ __published:	// IDE-managed Components
 	TToolButton *ToolButton4;
 	TToolButton *ToolButton5;
 	TToolButton *ToolButton6;
+	TTimer *Timer_Init_app;
 	void __fastcall ToolButton1Click(TObject *Sender);
 	void __fastcall Timer_General_1sTimer(TObject *Sender);
 	void __fastcall ToolButton2Click(TObject *Sender);
+	void __fastcall Timer_Init_appTimer(TObject *Sender);
 
 private:	// User declarations
 public:		// User declarations
@@ -62,6 +63,8 @@ private:     //Window property management
 
 	void InitMainWindow(void);
 	void DevideMainWindow(int browser_part, int data_part);
+
+    void InitApplication(void);
 
 };
 //---------------------------------------------------------------------------

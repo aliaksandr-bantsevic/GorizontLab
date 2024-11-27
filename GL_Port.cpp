@@ -8,7 +8,10 @@
 
 TGLPort::TGLPort()
 {
-
+	 name = L"New Port";
+	 mark = L"...";
+	 node = NULL;
+	 num = 0;
 }
 
 TGLPort::~TGLPort()

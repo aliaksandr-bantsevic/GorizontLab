@@ -2,17 +2,19 @@
 
 #pragma hdrstop
 
-#include "GL_Obj.h"
+#include "GL_Sensor.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
-
-TGLObj::TGLObj()
+TGLSensor::TGLSensor()
 {
-	name = L"Новый объект";
+	 name = L"New Sensor";
+	 mark = L"...";
+	 node = NULL;
+	 num = 0;
 }
 
-TGLObj::~TGLObj()
+TGLSensor::~TGLSensor()
 {
 
 }

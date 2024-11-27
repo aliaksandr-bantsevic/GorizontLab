@@ -4,6 +4,12 @@
 #define GL_ObjectH
 //---------------------------------------------------------------------------
 
+#include "GL_List.h"
+#include "GL_Port.h"
+
+//---------------------------------------------------------------------------
+
+class TGLPort; //???
 
 class TGLObject
 {
@@ -15,17 +21,14 @@ public:
 
 public:
 
+	std::list<TGLPort> ports_list;
+
+public:
+
 	WideString name;
-
+	WideString mark;
+	TTreeNode* node;
+	int num;
 };
-
-
-
-
-
-
-
-
-
 
 #endif
