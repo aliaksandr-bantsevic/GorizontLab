@@ -18,6 +18,8 @@ __fastcall TForm_General::TForm_General(TComponent* Owner)
 
 TGLSystem* GLSystem;
 
+TDateTime g_global_second_timer = 0.;
+
 //--------------------------------------------------------------------------
 
 void TForm_General::InitMainWindow(void)
@@ -39,49 +41,19 @@ void TForm_General::DevideMainWindow(int browser_part, int data_part)
 
 }
 
-WideString oname(L"obj#1");
-int iname = 1;
-
-TGLList<TGLObject> o_list;
-
-void __fastcall TForm_General::ToolButton1Click(TObject *Sender)
-{
-	//StatusBar->Panels->Items[0]->Text = L"Status Bar";
-	//StatusBar->Panels->Items[1]->Text = L"Status Bar message 2";
-
-	TGLObject* obj = new TGLObject;
-
-	oname.printf(L"obj#%d", iname); obj->name = oname; iname++;
-
-	o_list.add(obj);
-
-	WideString s("");
 
 
-	o_list.show();
-
-	Sleep(1);
-
-}
-//---------------------------------------------------------------------------
 
 void __fastcall TForm_General::Timer_General_1sTimer(TObject *Sender)
 {
 	//Show Current time
 	StatusBar->Panels->Items[0]->Text = GetCurrentTimeStr();
+
+	//Show global time
+	StatusBar->Panels->Items[1]->Text = GetGlobalSecondTimerStr(&g_global_second_timer);
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TForm_General::ToolButton2Click(TObject *Sender)
-{
-	//GLSystem.remove_object(L"obj#2");
-	//GLSystem.show_objects();
-
-	o_list.remove(L"obj#2");
-	o_list.show();
-
-}
-//---------------------------------------------------------------------------
 void TForm_General::InitApplication(void)
 {
    GLSystem = new TGLSystem;
@@ -89,8 +61,9 @@ void TForm_General::InitApplication(void)
    WideString s;
    s.printf(L"Версия: %d.%d.%d", BUILD, VERSION, SUBVERSION);
 
-   StatusBar->Panels->Items[1]->Text = s;
+   StatusBar->Panels->Items[2]->Text = s;
 }
+
 void __fastcall TForm_General::Timer_Init_appTimer(TObject *Sender)
 {
 	Timer_Init_app->Enabled = false;

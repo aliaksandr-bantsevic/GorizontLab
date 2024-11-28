@@ -131,9 +131,9 @@
             <DependentOn>GL_List.h</DependentOn>
             <BuildOrder>6</BuildOrder>
         </CppCompile>
-        <CppCompile Include="GL_Object.cpp">
-            <DependentOn>GL_Object.h</DependentOn>
-            <BuildOrder>5</BuildOrder>
+        <CppCompile Include="GL_Place.cpp">
+            <DependentOn>GL_Place.h</DependentOn>
+            <BuildOrder>8</BuildOrder>
         </CppCompile>
         <CppCompile Include="GL_Port.cpp">
             <DependentOn>GL_Port.h</DependentOn>

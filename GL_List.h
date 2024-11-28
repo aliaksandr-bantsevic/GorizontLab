@@ -5,12 +5,13 @@
 //---------------------------------------------------------------------------
 #include <list>
 #include <algorithm>
-
-#include "GL_Object.h"
-#include "GL_Port.h"
-#include "GL_Sensor.h"
-
+#include <vcl.h>
 //---------------------------------------------------------------------------
+// Предварительное объявление классов
+class TGLPlace;
+class TGLPort;
+class TGLЫутыщк;
+
 template<typename T>
 class TGLList
 {
@@ -18,7 +19,7 @@ class TGLList
 public:
 
 	TGLList();
-	virtual ~TGLList();
+	~TGLList();
 
 public:
 
@@ -33,10 +34,12 @@ public:
 	int show(void);
 
 
-private:
+public:
 
 	std::list<T*> m_list;
 };
 
 
-#endif
+#include "GL_List_impl.h" // Включаем реализацию шаблона
+
+#endif //GL_ListH

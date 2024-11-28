@@ -4,8 +4,9 @@
 #define GL_PortH
 //---------------------------------------------------------------------------
 #include "GL_List.h"
-#include "GL_Sensor.h"
+#include <vcl.h>
 
+class TGLSensor;
 //---------------------------------------------------------------------------
 
 class TGLPort
@@ -14,6 +15,7 @@ class TGLPort
 public:
 
 	TGLPort();
+	TGLPort(WideString nm, TTreeNode* nd, int nn);
 	~TGLPort();
 
 	WideString name;
@@ -23,16 +25,17 @@ public:
 
 public:
 
-	std::list<TGLSensor> sensors_list;
+	TGLList<TGLSensor> sensor_list;
 
 public:
 
 	void SetBaud(int b);
+	int add_sensor(WideString nm, TTreeNode* nd, int nn);
 
 private:
 
+	TGLSensor* sns;
 	int baud;
 };
-
 
 #endif

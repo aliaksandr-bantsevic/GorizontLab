@@ -3,16 +3,17 @@
 #ifndef GL_SystemH
 #define GL_SystemH
 //---------------------------------------------------------------------------
-
+#include <vcl.h>
 #include "GL_List.h"
-#include "GL_Object.h"
-
+class TGLPlace;
+//---------------------------------------------------------------------------
 class TGLSystem
 {
 
 public:
 
 	TGLSystem();
+	TGLSystem(TTreeNode* nd);
 	~TGLSystem();
 
 public:
@@ -21,7 +22,7 @@ private:
 
 public:
 
-	std::list<TGLObject> objects_list;
+	TGLList<TGLPlace> place_list;
 
 public:
 
@@ -34,6 +35,7 @@ public:
 
 public:
 
+	int add_place(WideString nm, TTreeNode* nd, int nn);
 
 };
 

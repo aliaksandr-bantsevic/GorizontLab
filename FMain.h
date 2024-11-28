@@ -50,9 +50,7 @@ __published:	// IDE-managed Components
 	TToolButton *ToolButton5;
 	TToolButton *ToolButton6;
 	TTimer *Timer_Init_app;
-	void __fastcall ToolButton1Click(TObject *Sender);
 	void __fastcall Timer_General_1sTimer(TObject *Sender);
-	void __fastcall ToolButton2Click(TObject *Sender);
 	void __fastcall Timer_Init_appTimer(TObject *Sender);
 
 private:	// User declarations

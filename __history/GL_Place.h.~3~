@@ -1,0 +1,32 @@
+//---------------------------------------------------------------------------
+#ifndef GL_PlaceH
+#define GL_PlaceH
+//---------------------------------------------------------------------------
+#include <vcl.h>
+
+#include "GL_List.h"
+//#include "GL_Port.h"
+
+class TGLPort;
+
+//---------------------------------------------------------------------------
+class TGLPlace
+{
+
+public:
+
+	TGLList<TGLPort> p_list;
+
+	//TGLPort* pp;
+
+public:
+
+	WideString name;
+	WideString mark;
+	TTreeNode* node;
+	int num;
+
+};
+#endif
+
+

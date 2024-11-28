@@ -10,6 +10,7 @@ class TGLSensor
 public:
 
 	TGLSensor();
+	TGLSensor(WideString nm, TTreeNode* nd, int nn);
 	~TGLSensor();
 
 public:

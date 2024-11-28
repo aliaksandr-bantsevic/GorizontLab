@@ -2,6 +2,48 @@
 
 #pragma hdrstop
 
-#include "GL_List.h"
+#include "GL_Place.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
+
+#include "GL_Port.h"
+//---------------------------------------------------------------------------
+
+TGLPlace::TGLPlace()
+{
+	name = L"Новый объект";
+	mark = L"...";
+	node = NULL;
+	num = 0;
+
+}
+
+TGLPlace::TGLPlace(WideString nm, TTreeNode* nd, int nn)
+{
+	name = nm;
+	mark = L"...";
+	node = nd;
+	num = nn;
+}
+
+TGLPlace::~TGLPlace()
+{
+
+}
+
+int TGLPlace::add_port(WideString nm, TTreeNode* nd, int nn)
+{
+	prt = new TGLPort(nm, nd, nn);
+
+
+	if (port_list.add(prt) != 0)
+	{
+		delete prt;
+		return -1;  //fail to add the port
+	}
+	else
+	{
+		return 0;
+	}
+
+}

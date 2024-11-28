@@ -1,0 +1,51 @@
+//---------------------------------------------------------------------------
+
+#ifndef GL_SystemH
+#define GL_SystemH
+//---------------------------------------------------------------------------
+#include <vcl.h>
+
+#include "GL_List.h"
+#include "GL_Place.h"
+
+//#include "GL_Object.h"
+//#include "GL_Port.h"
+//#include "GL_Sensor.h"
+
+class TGLSystem
+{
+
+public:
+
+	TGLSystem();
+	~TGLSystem();
+
+public:
+
+private:
+
+public:
+
+	TGLList<TGLPlace> pl_list;
+
+	//TGLList<TGLObject> obj_list;
+	//TGLList<TGLPort> p_list;
+	//TGLList<TGLSensor> s_list;
+
+public:
+
+	WideString name;
+	WideString mark;
+	TTreeNode* node;
+
+public:
+
+
+public:
+
+	int add_obj(WideString nm, TTreeNode* nd, int nn);
+
+};
+
+
+#endif
