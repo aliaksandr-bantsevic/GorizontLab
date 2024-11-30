@@ -1,0 +1,46 @@
+//---------------------------------------------------------------------------
+
+#ifndef GL_ListH
+#define GL_ListH
+//---------------------------------------------------------------------------
+#include <list>
+#include <algorithm>
+#include <vcl.h>
+//---------------------------------------------------------------------------
+// Предварительное объявление классов
+class TGLPlace;
+class TGLPort;
+class TGLЫутыщк;
+
+template<typename T>
+class TGLList
+{
+
+public:
+
+	TGLList();
+	~TGLList();
+
+public:
+
+	int add(T* obj);
+	int add(WideString nm, TTreeNode* nd, int nn);
+    int count(void);
+
+	T* find(WideString nm);
+	T* find(TTreeNode* nd);
+	T* find(int nn);
+
+	int remove(WideString nm);
+	int show(void);
+
+
+public:
+
+	std::list<T*> m_list;
+};
+
+
+#include "GL_List_impl.h" // Включаем реализацию шаблона
+
+#endif //GL_ListH

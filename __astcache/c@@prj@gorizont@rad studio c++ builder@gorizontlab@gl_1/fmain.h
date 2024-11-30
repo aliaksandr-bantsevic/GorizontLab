@@ -19,9 +19,12 @@
 #include "defs.h"
 
 #include "GL_System.h"
-#include "GL_Object.h"
 #include "GL_Port.h"
 #include "GL_Sensor.h"
+
+#include "FPort_adjust.h"
+#include "FPlace_adjust.h"
+#include "FSensor_adjust.h"
 
 //---------------------------------------------------------------------------
 class TForm_General : public TForm
@@ -42,16 +45,33 @@ __published:	// IDE-managed Components
 	TPageControl *PageControl_Console;
 	TTimer *Timer_General_1s;
 	TPopupMenu *PopupMenu;
-	TMenuItem *N1;
-	TMenuItem *N2;
+	TMenuItem *N_AddPlace;
+	TMenuItem *N_DeletePlace;
 	TToolButton *ToolButton2;
 	TToolButton *ToolButton3;
 	TToolButton *ToolButton4;
 	TToolButton *ToolButton5;
 	TToolButton *ToolButton6;
 	TTimer *Timer_Init_app;
+	TImageList *ImageList_Tree_browser;
+	TMenuItem *N_AddPort;
+	TMenuItem *N_DeletePort;
+	TMenuItem *N_AddSensor;
+	TMenuItem *N_DeleteSensor;
+	TMenuItem *N_Port;
+	TMenuItem *N_Sensor;
+	TMenuItem *N_AdjustPlace;
+	TMenuItem *N_AdjustPort;
+	TMenuItem *N_AdjustSensor;
+	TMenuItem *N_AdjustSystem;
 	void __fastcall Timer_General_1sTimer(TObject *Sender);
 	void __fastcall Timer_Init_appTimer(TObject *Sender);
+	void __fastcall ToolButton1Click(TObject *Sender);
+	void __fastcall TreeView_BrowserClick(TObject *Sender);
+	void __fastcall PopupMenuPopup(TObject *Sender);
+	void __fastcall N_AddPortClick(TObject *Sender);
+	void __fastcall N_AddPlaceClick(TObject *Sender);
+	void __fastcall N_AddSensorClick(TObject *Sender);
 
 private:	// User declarations
 public:		// User declarations
@@ -62,8 +82,13 @@ private:     //Window property management
 	void InitMainWindow(void);
 	void DevideMainWindow(int browser_part, int data_part);
 
-    void InitApplication(void);
+	void InitApplication(void);
+    void HidePopupMenu(void);
+	void ShowSystemElement(WideString s);
 
+	void AddPlace(void);
+	void AddPort(void);
+	void AddSensor(void);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_General *Form_General;

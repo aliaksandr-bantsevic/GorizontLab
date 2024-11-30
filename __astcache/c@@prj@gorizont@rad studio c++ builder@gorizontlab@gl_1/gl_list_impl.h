@@ -28,10 +28,10 @@ int TGLList<T>::add(T* obj)
 		return -1; //object with such a name already exists
 	}
 
-	if (find(obj->node) != NULL)
-	{
-		return -2; //object with such a node already exists
-	}
+	//if (find(obj->node) != NULL)
+	//{
+	//	return -2; //object with such a node already exists
+	//}
 
 	if (find(obj->num) != NULL)
 	{
@@ -171,6 +171,12 @@ int TGLList<T>::add(WideString nm, TTreeNode* nd, int nn)
    ob->name = nm;
    ob->node = nd;
    ob->num = nn;
+}
+
+template <typename T>
+int TGLList<T>::count(void)
+{
+	return m_list.size();
 }
 
 #endif  //GL_List_implH

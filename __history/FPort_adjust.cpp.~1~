@@ -1,0 +1,16 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "FPort_adjust.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm_Port_adjust *Form_Port_adjust;
+//---------------------------------------------------------------------------
+__fastcall TForm_Port_adjust::TForm_Port_adjust(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------

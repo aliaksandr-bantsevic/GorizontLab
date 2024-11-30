@@ -3,8 +3,8 @@
 #ifndef GL_PortH
 #define GL_PortH
 //---------------------------------------------------------------------------
+#include "defs.h"
 #include "GL_List.h"
-#include <vcl.h>
 
 class TGLSensor;
 //---------------------------------------------------------------------------
@@ -22,6 +22,7 @@ public:
 	WideString mark;
 	TTreeNode* node;
 	int num;
+	int plnum;
 
 public:
 
@@ -30,10 +31,15 @@ public:
 public:
 
 	void SetBaud(int b);
-	int add_sensor(WideString nm, TTreeNode* nd, int nn);
+	int add_sensor(WideString nm, int plnum);
+	void SetTree(TTreeView* t);
+	void SetNode(TTreeNode* n);
+
+    void SetPlnum(int n);
 
 private:
 
+    TTreeView* tree;
 	TGLSensor* sns;
 	int baud;
 };

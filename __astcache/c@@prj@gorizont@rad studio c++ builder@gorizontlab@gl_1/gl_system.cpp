@@ -5,9 +5,10 @@
 #include "GL_System.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
-
+#include <list>
 #include "GL_Place.h"
-
+#include "GL_Port.h"
+#include "GL_Sensor.h"
 //---------------------------------------------------------------------------
 
 TGLSystem::TGLSystem()
@@ -17,11 +18,12 @@ TGLSystem::TGLSystem()
    node = NULL;
 }
 
-TGLSystem::TGLSystem(TTreeNode* nd)
+TGLSystem::TGLSystem(TTreeView* t)
 {
    name = L"GorizontLab Monitoring System";
    mark = L"...";
-   node = nd;
+   tree = t;
+   node = this->tree->Items->Add(NULL, this->name);
 }
 
 TGLSystem::~TGLSystem()
@@ -29,19 +31,159 @@ TGLSystem::~TGLSystem()
 
 }
 
-int TGLSystem::add_place(WideString nm, TTreeNode* nd, int nn)
+TGLPlace* TGLSystem::add_place(WideString nm)
 {
-	TGLPlace* pl = new TGLPlace(nm, nd, nn);
+	int nmb = place_list.count() + 1;
+	pl = new TGLPlace(nm, NULL, place_list.count() + 1);
 
+	//the place shall have unique name & number in the list
 	if (place_list.add(pl) != 0)
 	{
 		delete pl;
-		return -1;  //fail to add the place
+		pl = NULL;
+		//return -1;  //fail to add the place
 	}
 	else
 	{
-		return 0;
+	//  create the place title in the browser & create tree node
+		WideString ss;
+		ss.printf(L"%d [", nmb);
+		ss = ss+nm;
+		ss = ss+L"]";
+		TTreeNode* ndd = tree->Items->AddChild(node, ss); ndd->ImageIndex = 1; ndd->SelectedIndex = 1;
+
+		pl->SetTree(tree);
+		pl->SetNode(ndd);
+
+		////// !!!
+
+		//pl->add_port(L"COM_1");
+		//pl->add_port(L"COM_2");
+		//pl->add_port(L"COM_3");
+
+		node->Expand(true);
+		//return 0;
 	}
+
+	return pl;
 }
 
+TTreeNode* TGLSystem::get_node(void)
+{
+	return node;
+}
 
+void TGLSystem::View(BYTE state)
+{
+	node->ImageIndex = 0;
+	node->SelectedIndex = 0;  node->SelectedIndex = 0;
+}
+
+/*
+TGLPlace* TGLSystem::GetPlace(int n)
+{
+	TGLPlace* pl = NULL;
+
+	pl = place_list.find(n);
+
+	return pl;
+}
+*/
+
+TObject* TGLSystem::GetBrowserElement(TTreeNode* nd, int* type)
+{
+	*type = OBJ_TYPE_NONE;
+	TObject* res = NULL;
+
+	if (nd == this->node)
+	{
+		*type = OBJ_TYPE_SYST;
+		return  (TObject*)this;
+	}
+	else if ((res = (TObject*)place_list.find(nd)) != NULL)
+	{
+		*type = OBJ_TYPE_PLCE;
+		return res;
+	}
+	else
+	{
+		TGLPlace* pl = NULL;
+		TGLPort* pr = NULL;
+		TGLSensor* sn = NULL;
+
+		for (auto itpl : place_list.m_list)
+		{
+			if ((res = (TObject*)itpl->port_list.find(nd)) != NULL)
+			{
+				*type = OBJ_TYPE_PORT;
+				return res;
+			}
+
+			for (auto itpr : itpl->port_list.m_list)
+			{
+				if ((res = (TObject*)itpr->sensor_list.find(nd)) != NULL)
+				{
+					*type = OBJ_TYPE_SNSR;
+					return res;
+				}
+			}
+
+		}
+	}
+
+	return res;
+}
+
+void TGLSystem::ProcBrowserСlick(TTreeNode* nd, int* tp)
+{
+	int type = OBJ_TYPE_NONE;
+	TObject* obj = NULL;
+	WideString ss;
+
+	cur_pl = NULL;
+	cur_pr = NULL;
+	cur_sn = NULL;
+	 
+	 obj = GetBrowserElement(nd, &type);
+	 {
+
+		switch (type)
+		{
+			case OBJ_TYPE_SYST:
+
+				ss.printf(L"СИСТЕМА: %s", this->name.c_bstr());
+
+			break;
+
+			case OBJ_TYPE_PLCE:
+
+				cur_pl = (TGLPlace*)obj;
+				ss.printf(L"МЕСТО: %d %s", cur_pl->num, cur_pl->name.c_bstr());
+
+			break;
+
+			case OBJ_TYPE_PORT:
+
+				cur_pr = (TGLPort*)obj;
+				ss.printf(L"ПОРТ: %d.%d %s", cur_pr->plnum, cur_pr->num, cur_pr->name.c_bstr());
+
+			break;
+
+			case OBJ_TYPE_SNSR:
+
+				cur_sn = (TGLSensor*)obj;
+				ss.printf(L"ДАТЧИК: %d.%d.%d %s", cur_sn->plnum, cur_sn->prnum, cur_sn->num, cur_sn->name.c_bstr());
+
+			break;
+
+			default:;
+
+		}
+
+	 }
+
+	*tp =  type;
+	//ShowMessage(ss);
+    g_ws_msg = ss;
+
+}

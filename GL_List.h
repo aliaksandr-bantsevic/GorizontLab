@@ -10,7 +10,7 @@
 // Предварительное объявление классов
 class TGLPlace;
 class TGLPort;
-class TGLЫутыщк;
+class TGLSensor;
 
 template<typename T>
 class TGLList
@@ -25,6 +25,7 @@ public:
 
 	int add(T* obj);
 	int add(WideString nm, TTreeNode* nd, int nn);
+	int count(void);
 
 	T* find(WideString nm);
 	T* find(TTreeNode* nd);

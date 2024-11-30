@@ -111,6 +111,9 @@
         <BCC_UseClassicCompiler>false</BCC_UseClassicCompiler>
         <ILINK_LibraryPath>$(BDSLIB)\$(PLATFORM)$(CC_SUFFIX)\debug;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <LinkPackageImports>rtl.bpi;vcl.bpi</LinkPackageImports>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <Icon_MainIcon>GorizontLab_Icon.ico</Icon_MainIcon>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>
@@ -126,6 +129,24 @@
             <FormType>dfm</FormType>
             <DependentOn>FMain.h</DependentOn>
             <BuildOrder>2</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="FPlace_adjust.cpp">
+            <Form>Form_Place_adjust</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>FPlace_adjust.h</DependentOn>
+            <BuildOrder>10</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="FPort_adjust.cpp">
+            <Form>Form_Port_adjust</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>FPort_adjust.h</DependentOn>
+            <BuildOrder>9</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="FSensor_adjust.cpp">
+            <Form>Form_Sensor_adjust</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>FSensor_adjust.h</DependentOn>
+            <BuildOrder>11</BuildOrder>
         </CppCompile>
         <CppCompile Include="GL_List.cpp">
             <DependentOn>GL_List.h</DependentOn>
@@ -158,6 +179,9 @@
             <PCH>true</PCH>
         </PCHCompile>
         <FormResources Include="FMain.dfm"/>
+        <FormResources Include="FPort_adjust.dfm"/>
+        <FormResources Include="FPlace_adjust.dfm"/>
+        <FormResources Include="FSensor_adjust.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -184,6 +208,10 @@
                 <Source>
                     <Source Name="MainSource">GorizontLab.cpp</Source>
                 </Source>
+                <Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k280.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp280.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
+                </Excluded_Packages>
             </CPlusPlusBuilder.Personality>
             <Deployment Version="4">
                 <DeployFile Condition="'$(DynamicRTL)'=='true'" LocalName="$(BDS)\Redist\osx32\libcgcrtl.dylib" Class="DependencyModule">

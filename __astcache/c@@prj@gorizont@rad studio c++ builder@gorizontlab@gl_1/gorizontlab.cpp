@@ -5,6 +5,9 @@
 #include <tchar.h>
 //---------------------------------------------------------------------------
 USEFORM("FMain.cpp", Form_General);
+USEFORM("FPort_adjust.cpp", Form_Port_adjust);
+USEFORM("FPlace_adjust.cpp", Form_Place_adjust);
+USEFORM("FSensor_adjust.cpp", Form_Sensor_adjust);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
@@ -13,6 +16,9 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 		Application->Initialize();
 		Application->MainFormOnTaskBar = true;
 		Application->CreateForm(__classid(TForm_General), &Form_General);
+		Application->CreateForm(__classid(TForm_Port_adjust), &Form_Port_adjust);
+		Application->CreateForm(__classid(TForm_Place_adjust), &Form_Place_adjust);
+		Application->CreateForm(__classid(TForm_Sensor_adjust), &Form_Sensor_adjust);
 		Application->Run();
 	}
 	catch (Exception &exception)

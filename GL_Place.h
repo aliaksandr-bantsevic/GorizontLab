@@ -2,7 +2,7 @@
 #ifndef GL_PlaceH
 #define GL_PlaceH
 //---------------------------------------------------------------------------
-#include <vcl.h>
+#include "defs.h"
 #include "GL_List.h"
 class TGLPort;
 //---------------------------------------------------------------------------
@@ -12,6 +12,7 @@ class TGLPlace
 public:
 
 	TGLPlace();
+    TGLPlace(WideString nm);
 	TGLPlace(WideString nm, TTreeNode* nd, int nn);
 	~TGLPlace();
 
@@ -28,11 +29,15 @@ public:
 
 public:
 
-	int add_port(WideString nm, TTreeNode* nd, int nn);
+	int add_port(WideString nm);
+	void SetTree(TTreeView* t);
+	void SetNode(TTreeNode* n);
 
 private:
 
-    TGLPort* prt;
+	TGLPort* prt;
+
+	TTreeView* tree;
 
 };
 #endif

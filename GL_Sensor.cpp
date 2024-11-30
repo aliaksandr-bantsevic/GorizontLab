@@ -26,3 +26,24 @@ TGLSensor::~TGLSensor()
 {
 
 }
+
+void TGLSensor::SetTree(TTreeView* t)
+{
+	tree = t;
+}
+
+void TGLSensor::SetNode(TTreeNode* n)
+{
+	node = n;
+}
+
+void TGLSensor::SetPlnum(int n)
+{
+	plnum = n;
+}
+
+void TGLSensor::SetPrnum(int n)
+{
+	prnum = n;
+}
+

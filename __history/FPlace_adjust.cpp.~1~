@@ -1,0 +1,16 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "FPlace_adjust.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TForm_Place_Adjust *Form_Place_Adjust;
+//---------------------------------------------------------------------------
+__fastcall TForm_Place_Adjust::TForm_Place_Adjust(TComponent* Owner)
+	: TForm(Owner)
+{
+}
+//---------------------------------------------------------------------------

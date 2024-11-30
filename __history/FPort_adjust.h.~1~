@@ -1,0 +1,21 @@
+//---------------------------------------------------------------------------
+
+#ifndef FPort_adjustH
+#define FPort_adjustH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+#include <Vcl.Controls.hpp>
+#include <Vcl.StdCtrls.hpp>
+#include <Vcl.Forms.hpp>
+//---------------------------------------------------------------------------
+class TForm_Port_adjust : public TForm
+{
+__published:	// IDE-managed Components
+private:	// User declarations
+public:		// User declarations
+	__fastcall TForm_Port_adjust(TComponent* Owner);
+};
+//---------------------------------------------------------------------------
+extern PACKAGE TForm_Port_adjust *Form_Port_adjust;
+//---------------------------------------------------------------------------
+#endif
