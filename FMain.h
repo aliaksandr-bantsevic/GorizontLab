@@ -26,6 +26,9 @@
 #include "FPlace_adjust.h"
 #include "FSensor_adjust.h"
 
+#define SYS_MODE_ADJ 0
+#define SYS_MODE_RUN 1
+
 //---------------------------------------------------------------------------
 class TForm_General : public TForm
 {

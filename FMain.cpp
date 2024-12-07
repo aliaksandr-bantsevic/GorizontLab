@@ -16,9 +16,10 @@ __fastcall TForm_General::TForm_General(TComponent* Owner)
 }
 //---------------------GLOBALS-----------------------------------------------
 
-TGLSystem* GLSystem;
-TDateTime g_global_second_timer = 0.;
-WideString g_ws_msg;
+TGLSystem* 			GLSystem;
+TDateTime 			g_global_second_timer = 0.;
+WideString 			g_ws_msg;
+int                 g_global_system_mode = SYS_MODE_ADJ;
 
 //--------------------------------------------------------------------------
 
