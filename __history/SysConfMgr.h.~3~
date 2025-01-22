@@ -1,0 +1,37 @@
+//---------------------------------------------------------------------------
+
+#ifndef SysConfMgrH
+#define SysConfMgrH
+//---------------------------------------------------------------------------
+
+class TSysConfMgr
+{
+
+public:
+
+	TSysConfMgr();
+	~TSysConfMgr();
+
+private:
+
+	WideString curDir;
+	WideString curSysName;
+	WideString confFold;
+	WideString baseFold;
+	WideString curConfPath;
+	WideString curBasePath;
+
+
+private:
+
+   void IniCurPath(void);
+   void SelCurSysName(void);
+
+public:
+
+};
+
+
+
+
+#endif

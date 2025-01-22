@@ -178,9 +178,13 @@
             <BuildOrder>1</BuildOrder>
             <PCH>true</PCH>
         </PCHCompile>
-        <FormResources Include="FMain.dfm"/>
+        <CppCompile Include="SysConfMgr.cpp">
+            <DependentOn>SysConfMgr.h</DependentOn>
+            <BuildOrder>12</BuildOrder>
+        </CppCompile>
         <FormResources Include="FPort_adjust.dfm"/>
         <FormResources Include="FPlace_adjust.dfm"/>
+        <FormResources Include="FMain.dfm"/>
         <FormResources Include="FSensor_adjust.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

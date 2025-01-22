@@ -14,6 +14,9 @@
 #include <Vcl.ImgList.hpp>
 
 #include <Vcl.Menus.hpp>
+#include <Xml.XMLDoc.hpp>
+#include <Xml.xmldom.hpp>
+#include <Xml.XMLIntf.hpp>
 #include <list>
 
 #include "defs.h"
@@ -67,6 +70,7 @@ __published:	// IDE-managed Components
 	TMenuItem *N_AdjustPort;
 	TMenuItem *N_AdjustSensor;
 	TMenuItem *N_AdjustSystem;
+	TXMLDocument *XMLDocument_conf;
 	void __fastcall Timer_General_1sTimer(TObject *Sender);
 	void __fastcall Timer_Init_appTimer(TObject *Sender);
 	void __fastcall ToolButton1Click(TObject *Sender);
@@ -75,6 +79,9 @@ __published:	// IDE-managed Components
 	void __fastcall N_AddPortClick(TObject *Sender);
 	void __fastcall N_AddPlaceClick(TObject *Sender);
 	void __fastcall N_AddSensorClick(TObject *Sender);
+	void __fastcall ToolButton4Click(TObject *Sender);
+	void __fastcall ToolButton3Click(TObject *Sender);
+	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 
 private:	// User declarations
 public:		// User declarations

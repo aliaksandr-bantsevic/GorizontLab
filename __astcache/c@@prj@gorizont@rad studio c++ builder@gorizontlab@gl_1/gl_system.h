@@ -5,6 +5,13 @@
 //---------------------------------------------------------------------------
 #include <vcl.h>
 #include "GL_List.h"
+
+#include "SysConfMgr.h"
+
+#include <vcl.h>
+#include <Xml.XMLDoc.hpp>
+#include <Xml.XMLIntf.hpp>
+
 class TGLPlace;
 //---------------------------------------------------------------------------
 
@@ -22,20 +29,21 @@ class TGLSystem
 public:
 
 	TGLSystem();
-	TGLSystem(TTreeView* t);
+	TGLSystem(TTreeView* t, TXMLDocument* xmlDoc);
 	~TGLSystem();
 
 public:
 
 private:
 
-    TGLPlace* pl;
+	TGLPlace* pl;
+    TSysConfMgr* SysConfMgr;
 
 public:
 
 	TGLList<TGLPlace> place_list;
 
-private:
+public:
 
    	TTreeNode* node;
 
@@ -61,7 +69,10 @@ public:
 	//TGLPlace* GetPlace(int n);
 	TObject* GetBrowserElement(TTreeNode* nd, int* type);
 	void ProcBrowserСlick(TTreeNode* nd, int* tp);
-
+	TGLPort* add_port(WideString nm);
+	TGLSensor* add_sensor(WideString nm);
+	int SaveConf(void);
+    int LoadConf(void);
 };
 
 

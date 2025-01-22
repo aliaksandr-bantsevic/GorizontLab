@@ -40,7 +40,7 @@ TGLPlace::~TGLPlace()
 
 }
 
-int TGLPlace::add_port(WideString nm)
+TGLPort* TGLPlace::add_port(WideString nm)
 {
 	int nmb = port_list.count() + 1;
 	prt = new TGLPort(nm, NULL, nmb);
@@ -48,7 +48,7 @@ int TGLPlace::add_port(WideString nm)
 	if (port_list.add(prt) != 0)
 	{
 		delete prt;
-		return -1;  //fail to add the port
+		return NULL;  //fail to add the port
 	}
 	else
 	{
@@ -64,16 +64,16 @@ int TGLPlace::add_port(WideString nm)
 		prt->SetPlnum(num);
 
 		////////////!!!!
-		prt->add_sensor(L"AND3#1", num);
-		prt->add_sensor(L"AND3#2", num);
-		prt->add_sensor(L"AND3#2", num);
-		prt->add_sensor(L"AND3#4", num);
-		prt->add_sensor(L"AND3#5", num);
-		prt->add_sensor(L"IND3#1", num);
-		prt->add_sensor(L"IND3#2", num);
-		prt->add_sensor(L"IND3#3", num);
+		//prt->add_sensor(L"AND3#1", num);
+		//prt->add_sensor(L"AND3#2", num);
+		//prt->add_sensor(L"AND3#2", num);
+		//prt->add_sensor(L"AND3#4", num);
+		//prt->add_sensor(L"AND3#5", num);
+		//prt->add_sensor(L"IND3#1", num);
+		//prt->add_sensor(L"IND3#2", num);
+		//prt->add_sensor(L"IND3#3", num);
 
-		return 0;
+		return prt;
 	}
 }
 

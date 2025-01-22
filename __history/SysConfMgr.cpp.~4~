@@ -1,0 +1,30 @@
+//---------------------------------------------------------------------------
+
+#pragma hdrstop
+
+#include "SysConfMgr.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+
+TSysConfMgr::TSysConfMgr()
+{
+
+}
+
+TSysConfMgr::~TSysConfMgr()
+{
+
+}
+
+void TSysConfMgr::IniCurPath(void)
+{
+	TCHAR tdir [1024];
+	::GetCurrentDirectoryW(1024, tdir);
+
+	curDir = tdir;
+	curConfPath = curDir + L"\\" + L"Conf";
+	::CreateDirectoryW(curConfPath.c_bstr(), 0);
+
+	curSysName = L"GorizontLab";
+
+}

@@ -18,12 +18,15 @@ TGLSystem::TGLSystem()
    node = NULL;
 }
 
-TGLSystem::TGLSystem(TTreeView* t)
+TGLSystem::TGLSystem(TTreeView* t, TXMLDocument* xmlDoc)
 {
    name = L"GorizontLab Monitoring System";
    mark = L"...";
    tree = t;
    node = this->tree->Items->Add(NULL, this->name);
+
+   SysConfMgr = new TSysConfMgr();
+   SysConfMgr->SetXMLDoc(xmlDoc);
 }
 
 TGLSystem::~TGLSystem()
@@ -95,6 +98,10 @@ TObject* TGLSystem::GetBrowserElement(TTreeNode* nd, int* type)
 	*type = OBJ_TYPE_NONE;
 	TObject* res = NULL;
 
+	cur_pl = NULL;
+	cur_pr = NULL;
+	cur_sn = NULL;
+
 	if (nd == this->node)
 	{
 		*type = OBJ_TYPE_SYST;
@@ -103,6 +110,7 @@ TObject* TGLSystem::GetBrowserElement(TTreeNode* nd, int* type)
 	else if ((res = (TObject*)place_list.find(nd)) != NULL)
 	{
 		*type = OBJ_TYPE_PLCE;
+		cur_pl = (TGLPlace*)res;
 		return res;
 	}
 	else
@@ -116,6 +124,10 @@ TObject* TGLSystem::GetBrowserElement(TTreeNode* nd, int* type)
 			if ((res = (TObject*)itpl->port_list.find(nd)) != NULL)
 			{
 				*type = OBJ_TYPE_PORT;
+
+				cur_pl = itpl;
+				cur_pr = (TGLPort*) res;
+
 				return res;
 			}
 
@@ -124,6 +136,11 @@ TObject* TGLSystem::GetBrowserElement(TTreeNode* nd, int* type)
 				if ((res = (TObject*)itpr->sensor_list.find(nd)) != NULL)
 				{
 					*type = OBJ_TYPE_SNSR;
+
+					cur_pl = (TGLPlace*) itpl;
+					cur_pr = (TGLPort*) itpr;
+					cur_sn = (TGLSensor*) res;
+
 					return res;
 				}
 			}
@@ -186,4 +203,177 @@ void TGLSystem::ProcBrowserСlick(TTreeNode* nd, int* tp)
 	//ShowMessage(ss);
     g_ws_msg = ss;
 
+}
+
+TGLPort* TGLSystem::add_port(WideString nm)
+{
+   if (cur_pl != NULL)
+   {
+	   return cur_pl->add_port(nm);
+   }
+
+   return NULL;
+}
+
+TGLSensor* TGLSystem::add_sensor(WideString nm)
+{
+   if ((cur_pr != NULL) &&  (cur_pl != NULL))
+   {
+	   cur_pr->add_sensor(nm, cur_pl->num);
+   }
+
+   return NULL;
+}
+
+int TGLSystem::SaveConf(void)
+{
+   TXMLDocument* XMLDoc = SysConfMgr->GetXMLDoc();
+
+   if (XMLDoc != nullptr)
+   {
+		XMLDoc->ChildNodes->Clear();
+   }
+
+   XMLDoc->Options = XMLDoc->Options << doNodeAutoIndent;
+   XMLDoc->Version = "1.0";
+   XMLDoc->Encoding = "UTF-16"; // Устанавливаем кодировку на UTF-16
+
+   _di_IXMLNode RootNode = XMLDoc->AddChild("system");
+   RootNode->Attributes["name"] = name.c_bstr(); // Устанавливаем атрибут
+
+   int plid = 0;
+   int prid = 0;
+   int snid = 0;
+
+   WideString sid ("");
+
+
+
+	for (auto itpl : place_list.m_list)
+	{
+		_di_IXMLNode ObjectNode = RootNode->AddChild("object");
+
+		sid.printf(L"%d", ++plid);
+		ObjectNode->Attributes["ID"] = sid;
+		ObjectNode->AddChild("name")->Text = itpl->name;
+
+		prid = 0;
+
+		for (auto itpr : itpl->port_list.m_list)
+		{
+			_di_IXMLNode PortNode = ObjectNode->AddChild("port");
+
+			sid.printf(L"%d.%d", plid, ++prid);
+			PortNode->Attributes["ID"] = sid;
+			PortNode->AddChild("name")->Text = itpr->name;
+
+            snid = 0;
+
+			for (auto itsn : itpr->sensor_list.m_list)
+			{
+				_di_IXMLNode SensorNode = PortNode->AddChild("sensor");
+
+				sid.printf(L"%d.%d.%d", plid, prid, ++snid);
+				SensorNode->Attributes["ID"] = sid;
+				SensorNode->AddChild("name")->Text = itsn->name;
+			}
+		}
+
+	}
+
+   TCHAR* path = SysConfMgr->GetXMLDocPath();
+   TCHAR pathb [1024];
+   wcscpy(pathb, SysConfMgr->GetXMLDocPath());
+   wcscat(pathb, L".back");
+
+   ::DeleteFile(pathb);
+   ::CopyFile(path, pathb, true);
+   ::DeleteFile(path);
+
+   Sleep(100);
+
+   XMLDoc->SaveToFile(path);
+
+
+
+   return 0;
+}
+
+int TGLSystem::LoadConf(void)
+{
+   TXMLDocument* XMLDoc = SysConfMgr->GetXMLDoc();
+
+   int plid = 0;
+   int prid = 0;
+   int snid = 0;
+
+   WideString sid ("");
+
+   cur_pl = NULL;
+   cur_pr = NULL;
+   cur_sn = NULL;
+
+   try
+   {
+	  TCHAR* path = SysConfMgr->GetXMLDocPath();
+	 _di_IXMLDocument xmlDoc = LoadXMLDocument(path);
+	 _di_IXMLNode rootNode = xmlDoc->DocumentElement;
+
+	 for (int i = 0; i < rootNode->ChildNodes->Count; ++i)
+	 {
+		_di_IXMLNode objectNode = rootNode->ChildNodes->Nodes[i];
+		_di_IXMLNode nameNode = objectNode->ChildNodes->FindNode("name");
+		if (nameNode)
+		{
+			cur_pl = add_place (nameNode->Text);
+
+		}
+		else
+		{
+			//std::cout << "Тег name не найден в узле objectNode." << std::endl;
+		}
+
+		for (int i = 0; i < objectNode->ChildNodes->Count; ++i)
+		{
+			_di_IXMLNode portNode = objectNode->ChildNodes->Nodes[i];
+			_di_IXMLNode nameNode = portNode->ChildNodes->FindNode("name");
+			if (nameNode)
+			{
+				cur_pr = add_port (nameNode->Text);
+
+				Sleep(1);
+			}
+			else
+			{
+			//std::cout << "Тег name не найден в узле objectNode." << std::endl;
+			}
+
+			for (int i = 0; i < portNode->ChildNodes->Count; ++i)
+			{
+				_di_IXMLNode sensorNode = portNode->ChildNodes->Nodes[i];
+				_di_IXMLNode nameNode = sensorNode->ChildNodes->FindNode("name");
+				if (nameNode)
+				{
+					add_sensor (nameNode->Text);
+				}
+				else
+				{
+				//std::cout << "Тег name не найден в узле objectNode." << std::endl;
+				}
+			}
+
+		}
+     }
+	 //View();
+
+	 Sleep(1);
+   }
+   catch(...)
+   {
+	   ShowMessage(L"Конфигурация не найдена!");
+   }
+
+
+
+   return 0;
 }

@@ -1,0 +1,65 @@
+//---------------------------------------------------------------------------
+
+#pragma hdrstop
+
+#include "SysConfMgr.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+
+TSysConfMgr::TSysConfMgr()
+{
+   IniCurPath();
+}
+
+TSysConfMgr::~TSysConfMgr()
+{
+
+}
+
+void TSysConfMgr::SelCurSysName(void)
+{
+
+   curSysName = L"GorizontLab";
+
+}
+
+void TSysConfMgr::IniCurPath(void)
+{
+	SelCurSysName();
+	
+	TCHAR tdir [1024];
+	::GetCurrentDirectoryW(1024, tdir);
+
+	curDir = tdir;
+	
+	curConfPath = curDir + L"\\" + L"Conf"  L"\\";
+	::CreateDirectoryW(curConfPath.c_bstr(), 0);
+
+	confFold = curConfPath;
+	
+	curConfPath = curConfPath + curSysName + L".xml";
+	
+	curBasePath =  curDir + L"\\" + L"Base"  L"\\";
+	::CreateDirectoryW(curBasePath.c_bstr(), 0);
+
+	baseFold = curBasePath;
+	
+	curBasePath = curBasePath + curSysName + L"\\";
+	
+	Sleep(1);
+}
+
+void TSysConfMgr::SetXMLDoc(TXMLDocument* doc)
+{
+   xmlDoc = doc;
+}
+
+TXMLDocument* TSysConfMgr::GetXMLDoc(void)
+{
+   return xmlDoc;
+}
+
+TCHAR* TSysConfMgr::GetXMLDocPath(void)
+{
+   return  curConfPath.c_bstr();
+}

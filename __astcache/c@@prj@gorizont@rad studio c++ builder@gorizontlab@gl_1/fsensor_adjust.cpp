@@ -19,10 +19,39 @@ __fastcall TForm_Sensor_adjust::TForm_Sensor_adjust(TComponent* Owner)
 void TForm_Sensor_adjust::start(TGLSensor* sn)
 {
 	sensor = sn;
-    ShowModal();
+
+	ComboBox_addr->Clear();
+
+	for (int i = 1; i < 255; i++)
+	{
+		ComboBox_addr->Items->Add(i);
+	}
+
+	ComboBox_addr->ItemIndex = 0;
+
+	ShowModal();
 }
 void __fastcall TForm_Sensor_adjust::Button_OKClick(TObject *Sender)
 {
+	WideString ssens;
+	ssens.printf(L"ind3#%03d", ComboBox_addr->ItemIndex + 1);
+
+		if (GLSystem->add_sensor(ssens))
+		{
+
+		}
+		else
+		{
+			//ShowMessage(L"Не удалось добавить порт!");
+			//    delete port;
+		}
+
 	Close();
 }
 //---------------------------------------------------------------------------
+void __fastcall TForm_Sensor_adjust::Timer_startTimer(TObject *Sender)
+{
+	Timer_start->Enabled = false;
+}
+//---------------------------------------------------------------------------
+

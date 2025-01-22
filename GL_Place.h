@@ -29,7 +29,7 @@ public:
 
 public:
 
-	int add_port(WideString nm);
+	TGLPort* add_port(WideString nm);
 	void SetTree(TTreeView* t);
 	void SetNode(TTreeNode* n);
 

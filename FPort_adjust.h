@@ -9,14 +9,19 @@
 #include <Vcl.Forms.hpp>
 //---------------------------------------------------------------------------
 #include "GL_Port.h"
-
+#include <Vcl.ExtCtrls.hpp>
+#include "GL_System.h"
 //---------------------------------------------------------------------------
 class TForm_Port_adjust : public TForm
 {
 __published:	// IDE-managed Components
 	TButton *Button_ok;
 	TButton *Button_cancel;
+	TComboBox *ComboBox_COM;
+	TLabel *Label1;
+	TTimer *Timer_start;
 	void __fastcall Button_okClick(TObject *Sender);
+	void __fastcall Timer_startTimer(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_Port_adjust(TComponent* Owner);
@@ -28,5 +33,6 @@ public:
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_Port_adjust *Form_Port_adjust;
+extern TGLSystem* GLSystem;
 //---------------------------------------------------------------------------
 #endif

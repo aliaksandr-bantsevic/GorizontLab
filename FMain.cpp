@@ -57,12 +57,14 @@ void __fastcall TForm_General::Timer_General_1sTimer(TObject *Sender)
 
 void TForm_General::InitApplication(void)
 {
-   GLSystem = new TGLSystem(TreeView_Browser);
+   GLSystem = new TGLSystem(TreeView_Browser, XMLDocument_conf);
 
    WideString s;
    s.printf(L"Âåðñèÿ: %d.%d.%d", BUILD, VERSION, SUBVERSION);
 
    StatusBar->Panels->Items[2]->Text = s;
+
+   GLSystem->LoadConf();
 }
 
 void __fastcall TForm_General::Timer_Init_appTimer(TObject *Sender)
@@ -116,6 +118,8 @@ void __fastcall TForm_General::TreeView_BrowserClick(TObject *Sender)
 	GLSystem->ProcBrowserÑlick(nd, &type);
 
 	HidePopupMenu();
+
+
 
 		switch (type)
 		{
@@ -190,6 +194,24 @@ void TForm_General::AddPort(void)
 void __fastcall TForm_General::N_AddSensorClick(TObject *Sender)
 {
 	AddSensor();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::ToolButton4Click(TObject *Sender)
+{
+	GLSystem->SaveConf();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::ToolButton3Click(TObject *Sender)
+{
+    GLSystem->LoadConf();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::FormClose(TObject *Sender, TCloseAction &Action)
+{
+    GLSystem->SaveConf();
 }
 //---------------------------------------------------------------------------
 

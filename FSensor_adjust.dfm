@@ -11,6 +11,13 @@ object Form_Sensor_adjust: TForm_Sensor_adjust
   Font.Name = 'Segoe UI'
   Font.Style = []
   TextHeight = 15
+  object Label1: TLabel
+    Left = 136
+    Top = 64
+    Width = 39
+    Height = 15
+    Caption = 'IND3 # '
+  end
   object Button_OK: TButton
     Left = 545
     Top = 409
@@ -27,5 +34,19 @@ object Form_Sensor_adjust: TForm_Sensor_adjust
     Height = 25
     Caption = 'Cancel'
     TabOrder = 1
+  end
+  object ComboBox_addr: TComboBox
+    Left = 181
+    Top = 61
+    Width = 145
+    Height = 23
+    TabOrder = 2
+    Text = 'ComboBox_addr'
+  end
+  object Timer_start: TTimer
+    Interval = 100
+    OnTimer = Timer_startTimer
+    Left = 56
+    Top = 376
   end
 end
