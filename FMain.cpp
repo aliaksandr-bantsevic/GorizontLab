@@ -78,10 +78,12 @@ int pnum = 1;
 
 void __fastcall TForm_General::ToolButton1Click(TObject *Sender)
 {
-	WideString ss;
-	ss.printf(L"Place #%d", pnum);
-	GLSystem->add_place(ss);
-	pnum++;
+   //	WideString ss;
+   //	ss.printf(L"Place #%d", pnum);
+   //	GLSystem->add_place(ss);
+   //	pnum++;
+
+   GLSystem->ReDraw();
 }
 //---------------------------------------------------------------------------
 void TForm_General::HidePopupMenu(void)
@@ -136,6 +138,7 @@ void __fastcall TForm_General::TreeView_BrowserClick(TObject *Sender)
 
 			case OBJ_TYPE_PORT:
 				this->N_DeletePort->Visible = true;
+                this->N_AdjustPort->Visible = true;
 				this->N_AddSensor->Visible = true;
 			break;
 
@@ -225,3 +228,21 @@ void TForm_General::AdjustSensor(void)
 {
 	Form_Sensor_adjust->start(GLSystem->GetCurSn());
 }
+void __fastcall TForm_General::N_DeleteSensorClick(TObject *Sender)
+{
+	GLSystem->delete_sensor();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::N_DeletePortClick(TObject *Sender)
+{
+	GLSystem->delete_port();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::N_DeletePlaceClick(TObject *Sender)
+{
+	GLSystem->delete_place();
+}
+//---------------------------------------------------------------------------
+

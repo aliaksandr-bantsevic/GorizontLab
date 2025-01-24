@@ -34,8 +34,10 @@ public:
 	TGLSensor* add_sensor(WideString nm, int plnum);
 	void SetTree(TTreeView* t);
 	void SetNode(TTreeNode* n);
+	TTreeNode* GetNode(void);
 
-    void SetPlnum(int n);
+	void SetPlnum(int n);
+	int ReDraw(TTreeNode* n, int plnum, int prnum);
 
 private:
 

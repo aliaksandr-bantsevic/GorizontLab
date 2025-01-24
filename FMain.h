@@ -83,6 +83,9 @@ __published:	// IDE-managed Components
 	void __fastcall ToolButton3Click(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
 	void __fastcall N_AdjustSensorClick(TObject *Sender);
+	void __fastcall N_DeleteSensorClick(TObject *Sender);
+	void __fastcall N_DeletePortClick(TObject *Sender);
+	void __fastcall N_DeletePlaceClick(TObject *Sender);
 
 private:	// User declarations
 public:		// User declarations

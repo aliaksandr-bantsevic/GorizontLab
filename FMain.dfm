@@ -1257,12 +1257,15 @@ object Form_General: TForm_General
     end
     object N_DeletePlace: TMenuItem
       Caption = #1059#1076#1072#1083#1080#1090#1100' '#1052#1077#1089#1090#1086
+      OnClick = N_DeletePlaceClick
     end
     object N_DeletePort: TMenuItem
       Caption = #1059#1076#1072#1083#1080#1090#1100' '#1055#1086#1088#1090
+      OnClick = N_DeletePortClick
     end
     object N_DeleteSensor: TMenuItem
       Caption = #1059#1076#1072#1083#1080#1090#1100' '#1044#1072#1090#1095#1080#1082
+      OnClick = N_DeleteSensorClick
     end
     object N_Port: TMenuItem
       Caption = #1055#1086#1088#1090

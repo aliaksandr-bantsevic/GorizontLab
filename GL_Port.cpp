@@ -77,3 +77,24 @@ void TGLPort::SetPlnum(int n)
 	plnum = n;
 }
 
+int TGLPort::ReDraw(TTreeNode* n, int plnum, int prnum)
+{
+	WideString ss;
+	ss.printf(L"%d.%d [", plnum, prnum);
+	ss = ss + name;
+	ss = ss+L"]";
+	node = tree->Items->AddChild(n, ss); node->ImageIndex = 2; node->SelectedIndex = 2;
+	node->Expand(true);
+
+	this->plnum = plnum;
+	num = prnum;
+
+	n->Expand(true);
+
+	return 0;
+}
+
+TTreeNode* TGLPort::GetNode(void)
+{
+	return node;
+}

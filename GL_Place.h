@@ -32,6 +32,8 @@ public:
 	TGLPort* add_port(WideString nm);
 	void SetTree(TTreeView* t);
 	void SetNode(TTreeNode* n);
+	void ReDraw(TTreeNode* n, int plnum);
+    TTreeNode* GetNode(void);
 
 private:
 

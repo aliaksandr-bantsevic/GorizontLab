@@ -209,7 +209,7 @@ TGLPort* TGLSystem::add_port(WideString nm)
 {
    if (cur_pl != NULL)
    {
-	   cur_pl->add_port(nm);
+	   return cur_pl->add_port(nm);
    }
 
    return NULL;
@@ -219,7 +219,7 @@ TGLSensor* TGLSystem::add_sensor(WideString nm)
 {
    if ((cur_pr != NULL) &&  (cur_pl != NULL))
    {
-	   cur_pr->add_sensor(nm, cur_pl->num);
+	   return cur_pr->add_sensor(nm, cur_pl->num);
    }
 
    return NULL;
@@ -257,6 +257,8 @@ int TGLSystem::SaveConf(void)
 		ObjectNode->Attributes["ID"] = sid;
 		ObjectNode->AddChild("name")->Text = itpl->name;
 
+		prid = 0;
+
 		for (auto itpr : itpl->port_list.m_list)
 		{
 			_di_IXMLNode PortNode = ObjectNode->AddChild("port");
@@ -265,13 +267,18 @@ int TGLSystem::SaveConf(void)
 			PortNode->Attributes["ID"] = sid;
 			PortNode->AddChild("name")->Text = itpr->name;
 
+            snid = 0;
+
 			for (auto itsn : itpr->sensor_list.m_list)
 			{
 				_di_IXMLNode SensorNode = PortNode->AddChild("sensor");
 
 				sid.printf(L"%d.%d.%d", plid, prid, ++snid);
 				SensorNode->Attributes["ID"] = sid;
-				SensorNode->AddChild("name")->Text = itsn->name;
+				SensorNode->AddChild("name")->Text = itsn->GetName();
+                WideString s("");
+				s.printf(L"%03d", itsn->GetBaud());
+				SensorNode->AddChild("baud")->Text = s;
 			}
 		}
 
@@ -305,6 +312,10 @@ int TGLSystem::LoadConf(void)
 
    WideString sid ("");
 
+   cur_pl = NULL;
+   cur_pr = NULL;
+   cur_sn = NULL;
+
    try
    {
 	  TCHAR* path = SysConfMgr->GetXMLDocPath();
@@ -331,12 +342,9 @@ int TGLSystem::LoadConf(void)
 			_di_IXMLNode nameNode = portNode->ChildNodes->FindNode("name");
 			if (nameNode)
 			{
-				TGLPort* cur_pr_tmp = add_port (nameNode->Text);
-				if (cur_pr_tmp) {
+				cur_pr = add_port (nameNode->Text);
 
-                    cur_pr = cur_pr_tmp;
-
-				}
+				Sleep(1);
 			}
 			else
 			{
@@ -345,11 +353,23 @@ int TGLSystem::LoadConf(void)
 
 			for (int i = 0; i < portNode->ChildNodes->Count; ++i)
 			{
+				TGLSensor* sn;
+
 				_di_IXMLNode sensorNode = portNode->ChildNodes->Nodes[i];
 				_di_IXMLNode nameNode = sensorNode->ChildNodes->FindNode("name");
 				if (nameNode)
 				{
-					add_sensor (nameNode->Text);
+					sn =add_sensor (nameNode->Text);
+				}
+				else
+				{
+				//std::cout << "Тег name не найден в узле objectNode." << std::endl;
+				}
+
+				_di_IXMLNode baudNode = sensorNode->ChildNodes->FindNode("baud");
+				if (baudNode)
+				{
+					sn->SetBaud(StrToIntDef(baudNode->Text, 0));
 				}
 				else
 				{
@@ -371,4 +391,42 @@ int TGLSystem::LoadConf(void)
 
 
    return 0;
+}
+
+TGLSensor* TGLSystem::GetCurSn(void)
+{
+	return cur_sn;
+}
+
+int TGLSystem::ReDraw(void)
+{
+	tree->Items->Clear();
+
+	node = this->tree->Items->Add(NULL, this->name);
+
+	int plnum = 0;
+	int prnum = 0;
+	int snnum = 0;
+
+	for (auto itpl : place_list.m_list)
+	{
+		itpl->ReDraw(node, ++plnum);
+
+		prnum = 0;
+
+		for (auto itpr : itpl->port_list.m_list)
+		{
+			itpr->ReDraw(itpl->GetNode(), plnum, ++prnum);
+
+			snnum = 0;
+
+            for (auto itsn : itpr->sensor_list.m_list)
+			{
+                itsn->ReDraw(itpr->GetNode(), plnum, prnum, snnum);
+            }
+
+        }
+    }
+
+	return 0;
 }

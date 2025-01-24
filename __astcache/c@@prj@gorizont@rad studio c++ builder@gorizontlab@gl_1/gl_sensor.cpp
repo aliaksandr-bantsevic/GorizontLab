@@ -74,3 +74,20 @@ void TGLSensor::SetAddr(Byte ad)
 {
 	addr = ad;
 }
+
+int TGLSensor::ReDraw(TTreeNode* n, int plnum, int prnum, int snnum)
+{
+   WideString ss;
+	ss.printf(L"%d.%d.%d [", plnum, prnum, snnum);
+	ss = ss + name;
+	ss = ss+L"]";
+	node = tree->Items->AddChild(n, ss); node->ImageIndex = 3; node->SelectedIndex = 3;
+	n->Expand(true);
+
+	this->plnum = plnum;
+	this->prnum = prnum;
+	num = snnum;
+
+
+	return 0;
+}

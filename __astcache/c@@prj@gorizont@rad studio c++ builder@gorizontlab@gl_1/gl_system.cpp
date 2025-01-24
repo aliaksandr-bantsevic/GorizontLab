@@ -397,3 +397,77 @@ TGLSensor* TGLSystem::GetCurSn(void)
 {
 	return cur_sn;
 }
+
+int TGLSystem::ReDraw(void)
+{
+	tree->Items->Clear();
+
+	node = this->tree->Items->Add(NULL, this->name);
+
+	int plnum = 0;
+	int prnum = 0;
+	int snnum = 0;
+
+	for (auto itpl : place_list.m_list)
+	{
+		itpl->ReDraw(node, ++plnum);
+
+		prnum = 0;
+
+		for (auto itpr : itpl->port_list.m_list)
+		{
+			itpr->ReDraw(itpl->GetNode(), plnum, ++prnum);
+
+			snnum = 0;
+
+            for (auto itsn : itpr->sensor_list.m_list)
+			{
+                itsn->ReDraw(itpr->GetNode(), plnum, prnum, snnum);
+            }
+
+        }
+    }
+
+	return 0;
+}
+
+int TGLSystem::delete_sensor(void)
+{
+
+	cur_pr->sensor_list.remove(cur_sn->name);
+
+	//delete cur_sn;
+
+	ReDraw();
+
+	return 0;
+}
+
+int TGLSystem::delete_port(void)
+{
+
+	cur_pl->port_list.remove(cur_pr->name);
+
+	//delete cur_pr;
+
+	ReDraw();
+
+	return 0;
+}
+
+int TGLSystem::delete_place(void)
+{
+
+	place_list.remove(cur_pl->name);
+
+	//for (auto itpr : cur_pl->port_list.m_list)
+	//{
+	//	delete itpr;
+	//}
+
+	//delete cur_pl;
+
+	ReDraw();
+
+	return 0;
+}

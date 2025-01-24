@@ -36,6 +36,7 @@ public:
 	WideString GetName(void);
 	BYTE GetAddr(void);
 	void SetAddr(Byte ad);
+    int ReDraw(TTreeNode* n, int plnum, int prnum, int snnum);
 private:
 
 	TTreeView* tree;

@@ -74,7 +74,11 @@ public:
 	TGLSensor* add_sensor(WideString nm);
 	int SaveConf(void);
 	int LoadConf(void);
-    TGLSensor* GetCurSn(void);
+	TGLSensor* GetCurSn(void);
+	int ReDraw(void);
+	int delete_sensor(void);
+	int delete_port(void);
+    int delete_place(void);
 };
 
 

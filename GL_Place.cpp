@@ -86,3 +86,19 @@ void TGLPlace::SetNode(TTreeNode* n)
 {
 	node = n;
 }
+
+void TGLPlace::ReDraw(TTreeNode* n, int plnum)
+{
+    WideString ss;
+	ss.printf(L"%d [", plnum);
+	ss = ss + name;
+	ss = ss+L"]";
+	node = tree->Items->AddChild(node, ss); node->ImageIndex = 1; node->SelectedIndex = 1;
+
+	num = plnum;
+}
+
+TTreeNode* TGLPlace::GetNode(void)
+{
+	return node;
+}

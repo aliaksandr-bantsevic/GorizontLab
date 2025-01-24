@@ -16,8 +16,10 @@ __fastcall TForm_General::TForm_General(TComponent* Owner)
 }
 //---------------------GLOBALS-----------------------------------------------
 
-TGLSystem* GLSystem;
-TDateTime g_global_second_timer = 0.;
+TGLSystem* 			GLSystem;
+TDateTime 			g_global_second_timer = 0.;
+WideString 			g_ws_msg;
+int                 g_global_system_mode = SYS_MODE_ADJ;
 
 //--------------------------------------------------------------------------
 
@@ -55,12 +57,14 @@ void __fastcall TForm_General::Timer_General_1sTimer(TObject *Sender)
 
 void TForm_General::InitApplication(void)
 {
-   GLSystem = new TGLSystem(TreeView_Browser);
+   GLSystem = new TGLSystem(TreeView_Browser, XMLDocument_conf);
 
    WideString s;
    s.printf(L"Версия: %d.%d.%d", BUILD, VERSION, SUBVERSION);
 
    StatusBar->Panels->Items[2]->Text = s;
+
+   GLSystem->LoadConf();
 }
 
 void __fastcall TForm_General::Timer_Init_appTimer(TObject *Sender)
@@ -74,10 +78,12 @@ int pnum = 1;
 
 void __fastcall TForm_General::ToolButton1Click(TObject *Sender)
 {
-	WideString ss;
-	ss.printf(L"Place #%d", pnum);
-	GLSystem->add_place(ss);
-	pnum++;
+   //	WideString ss;
+   //	ss.printf(L"Place #%d", pnum);
+   //	GLSystem->add_place(ss);
+   //	pnum++;
+
+   GLSystem->ReDraw();
 }
 //---------------------------------------------------------------------------
 void TForm_General::HidePopupMenu(void)
@@ -86,13 +92,18 @@ void TForm_General::HidePopupMenu(void)
 	this->N_AddPlace->Visible = false;
 	this->N_DeletePlace->Visible = false;
 	this->N_AddPort->Visible = false;
+
 	this->N_DeletePort->Visible = false;
 	this->N_AddSensor->Visible = false;
 	this->N_DeleteSensor->Visible = false;
+
 	this->N_Port->Visible = false;
 	this->N_Sensor->Visible = false;
 
-
+	this->N_AdjustPlace->Visible = false;
+	this->N_AdjustPort->Visible = false;
+	this->N_AdjustSensor->Visible = false;
+	this->N_AdjustSystem->Visible = false;
 }
 //---------------------------------------------------------------------------
 
@@ -110,13 +121,17 @@ void __fastcall TForm_General::TreeView_BrowserClick(TObject *Sender)
 
 	HidePopupMenu();
 
+
+
 		switch (type)
 		{
 			case OBJ_TYPE_SYST:
 				this->N_AddPlace->Visible = true;
+				this->N_AdjustSystem->Visible = true;
 			break;
 
 			case OBJ_TYPE_PLCE:
+              	this->N_AdjustPlace->Visible = true;
 				this->N_DeletePlace->Visible = true;
 				this->N_AddPort->Visible = true;
 			break;
@@ -128,19 +143,105 @@ void __fastcall TForm_General::TreeView_BrowserClick(TObject *Sender)
 
 			case OBJ_TYPE_SNSR:
 				this->N_DeleteSensor->Visible = true;
+				this->N_AdjustSensor->Visible = true;
 			break;
 
 			default:;
 
 		}
 
-
+		ShowSystemElement(g_ws_msg);
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TForm_General::PopupMenuPopup(TObject *Sender)
 {
 	TreeView_BrowserClick(NULL);
+}
+//---------------------------------------------------------------------------
+void TForm_General::ShowSystemElement(WideString s)
+{
+   StatusBar->Panels->Items[3]->Text = s;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::N_AddPortClick(TObject *Sender)
+{
+	 AddPort();
+}
+//---------------------------------------------------------------------------
+
+void TForm_General::AddPlace(void)
+{
+	Form_Place_adjust->start(NULL);
+}
+//---------------------------------------------------------------------------
+
+void TForm_General::AddSensor(void)
+{
+	Form_Sensor_adjust->start(NULL);
+}
+
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::N_AddPlaceClick(TObject *Sender)
+{
+	AddPlace();
+}
+//---------------------------------------------------------------------------
+void TForm_General::AddPort(void)
+{
+	Form_Port_adjust->start(NULL);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::N_AddSensorClick(TObject *Sender)
+{
+	AddSensor();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::ToolButton4Click(TObject *Sender)
+{
+	GLSystem->SaveConf();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::ToolButton3Click(TObject *Sender)
+{
+    GLSystem->LoadConf();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::FormClose(TObject *Sender, TCloseAction &Action)
+{
+    GLSystem->SaveConf();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::N_AdjustSensorClick(TObject *Sender)
+{
+	AdjustSensor();
+}
+//---------------------------------------------------------------------------
+void TForm_General::AdjustSensor(void)
+{
+	Form_Sensor_adjust->start(GLSystem->GetCurSn());
+}
+void __fastcall TForm_General::N_DeleteSensorClick(TObject *Sender)
+{
+	GLSystem->delete_sensor();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::N_DeletePortClick(TObject *Sender)
+{
+	GLSystem->delete_port();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::N_DeletePlaceClick(TObject *Sender)
+{
+	GLSystem->delete_place();
 }
 //---------------------------------------------------------------------------
 
