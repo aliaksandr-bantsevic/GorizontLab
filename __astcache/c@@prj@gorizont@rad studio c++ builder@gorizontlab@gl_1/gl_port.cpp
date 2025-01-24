@@ -33,7 +33,7 @@ void TGLPort::SetBaud(int b)
 	baud = b;
 }
 
-int TGLPort::add_sensor(WideString nm, int plnum)
+TGLSensor* TGLPort::add_sensor(WideString nm, int plnum)
 {
 	int nmb = sensor_list.count() + 1;
 	sns = new TGLSensor(nm, NULL, nmb);
@@ -41,7 +41,7 @@ int TGLPort::add_sensor(WideString nm, int plnum)
 	if (sensor_list.add(sns) != 0)
 	{
 		delete sns;
-		return -1;  //fail to add the port
+		return NULL;  //fail to add the port
 	}
 	else
 	{
@@ -58,7 +58,7 @@ int TGLPort::add_sensor(WideString nm, int plnum)
 		sns->SetPlnum(plnum);
 		sns->SetPrnum(num);
 
-		return 0;
+		return sns;
 	}
 }
 

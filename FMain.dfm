@@ -1241,7 +1241,7 @@ object Form_General: TForm_General
   end
   object PopupMenu: TPopupMenu
     OnPopup = PopupMenuPopup
-    Left = 72
+    Left = 80
     Top = 120
     object N_AddPlace: TMenuItem
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1052#1077#1089#1090#1086
@@ -1278,6 +1278,7 @@ object Form_General: TForm_General
     end
     object N_AdjustSensor: TMenuItem
       Caption = #1053#1072#1089#1090#1088#1086#1080#1090#1100' '#1076#1072#1090#1095#1080#1082
+      OnClick = N_AdjustSensorClick
     end
     object N_AdjustSystem: TMenuItem
       Caption = #1053#1072#1089#1090#1088#1086#1080#1090#1100' '#1089#1080#1089#1090#1077#1084#1091

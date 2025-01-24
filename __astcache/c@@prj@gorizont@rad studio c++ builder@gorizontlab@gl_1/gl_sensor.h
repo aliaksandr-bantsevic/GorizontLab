@@ -30,11 +30,17 @@ public:
 	void SetTree(TTreeView* t);
 	void SetNode(TTreeNode* n);
 	void SetPlnum(int n);
-    void SetPrnum(int n);
-
+	void SetPrnum(int n);
+	void SetBaud(DWORD bd);
+	DWORD GetBaud(void);
+	WideString GetName(void);
+	BYTE GetAddr(void);
+	void SetAddr(Byte ad);
 private:
 
 	TTreeView* tree;
+	DWORD baud;
+    BYTE addr;
 
 };
 

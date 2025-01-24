@@ -20,6 +20,9 @@ TGLSensor::TGLSensor(WideString nm, TTreeNode* nd, int nn)
 	mark = L"...";
 	node = nd;
 	num = nn;
+
+	baud = 9600;
+	addr = 1;
 }
 
 TGLSensor::~TGLSensor()
@@ -47,3 +50,27 @@ void TGLSensor::SetPrnum(int n)
 	prnum = n;
 }
 
+void TGLSensor::SetBaud(DWORD bd)
+{
+	baud = bd;
+}
+
+DWORD TGLSensor::GetBaud(void)
+{
+	return baud;
+}
+
+WideString TGLSensor::GetName(void)
+{
+	return name;
+}
+
+BYTE TGLSensor::GetAddr(void)
+{
+	return addr;
+}
+
+void TGLSensor::SetAddr(Byte ad)
+{
+	addr = ad;
+}

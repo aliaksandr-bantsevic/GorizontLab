@@ -82,6 +82,7 @@ __published:	// IDE-managed Components
 	void __fastcall ToolButton4Click(TObject *Sender);
 	void __fastcall ToolButton3Click(TObject *Sender);
 	void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+	void __fastcall N_AdjustSensorClick(TObject *Sender);
 
 private:	// User declarations
 public:		// User declarations
@@ -99,6 +100,7 @@ private:     //Window property management
 	void AddPlace(void);
 	void AddPort(void);
 	void AddSensor(void);
+    void AdjustSensor(void);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_General *Form_General;

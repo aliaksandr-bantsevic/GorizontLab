@@ -141,6 +141,7 @@ void __fastcall TForm_General::TreeView_BrowserClick(TObject *Sender)
 
 			case OBJ_TYPE_SNSR:
 				this->N_DeleteSensor->Visible = true;
+				this->N_AdjustSensor->Visible = true;
 			break;
 
 			default:;
@@ -215,3 +216,12 @@ void __fastcall TForm_General::FormClose(TObject *Sender, TCloseAction &Action)
 }
 //---------------------------------------------------------------------------
 
+void __fastcall TForm_General::N_AdjustSensorClick(TObject *Sender)
+{
+	AdjustSensor();
+}
+//---------------------------------------------------------------------------
+void TForm_General::AdjustSensor(void)
+{
+	Form_Sensor_adjust->start(GLSystem->GetCurSn());
+}

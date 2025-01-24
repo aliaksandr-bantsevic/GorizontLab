@@ -29,22 +29,61 @@ void TForm_Sensor_adjust::start(TGLSensor* sn)
 
 	ComboBox_addr->ItemIndex = 0;
 
+	ComboBox_baud->Clear();
+
+	ComboBox_baud->Items->Add(4800);
+	ComboBox_baud->Items->Add(9600);
+	ComboBox_baud->Items->Add(19200);
+	ComboBox_baud->Items->Add(38400);
+	ComboBox_baud->Items->Add(115200);
+
+	ComboBox_baud->ItemIndex = 1;
+
+	if (sensor)
+	{
+	   WideString s;
+	   s.printf(L"%d", sensor->GetBaud());
+	   ComboBox_baud->Text = s;
+	   Caption = L"Настроить датчик";
+	   s.printf(L"%d", sensor->GetAddr());
+	   ComboBox_addr->Text = s;
+	   ComboBox_addr->Enabled = false;
+	}
+	else
+	{
+	  Caption = L"Добавить датчик";
+	  ComboBox_addr->Enabled = true;
+    }
+
 	ShowModal();
 }
 void __fastcall TForm_Sensor_adjust::Button_OKClick(TObject *Sender)
 {
 	WideString ssens;
 	ssens.printf(L"ind3#%03d", ComboBox_addr->ItemIndex + 1);
+	TGLSensor* sn;
 
-		if (GLSystem->add_sensor(ssens))
-		{
+	Update();
 
-		}
-		else
-		{
-			//ShowMessage(L"Не удалось добавить порт!");
-			//    delete port;
-		}
+	if (sensor == NULL)
+	{
+	  sn = GLSystem->add_sensor(ssens);
+	  if (sn == NULL)
+	  {
+		  ShowMessage(L"Не удалось добавить порт!");
+		  Close();
+	  }
+
+	  sn->SetAddr(ComboBox_addr->Text.ToInt());
+	}
+	else
+	{
+		sn = sensor;
+    }
+
+   //	DWORD b = (DWORD)ComboBox_baud->Text.ToInt();
+	sn->SetBaud(ComboBox_baud->Text.ToInt());
+
 
 	Close();
 }
@@ -52,6 +91,12 @@ void __fastcall TForm_Sensor_adjust::Button_OKClick(TObject *Sender)
 void __fastcall TForm_Sensor_adjust::Timer_startTimer(TObject *Sender)
 {
 	Timer_start->Enabled = false;
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_Sensor_adjust::Button_cancelClick(TObject *Sender)
+{
+	Close();
 }
 //---------------------------------------------------------------------------
 

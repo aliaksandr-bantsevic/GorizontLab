@@ -20,8 +20,11 @@ __published:	// IDE-managed Components
 	TTimer *Timer_start;
 	TComboBox *ComboBox_addr;
 	TLabel *Label1;
+	TComboBox *ComboBox_baud;
+	TLabel *Label2;
 	void __fastcall Button_OKClick(TObject *Sender);
 	void __fastcall Timer_startTimer(TObject *Sender);
+	void __fastcall Button_cancelClick(TObject *Sender);
 private:	// User declarations
 public:		// User declarations
 	__fastcall TForm_Sensor_adjust(TComponent* Owner);

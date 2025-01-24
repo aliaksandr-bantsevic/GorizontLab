@@ -31,7 +31,7 @@ public:
 public:
 
 	void SetBaud(int b);
-	int add_sensor(WideString nm, int plnum);
+	TGLSensor* add_sensor(WideString nm, int plnum);
 	void SetTree(TTreeView* t);
 	void SetNode(TTreeNode* n);
 

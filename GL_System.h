@@ -11,6 +11,7 @@
 #include <vcl.h>
 #include <Xml.XMLDoc.hpp>
 #include <Xml.XMLIntf.hpp>
+#include "utils.h"
 
 class TGLPlace;
 //---------------------------------------------------------------------------
@@ -72,7 +73,8 @@ public:
 	TGLPort* add_port(WideString nm);
 	TGLSensor* add_sensor(WideString nm);
 	int SaveConf(void);
-    int LoadConf(void);
+	int LoadConf(void);
+    TGLSensor* GetCurSn(void);
 };
 
 
