@@ -1,0 +1,34 @@
+//---------------------------------------------------------------------------
+
+#pragma hdrstop
+
+#include "Protocol.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+
+virtual TProtocol::TProtocol()
+{
+   clear();
+   protocol_type = 255; //unknown
+}
+
+TProtocol::~TProtocol()
+{
+
+}
+
+void TProtocol::clear(void)
+{
+	memset(bufrx,0,1024);
+	memset(buftx,0,1024);
+}
+
+BYTE* TProtocol::getRX(void)
+{
+	return rxbuf;
+}
+
+BYTE* TProtocol::geTX(void)
+{
+	return txbuf;
+}

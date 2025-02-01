@@ -78,7 +78,12 @@ public:
 	int ReDraw(void);
 	int delete_sensor(void);
 	int delete_port(void);
-    int delete_place(void);
+	int delete_place(void);
+	TCHAR* GetConfPath(void);
+	int CreateConf(TSaveDialog* dlg);
+	int OpenConf(TOpenDialog* dlg);
+	int Clear(void);
+    int SaveConf(TSaveDialog* dlg);
 };
 
 

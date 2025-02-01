@@ -1,0 +1,22 @@
+//---------------------------------------------------------------------------
+
+#ifndef Protocol_211H
+#define Protocol_211H
+//---------------------------------------------------------------------------
+#include "Protocol.h"
+
+class TProtocol_211 : public TProtocol
+{
+
+	void setProtocol(void) override;
+	int request_curr_XY(BYTE addr) override;
+	int accept_response_curr_XY(BYTE addr) override;
+
+
+
+};
+
+
+
+
+#endif

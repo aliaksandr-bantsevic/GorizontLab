@@ -17,6 +17,7 @@
 #include <Xml.XMLDoc.hpp>
 #include <Xml.xmldom.hpp>
 #include <Xml.XMLIntf.hpp>
+#include <Vcl.Dialogs.hpp>
 #include <list>
 
 #include "defs.h"
@@ -71,6 +72,10 @@ __published:	// IDE-managed Components
 	TMenuItem *N_AdjustSensor;
 	TMenuItem *N_AdjustSystem;
 	TXMLDocument *XMLDocument_conf;
+	TFileOpenDialog *FileOpenDialog;
+	TFileSaveDialog *FileSaveDialog;
+	TSaveDialog *SaveDialog;
+	TOpenDialog *OpenDialog;
 	void __fastcall Timer_General_1sTimer(TObject *Sender);
 	void __fastcall Timer_Init_appTimer(TObject *Sender);
 	void __fastcall ToolButton1Click(TObject *Sender);
@@ -86,6 +91,9 @@ __published:	// IDE-managed Components
 	void __fastcall N_DeleteSensorClick(TObject *Sender);
 	void __fastcall N_DeletePortClick(TObject *Sender);
 	void __fastcall N_DeletePlaceClick(TObject *Sender);
+	void __fastcall ToolButton2Click(TObject *Sender);
+	void __fastcall ToolButton5Click(TObject *Sender);
+	void __fastcall ToolButton6Click(TObject *Sender);
 
 private:	// User declarations
 public:		// User declarations
@@ -103,7 +111,8 @@ private:     //Window property management
 	void AddPlace(void);
 	void AddPort(void);
 	void AddSensor(void);
-    void AdjustSensor(void);
+	void AdjustSensor(void);
+    void SetGeneralCaption(void);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_General *Form_General;

@@ -22,6 +22,13 @@ WideString 			g_ws_msg;
 int                 g_global_system_mode = SYS_MODE_ADJ;
 
 //--------------------------------------------------------------------------
+void TForm_General::SetGeneralCaption(void)
+{
+    WideString cap;
+   TCHAR* cp = GLSystem->GetConfPath();
+   cap.printf(L"GorizontLab [%s]", cp);
+   Caption = cap;
+}
 
 void TForm_General::InitMainWindow(void)
 {
@@ -57,6 +64,9 @@ void __fastcall TForm_General::Timer_General_1sTimer(TObject *Sender)
 
 void TForm_General::InitApplication(void)
 {
+
+  // FMaincaptionPointer& = Form_General->Caption;
+
    GLSystem = new TGLSystem(TreeView_Browser, XMLDocument_conf);
 
    WideString s;
@@ -65,6 +75,13 @@ void TForm_General::InitApplication(void)
    StatusBar->Panels->Items[2]->Text = s;
 
    GLSystem->LoadConf();
+
+   //WideString cap;
+   //TCHAR* cp = GLSystem->GetConfPath();
+   //cap.printf(L"GorizontLab [%s]", cp);
+   //Caption = cap;
+
+   SetGeneralCaption();
 }
 
 void __fastcall TForm_General::Timer_Init_appTimer(TObject *Sender)
@@ -78,12 +95,7 @@ int pnum = 1;
 
 void __fastcall TForm_General::ToolButton1Click(TObject *Sender)
 {
-   //	WideString ss;
-   //	ss.printf(L"Place #%d", pnum);
-   //	GLSystem->add_place(ss);
-   //	pnum++;
-
-   GLSystem->ReDraw();
+   GLSystem->SaveConf();
 }
 //---------------------------------------------------------------------------
 void TForm_General::HidePopupMenu(void)
@@ -203,7 +215,7 @@ void __fastcall TForm_General::N_AddSensorClick(TObject *Sender)
 
 void __fastcall TForm_General::ToolButton4Click(TObject *Sender)
 {
-	GLSystem->SaveConf();
+	GLSystem->ReDraw();
 }
 //---------------------------------------------------------------------------
 
@@ -243,6 +255,27 @@ void __fastcall TForm_General::N_DeletePortClick(TObject *Sender)
 void __fastcall TForm_General::N_DeletePlaceClick(TObject *Sender)
 {
 	GLSystem->delete_place();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::ToolButton2Click(TObject *Sender)
+{
+   GLSystem->CreateConf(SaveDialog);
+   SetGeneralCaption();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::ToolButton5Click(TObject *Sender)
+{
+   GLSystem->OpenConf(OpenDialog);
+   SetGeneralCaption();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::ToolButton6Click(TObject *Sender)
+{
+   GLSystem->SaveConf(SaveDialog);
+   SetGeneralCaption();
 }
 //---------------------------------------------------------------------------
 

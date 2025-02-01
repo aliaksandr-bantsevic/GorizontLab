@@ -297,7 +297,7 @@ int TGLSystem::SaveConf(void)
 
    XMLDoc->SaveToFile(path);
 
-
+   SysConfMgr->SaveCurSysName();
 
    return 0;
 }
@@ -385,7 +385,7 @@ int TGLSystem::LoadConf(void)
    }
    catch(...)
    {
-	   ShowMessage(L"Конфигурация не найдена!");
+	   ShowMessage(L"Конфигурация не найдена и будет создана заново!");
    }
 
 
@@ -420,13 +420,14 @@ int TGLSystem::ReDraw(void)
 
 			snnum = 0;
 
-            for (auto itsn : itpr->sensor_list.m_list)
+			for (auto itsn : itpr->sensor_list.m_list)
 			{
-                itsn->ReDraw(itpr->GetNode(), plnum, prnum, snnum);
-            }
+				itsn->ReDraw(itpr->GetNode(), plnum, prnum, ++snnum);
+			}
 
-        }
-    }
+
+		}
+	}
 
 	return 0;
 }
@@ -471,3 +472,54 @@ int TGLSystem::delete_place(void)
 
 	return 0;
 }
+
+TCHAR* TGLSystem::GetConfPath(void)
+{
+	return SysConfMgr->GetXMLDocPath();
+}
+
+int TGLSystem::CreateConf(TSaveDialog* dlg)
+{
+	if (SysConfMgr->CreateConf(dlg) != 0) return -1;
+
+	Clear();
+	SaveConf();
+	LoadConf();
+	//ReDraw();
+
+	return 0;
+}
+
+int TGLSystem::OpenConf(TOpenDialog* dlg)
+{
+	if (SysConfMgr->OpenConf(dlg) != 0) return -1;
+
+	Clear();
+	LoadConf();
+	//ReDraw();
+
+   return 0;
+}
+
+int TGLSystem::Clear(void)
+{
+
+   place_list.m_list.clear();
+
+   tree->Items->Clear();
+   node = this->tree->Items->Add(NULL, this->name);
+
+   return 0;
+}
+
+int TGLSystem::SaveConf(TSaveDialog* dlg)
+{
+	if (SysConfMgr->SaveConf(dlg) != 0) return -1;
+
+	Clear();
+	LoadConf();
+	//ReDraw();
+
+   return 0;
+}
+

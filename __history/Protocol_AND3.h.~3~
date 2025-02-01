@@ -1,0 +1,34 @@
+//---------------------------------------------------------------------------
+
+#ifndef Protocol_ind3H
+#define Protocol_ind3H
+//---------------------------------------------------------------------------
+
+#include "defs.h"
+
+#define AND3_CMD_GETALL 		201
+#define AND3_LEN_GETALL 		18
+#define AND3_DAT1_GETALL 		0
+#define AND3_DAT2_GETALL 		0
+
+#define AND3_LEN_CMD            6
+
+class TProtocol_and3 : public TProtocol
+{
+	void setProtocol(void) override;
+	int request_curr_XY(BYTE addr) override;
+	int accept_response_curr_XY(BYTE addr) override;
+
+	private:
+
+	int  TProtocol_and3::RequestMeasureResult(unsigned char addr, unsigned char* buf, int* len);
+
+};
+
+
+
+
+
+
+
+#endif

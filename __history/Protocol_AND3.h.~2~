@@ -1,0 +1,23 @@
+//---------------------------------------------------------------------------
+
+#ifndef Protocol_ind3H
+#define Protocol_ind3H
+//---------------------------------------------------------------------------
+
+class TProtocol_and3 : public TProtocol
+{
+	void setProtocol(void) override;
+	int request_curr_XY(BYTE addr) override;
+	int accept_response_curr_XY(BYTE addr) override;
+
+	private:
+
+};
+
+
+
+
+
+
+
+#endif

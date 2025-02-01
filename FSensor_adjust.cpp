@@ -70,19 +70,23 @@ void __fastcall TForm_Sensor_adjust::Button_OKClick(TObject *Sender)
 	  sn = GLSystem->add_sensor(ssens);
 	  if (sn == NULL)
 	  {
-		  ShowMessage(L"Не удалось добавить порт!");
+		  ShowMessage(L"Не удалось добавить датчик!");
 		  Close();
 	  }
-
-	  sn->SetAddr(ComboBox_addr->Text.ToInt());
+	  else
+	  {
+			sn->SetAddr(ComboBox_addr->Text.ToInt());
+			sn->SetBaud(ComboBox_baud->Text.ToInt());
+	  }
 	}
 	else
 	{
-		sn = sensor;
+			sn = sensor;
+			sn->SetBaud(ComboBox_baud->Text.ToInt());
     }
 
    //	DWORD b = (DWORD)ComboBox_baud->Text.ToInt();
-	sn->SetBaud(ComboBox_baud->Text.ToInt());
+
 
 
 	Close();
