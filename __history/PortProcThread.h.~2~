@@ -1,0 +1,33 @@
+//---------------------------------------------------------------------------
+
+#ifndef PortProcThreadH
+#define PortProcThreadH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+
+#include "defs.h"
+#include "GL_Port.h"
+
+//---------------------------------------------------------------------------
+class TPortProcThread : public TThread
+{
+protected:
+	void __fastcall Execute();
+public:
+	__fastcall TPortProcThread(bool CreateSuspended, TGLPort* prt);
+
+private:
+
+	TGLPort* port;
+	bool suspend_flag;
+	bool exit_flag;
+
+public:
+
+	void start();
+	void suspend();
+	void exit();
+
+};
+//---------------------------------------------------------------------------
+#endif

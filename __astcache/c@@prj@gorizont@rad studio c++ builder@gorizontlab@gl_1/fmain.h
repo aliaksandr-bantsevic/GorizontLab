@@ -76,6 +76,8 @@ __published:	// IDE-managed Components
 	TFileSaveDialog *FileSaveDialog;
 	TSaveDialog *SaveDialog;
 	TOpenDialog *OpenDialog;
+	TTabSheet *TabSheet_console;
+	TListBox *ListBox_console;
 	void __fastcall Timer_General_1sTimer(TObject *Sender);
 	void __fastcall Timer_Init_appTimer(TObject *Sender);
 	void __fastcall ToolButton1Click(TObject *Sender);

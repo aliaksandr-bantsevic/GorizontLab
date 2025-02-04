@@ -27,6 +27,7 @@ private:
 	WideString baseFold;
 	WideString curConfPath;
 	WideString curBasePath;
+	WideString logFilePath;
 
 	TXMLDocument* xmlDoc;
 
@@ -45,7 +46,9 @@ public:
 	int CreateConf(TSaveDialog* dlg);
 	int OpenConf(TOpenDialog* dlg);
 	int AcceptConf(TCHAR* newconf);
-    int SaveConf(TSaveDialog* dlg);
+	int SaveConf(TSaveDialog* dlg);
+	TCHAR* GetLogFilePath(void);
+    TCHAR* GetCurConfPath(void);
 
 };
 

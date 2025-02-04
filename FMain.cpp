@@ -4,6 +4,13 @@
 #pragma hdrstop
 
 #include "FMain.h"
+
+#include <windows.h>
+#include <mmsystem.h>
+#include <iostream>
+#pragma comment(lib, "winmm.lib")
+#include <algorithm>
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -21,6 +28,8 @@ TDateTime 			g_global_second_timer = 0.;
 WideString 			g_ws_msg;
 int                 g_global_system_mode = SYS_MODE_ADJ;
 
+TIMECAPS tc;
+UINT wTimerRes;
 //--------------------------------------------------------------------------
 void TForm_General::SetGeneralCaption(void)
 {
@@ -34,6 +43,23 @@ void TForm_General::InitMainWindow(void)
 {
    this->WindowState = wsMaximized;
    DevideMainWindow(30, 85);
+
+   // Запрашиваем разрешение таймера 1 мс
+    TIMECAPS tc;
+	UINT wTimerRes;
+
+	if (timeGetDevCaps(&tc, sizeof(TIMECAPS)) != TIMERR_NOERROR) {
+		//std::cerr << "Ошибка при получении возможностей таймера." << std::endl;
+		StatusBar->Panels->Items[3]->Text = L"Ошибка при получении возможностей таймера.";
+	}
+	else
+	{
+		//wTimerRes = std::min(std::max(tc.wPeriodMin, 1), tc.wPeriodMax);
+		wTimerRes = 1;
+		// Устанавливаем разрешение таймера
+		timeBeginPeriod(wTimerRes);
+		StatusBar->Panels->Items[3]->Text = L"Системный таймер установлен на разрешение 1 мс.";
+	}
 }
 
 void TForm_General::DevideMainWindow(int browser_part, int data_part)
@@ -68,6 +94,8 @@ void TForm_General::InitApplication(void)
   // FMaincaptionPointer& = Form_General->Caption;
 
    GLSystem = new TGLSystem(TreeView_Browser, XMLDocument_conf);
+   GLSystem->set_console(ListBox_console);
+   GLSystem->console(L"Приложение", L"Инициализация ...");
 
    WideString s;
    s.printf(L"Версия: %d.%d.%d", BUILD, VERSION, SUBVERSION);
@@ -82,6 +110,8 @@ void TForm_General::InitApplication(void)
    //Caption = cap;
 
    SetGeneralCaption();
+
+   GLSystem->console(L"Приложение", L"... успешно");
 }
 
 void __fastcall TForm_General::Timer_Init_appTimer(TObject *Sender)
@@ -227,7 +257,10 @@ void __fastcall TForm_General::ToolButton3Click(TObject *Sender)
 
 void __fastcall TForm_General::FormClose(TObject *Sender, TCloseAction &Action)
 {
-    GLSystem->SaveConf();
+	GLSystem->SaveConf();
+    // Восстанавливаем разрешение таймера
+    timeEndPeriod(wTimerRes);
+	StatusBar->Panels->Items[3]->Text = L"Системный таймер восстановлен.";
 }
 //---------------------------------------------------------------------------
 

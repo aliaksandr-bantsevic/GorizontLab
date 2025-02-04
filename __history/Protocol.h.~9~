@@ -1,0 +1,51 @@
+//---------------------------------------------------------------------------
+
+#ifndef ProtocolH
+#define ProtocolH
+//---------------------------------------------------------------------------
+
+#define PROTOCOL_TYPE_IND3          0
+#define PROTOCOL_TYPE_ASIN          1
+#define PROTOCOL_TYPE_AND3          2
+
+#define PROTOCOL_TYPE_NONE          255
+
+class TProtocol {
+
+	   public:
+
+		TProtocol();
+
+		~TProtocol();
+
+	   protected:
+
+	   virtual void setProtocol() = 0;
+
+	   BYTE bufrx[1024];
+	   BYTE buftx[1024];
+	   int rx_idx;
+	   int tx_idx;
+
+	   double raw_X;
+	   double raw_Y;
+
+	   int protocol_type;
+
+	   public:
+
+	   virtual int request_curr_XY(BYTE addr) = 0;
+	   virtual int accept_response_curr_XY(BYTE addr) =  0;
+
+	   BYTE* getRX(void);
+	   BYTE* getTX(void);
+	   void clear(void);
+	   void clear_rx(void);
+	   void clear_tx(void);
+	   int getRXidx(void);
+	   int getTXidx(void);
+
+
+};
+
+#endif

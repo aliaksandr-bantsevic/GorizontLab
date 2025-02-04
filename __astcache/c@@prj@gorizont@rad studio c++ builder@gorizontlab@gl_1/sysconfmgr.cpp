@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -59,7 +59,9 @@ void TSysConfMgr::IniCurPath(void)
 
 	curBasePath = curBasePath + curSysName + L"\\";
 
-	//Sleep(1);
+	logFilePath = curDir + L"\\" + L"GorizontLab.log";
+
+	Sleep(1);
 }
 
 void TSysConfMgr::SetXMLDoc(TXMLDocument* doc)
@@ -75,6 +77,11 @@ TXMLDocument* TSysConfMgr::GetXMLDoc(void)
 TCHAR* TSysConfMgr::GetXMLDocPath(void)
 {
    return  curConfPath.c_bstr();
+}
+
+TCHAR* TSysConfMgr::GetLogFilePath(void)
+{
+   return  logFilePath.c_bstr();
 }
 
 void TSysConfMgr::SaveCurSysName(void)
@@ -267,4 +274,9 @@ int TSysConfMgr::SaveConf(TSaveDialog* dlg)
 	 AcceptConf(nsn);
 
 	return 0;
+}
+
+TCHAR* TSysConfMgr::GetCurConfPath(void)
+{
+	return curConfPath.c_bstr();
 }

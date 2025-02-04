@@ -14,7 +14,7 @@ void TProtocol_and3::setProtocol(void)
 
 int TProtocol_and3::request_curr_XY(BYTE addr)
 {
-   RequestMeasureResult(addr, buftx, &tx_idx);
+   return RequestMeasureResult(addr, buftx, &tx_idx);
 }
 
 int  TProtocol_and3::RequestMeasureResult(unsigned char addr, unsigned char* buf, int* len)
@@ -36,7 +36,7 @@ int  TProtocol_and3::RequestMeasureResult(unsigned char addr, unsigned char* buf
 
 int TProtocol_and3::accept_response_curr_XY(BYTE addr)
 {
-	AcceptSensorMeasVal(addr, bufrx, &raw_X, &raw_Y);
+	return AcceptSensorMeasVal(addr, bufrx, &raw_X, &raw_Y);
 }
 
 int TProtocol_and3::AcceptSensorMeasVal(BYTE addr, BYTE* buf, double* x, double* y)

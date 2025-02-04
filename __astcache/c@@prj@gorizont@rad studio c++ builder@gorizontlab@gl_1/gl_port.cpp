@@ -15,12 +15,21 @@ TGLPort::TGLPort()
 	 num = 0;
 }
 
-TGLPort::TGLPort(WideString nm, TTreeNode* nd, int nn)
+TGLPort::TGLPort(WideString nm, TTreeNode* nd, int nn, int comtype)
 {
 	name = nm;
 	mark = L"...";
 	node = NULL;
 	num = nn;
+
+	delay_set.delay_debug = 100;
+	delay_set.delay_default = 10;
+	delay_set.delay_addr_change = 20;
+	delay_set.delay_cmd_exec = 20;
+
+	com = new TCOMPort(115200);
+
+	suspend_run_engine = false;
 }
 
 TGLPort::~TGLPort()
@@ -28,9 +37,11 @@ TGLPort::~TGLPort()
 
 }
 
-void TGLPort::SetBaud(int b)
+int TGLPort::SetBaud(int b)
 {
-	baud = b;
+	//baud = b;
+
+    return 0;
 }
 
 TGLSensor* TGLPort::add_sensor(WideString nm, int plnum)
@@ -97,4 +108,100 @@ int TGLPort::ReDraw(TTreeNode* n, int plnum, int prnum)
 TTreeNode* TGLPort::GetNode(void)
 {
 	return node;
+}
+
+void TGLPort::syspend_cycle ()
+{
+	cycle_syspend_flag = true;
+}
+
+void TGLPort::start_cycle ()
+{
+	cycle_syspend_flag = false;
+}
+
+ int TGLPort::transact_request_XY(TGLSensor* sn)
+ {
+	  BYTE* buf = NULL;
+	  int* len = NULL;
+
+
+	  buf = sn->getRX();
+	  len = sn->getRXidx();
+
+      /*
+
+	  if (sn->request_curr_XY(buf, len) == 0)
+	  {
+		 com->Purge();
+
+		 if (!com->PortNWrite((DWORD)*len, buf))
+		 {
+			 return -1;
+         }
+	  }
+
+	  Sleep(delay_set.delay_cmd_exec);
+
+	  sn->clrTX();
+
+	  buf = sn->getTX();
+	  len = sn->getTXidx();
+
+	  if (com->PortNRead(1, buf))
+	  {
+		  *len++;
+		  while(com->PortNRead(1, buf))
+		  {
+			  *len++;
+          }
+	  }
+
+      sn->accept_response_curr_XY();
+	  */
+	  return 0;
+ }
+
+bool TGLPort::is_suspended ()
+{
+	return cycle_syspend_flag;
+}
+
+int TGLPort::cycle ()
+{
+	while (is_suspended())
+	{
+		Sleep(delay_set.delay_default);
+	}
+
+	if (com->Open(true, sys_port_num) == false)
+	{
+		Sleep(delay_set.delay_default);
+	}
+	else
+	{
+		for (auto itsn : sensor_list.m_list)
+		{
+			transact_request_XY(itsn);
+		}
+	}
+
+	syspend_cycle ();
+
+	return 0;
+}
+
+bool TGLPort::is_run_engine_suspended ()
+{
+	return suspend_run_engine;
+}
+
+void TGLPort::run_engine_suspend ()
+{
+	suspend_run_engine = true;
+}
+
+void TGLPort::run_engine_resume ()
+{
+	suspend_run_engine = false;
 }

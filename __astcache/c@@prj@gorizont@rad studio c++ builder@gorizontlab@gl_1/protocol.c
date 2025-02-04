@@ -1,4 +1,4 @@
-﻿//---------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -52,5 +52,23 @@ BYTE* TProtocol::geTX(void)
 	return txbuf;
 }
 
+int* TProtocol::getRXidx(void)
+{
+	return &rx_idx;
+}
 
+int* TProtocol::getTXidx(void)
+{
+	return &tx_idx;
+}
+
+double get_raw_X()
+{
+	return raw_X;
+}
+
+double get_raw_Y()
+{
+	return raw_Y;
+}
 

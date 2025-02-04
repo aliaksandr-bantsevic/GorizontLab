@@ -13,6 +13,12 @@
 #include <Xml.XMLIntf.hpp>
 #include "utils.h"
 
+#include "PortProcThread.h"
+
+#include <list>
+
+
+
 class TGLPlace;
 //---------------------------------------------------------------------------
 
@@ -38,7 +44,9 @@ public:
 private:
 
 	TGLPlace* pl;
-    TSysConfMgr* SysConfMgr;
+	TSysConfMgr* SysConfMgr;
+	std::list<TPortProcThread*> m_port_proc_thread_list;
+	TListBox* list_console;
 
 public:
 
@@ -57,9 +65,7 @@ public:
 	WideString name;
 	WideString mark;
 
-   	TTreeView* tree;
-
-public:
+	TTreeView* tree;
 
 
 public:
@@ -83,7 +89,13 @@ public:
 	int CreateConf(TSaveDialog* dlg);
 	int OpenConf(TOpenDialog* dlg);
 	int Clear(void);
-    int SaveConf(TSaveDialog* dlg);
+	int SaveConf(TSaveDialog* dlg);
+	void run_engine_start ();
+	void run_engine_suspend ();
+	void run_engine_resume ();
+	void set_console(TListBox* list);
+	void console(WideString  obj, WideString  msg);
+
 };
 
 

@@ -1,0 +1,27 @@
+//---------------------------------------------------------------------------
+
+#pragma hdrstop
+
+#include "COMPort.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+
+TCOMPort::TCOMPort()
+{
+
+}
+
+TCOMPort::TCOMPort(int type, DWORD baud)
+{
+
+}
+
+TCOMPort::~TCOMPort()
+{
+
+}
+
+void TCOMPort::set_buf4100(BYTE* buf)
+{
+	buf4100 = buf;
+}

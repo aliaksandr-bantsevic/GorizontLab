@@ -29,6 +29,7 @@ void TForm_Sensor_adjust::start(TGLSensor* sn)
 
 	ComboBox_addr->ItemIndex = 0;
 
+	/*
 	ComboBox_baud->Clear();
 
 	ComboBox_baud->Items->Add(4800);
@@ -38,12 +39,13 @@ void TForm_Sensor_adjust::start(TGLSensor* sn)
 	ComboBox_baud->Items->Add(115200);
 
 	ComboBox_baud->ItemIndex = 1;
+    */
 
 	if (sensor)
 	{
 	   WideString s;
-	   s.printf(L"%d", sensor->GetBaud());
-	   ComboBox_baud->Text = s;
+	   //s.printf(L"%d", sensor->GetBaud());
+	   //ComboBox_baud->Text = s;
 	   Caption = L"Настроить датчик";
 	   s.printf(L"%d", sensor->GetAddr());
 	   ComboBox_addr->Text = s;
@@ -76,13 +78,13 @@ void __fastcall TForm_Sensor_adjust::Button_OKClick(TObject *Sender)
 	  else
 	  {
 			sn->SetAddr(ComboBox_addr->Text.ToInt());
-			sn->SetBaud(ComboBox_baud->Text.ToInt());
+			//sn->SetBaud(ComboBox_baud->Text.ToInt());
 	  }
 	}
 	else
 	{
 			sn = sensor;
-			sn->SetBaud(ComboBox_baud->Text.ToInt());
+			//sn->SetBaud(ComboBox_baud->Text.ToInt());
     }
 
    //	DWORD b = (DWORD)ComboBox_baud->Text.ToInt();

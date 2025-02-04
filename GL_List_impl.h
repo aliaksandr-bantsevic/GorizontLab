@@ -171,6 +171,8 @@ int TGLList<T>::add(WideString nm, TTreeNode* nd, int nn)
    ob->name = nm;
    ob->node = nd;
    ob->num = nn;
+
+   return 0;
 }
 
 template <typename T>

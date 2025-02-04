@@ -90,9 +90,9 @@ class TProtocol_and3 : public TProtocol
 
 	private:
 
-	int  TProtocol_and3::RequestMeasureResult(unsigned char addr, unsigned char* buf, int* len);
-	int TProtocol_and3::AcceptSensorMeasVal(unsigned char addr, BYTE* buf,double* x, double* y);
-	int TProtocol_and3::CheckPacket(unsigned char addr, unsigned char* buf, int* len);
+	int RequestMeasureResult(unsigned char addr, unsigned char* buf, int* len);
+	int AcceptSensorMeasVal(unsigned char addr, BYTE* buf,double* x, double* y);
+	int CheckPacket(unsigned char addr, unsigned char* buf, int* len);
 
 };
 

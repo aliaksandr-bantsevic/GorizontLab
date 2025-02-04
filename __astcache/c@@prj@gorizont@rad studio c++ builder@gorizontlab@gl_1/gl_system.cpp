@@ -9,6 +9,8 @@
 #include "GL_Place.h"
 #include "GL_Port.h"
 #include "GL_Sensor.h"
+
+#include <System.SysUtils.hpp>
 //---------------------------------------------------------------------------
 
 TGLSystem::TGLSystem()
@@ -276,9 +278,10 @@ int TGLSystem::SaveConf(void)
 				sid.printf(L"%d.%d.%d", plid, prid, ++snid);
 				SensorNode->Attributes["ID"] = sid;
 				SensorNode->AddChild("name")->Text = itsn->GetName();
-                WideString s("");
-				s.printf(L"%03d", itsn->GetBaud());
-				SensorNode->AddChild("baud")->Text = s;
+				WideString s("");
+
+				//s.printf(L"%03d", itsn->GetBaud());
+				//SensorNode->AddChild("baud")->Text = s;
 			}
 		}
 
@@ -299,6 +302,8 @@ int TGLSystem::SaveConf(void)
 
    SysConfMgr->SaveCurSysName();
 
+   console(L"Система", L"Сохранена текущая конфигурация");
+
    return 0;
 }
 
@@ -315,6 +320,8 @@ int TGLSystem::LoadConf(void)
    cur_pl = NULL;
    cur_pr = NULL;
    cur_sn = NULL;
+
+   m_port_proc_thread_list.clear();
 
    try
    {
@@ -344,6 +351,9 @@ int TGLSystem::LoadConf(void)
 			{
 				cur_pr = add_port (nameNode->Text);
 
+				TPortProcThread* ppt = new TPortProcThread(true, cur_pr);
+				m_port_proc_thread_list.push_back(ppt);
+
 				Sleep(1);
 			}
 			else
@@ -366,15 +376,15 @@ int TGLSystem::LoadConf(void)
 				//std::cout << "Тег name не найден в узле objectNode." << std::endl;
 				}
 
-				_di_IXMLNode baudNode = sensorNode->ChildNodes->FindNode("baud");
-				if (baudNode)
-				{
-					sn->SetBaud(StrToIntDef(baudNode->Text, 0));
-				}
-				else
-				{
+				//_di_IXMLNode baudNode = sensorNode->ChildNodes->FindNode("baud");
+				//if (baudNode)
+				//{
+				//	sn->SetBaud(StrToIntDef(baudNode->Text, 0));
+				//}
+				//else
+				//{
 				//std::cout << "Тег name не найден в узле objectNode." << std::endl;
-				}
+				//}
 			}
 
 		}
@@ -487,6 +497,12 @@ int TGLSystem::CreateConf(TSaveDialog* dlg)
 	LoadConf();
 	//ReDraw();
 
+	WideString s = L"Создана конфигурация ";
+
+	s = s + SysConfMgr->GetCurConfPath();
+
+	console(L"Система", s);
+
 	return 0;
 }
 
@@ -497,6 +513,12 @@ int TGLSystem::OpenConf(TOpenDialog* dlg)
 	Clear();
 	LoadConf();
 	//ReDraw();
+
+	WideString s = L"Загружена конфигурация ";
+
+	s = s + SysConfMgr->GetCurConfPath();
+
+	console(L"Система", s);
 
    return 0;
 }
@@ -519,7 +541,70 @@ int TGLSystem::SaveConf(TSaveDialog* dlg)
 	Clear();
 	LoadConf();
 	//ReDraw();
+	WideString s = L"Сохранена конфигурация ";
+
+	s = s + SysConfMgr->GetCurConfPath();
+
+	console(L"Система", s);
 
    return 0;
 }
 
+void TGLSystem::run_engine_start ()
+{
+	for (auto ppt : m_port_proc_thread_list)
+	{
+	   ppt->start();
+	}
+}
+
+void TGLSystem::run_engine_suspend ()
+{
+	for (auto ppt : m_port_proc_thread_list)
+	{
+	   ppt->suspend();
+	}
+}
+
+void TGLSystem::run_engine_resume ()
+{
+	for (auto ppt : m_port_proc_thread_list)
+	{
+	   ppt->resume();
+	}
+}
+
+void TGLSystem::set_console(TListBox* list)
+{
+	list_console = list;
+}
+
+void TGLSystem::console(WideString  obj, WideString  msg)
+{
+   WideString s = FormatDateTime(L"[dd-mm-yyyy hh:nn:ss] ", Now());
+   s = s + L"[" + obj + L"] ";
+   s = s + msg;
+
+   list_console->Items->Add(s);
+
+   FILE* f = _wfopen(SysConfMgr->GetLogFilePath(), L"rb");
+
+   if (f == NULL)
+   {
+		BYTE sgn [] = {0xff, 0xfe};
+
+		fclose(f);
+		FILE* f = _wfopen(SysConfMgr->GetLogFilePath(), L"wb");
+		fwrite(sgn, 2, 1, f);
+		fclose(f);
+
+   }
+
+   f = _wfopen(SysConfMgr->GetLogFilePath(), L"ab");
+
+   s = s + L"\r\n";
+
+   fwrite(s.c_bstr(), wcslen(s.c_bstr())*2, 1, f);
+
+   fclose(f);
+}

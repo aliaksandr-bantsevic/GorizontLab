@@ -77,14 +77,14 @@ class TProtocol_211 : public TProtocol
 
 	private:
 
-	void TProtocol_211::RequestMainMeterPacket(unsigned char addr, main_packet_211_id packet);
-	int TProtocol_211::EscapeBytesEncode(unsigned char* buf, int* len, int frame);
-	int TProtocol_211::EscapeBytesDecode(unsigned char* buf, int* len, int frame);
-	int  TProtocol_211::packet_proc();
-	int  TProtocol_211::packet_proc(unsigned char* buf, int* len, BYTE addr);
-	int TProtocol_211::ChceckSumCheck(void);
-	int TProtocol_211::ChceckSumCalculate(void);
-	int TProtocol_211::AcceptSensorMeasVal();
+	void RequestMainMeterPacket(unsigned char addr, main_packet_211_id packet);
+	int EscapeBytesEncode(unsigned char* buf, int* len, int frame);
+	int EscapeBytesDecode(unsigned char* buf, int* len, int frame);
+	int packet_proc();
+	int packet_proc(unsigned char* buf, int* len, BYTE addr);
+	int ChceckSumCheck(void);
+	int ChceckSumCalculate(void);
+	int AcceptSensorMeasVal();
 
 };
 

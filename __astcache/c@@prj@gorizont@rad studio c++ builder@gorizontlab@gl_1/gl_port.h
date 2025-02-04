@@ -6,8 +6,19 @@
 #include "defs.h"
 #include "GL_List.h"
 
+#include "COMPort.h"
+
 class TGLSensor;
 //---------------------------------------------------------------------------
+
+typedef struct {
+
+	DWORD delay_cmd_exec;
+	DWORD delay_addr_change;
+	DWORD delay_debug;
+	DWORD delay_default;
+
+} delays;
 
 class TGLPort
 {
@@ -15,7 +26,7 @@ class TGLPort
 public:
 
 	TGLPort();
-	TGLPort(WideString nm, TTreeNode* nd, int nn);
+	TGLPort(WideString nm, TTreeNode* nd, int nn, int comtype = PORT_TYPE_COM);
 	~TGLPort();
 
 	WideString name;
@@ -30,7 +41,7 @@ public:
 
 public:
 
-	void SetBaud(int b);
+	int SetBaud(int b);
 	TGLSensor* add_sensor(WideString nm, int plnum);
 	void SetTree(TTreeView* t);
 	void SetNode(TTreeNode* n);
@@ -38,12 +49,28 @@ public:
 
 	void SetPlnum(int n);
 	int ReDraw(TTreeNode* n, int plnum, int prnum);
+	void syspend_cycle ();
+	void start_cycle ();
+
+    int transact_request_XY(TGLSensor* sn);
+	bool is_suspended ();
+	int cycle ();
+	bool is_run_engine_suspended ();
+	void run_engine_suspend ();
+	void run_engine_resume ();
 
 private:
 
-    TTreeView* tree;
+	TTreeView* tree;
 	TGLSensor* sns;
-	int baud;
+	delays delay_set;
+
+	TCOMPort* com;
+
+	bool cycle_syspend_flag;
+	DWORD sys_port_num;
+	bool suspend_run_engine;
+
 };
 
 #endif

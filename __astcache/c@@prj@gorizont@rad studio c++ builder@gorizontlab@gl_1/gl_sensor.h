@@ -5,7 +5,20 @@
 //---------------------------------------------------------------------------
 #include "defs.h"
 #include "GL_List.h"
+
+#include "Protocol_211.h"
+#include "Protocol_and3.h"
 //---------------------------------------------------------------------------
+#define SENSOR_TYPE_IND3_IND3       0
+#define SENSOR_TYPE_IND3_AND3       1
+#define SENSOR_TYPE_IND3_ASIN       2
+#define SENSOR_TYPE_AND3_AND3       3
+
+#define SENSOR_TYPE_AND3_AND3       3
+
+
+#define SENSOR_TYPE_UNKN_UNKN       255
+
 class TGLSensor
 {
 
@@ -31,18 +44,41 @@ public:
 	void SetNode(TTreeNode* n);
 	void SetPlnum(int n);
 	void SetPrnum(int n);
-	void SetBaud(DWORD bd);
-	DWORD GetBaud(void);
+
 	WideString GetName(void);
 	BYTE GetAddr(void);
 	void SetAddr(Byte ad);
-    int ReDraw(TTreeNode* n, int plnum, int prnum, int snnum);
+	int ReDraw(TTreeNode* n, int plnum, int prnum, int snnum);
+
+	BYTE* getRX(void);
+	BYTE* getTX(void);
+	void clrTX(void);
+	int* getRXidx(void);
+	int* getTXidx(void);
+
 private:
 
 	TTreeView* tree;
-	DWORD baud;
-    BYTE addr;
+	BYTE addr;
 
+	double raw_X;
+	double raw_Y;
+
+	TProtocol* protocol;
+
+	void set_sensor(int type);
+
+	int type;
+
+	BYTE* rxbuf;
+	BYTE* txbuf;
+	int* rxidx;
+    int* txidx;
+
+public:
+
+	int request_curr_XY(BYTE* buf, int* len);
+	int accept_response_curr_XY();
 };
 
 

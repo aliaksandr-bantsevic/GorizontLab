@@ -32,7 +32,7 @@ class TProtocol {
 
 	   int protocol_type;
 
-	   public:
+public:
 
 	   virtual int request_curr_XY(BYTE addr) = 0;
 	   virtual int accept_response_curr_XY(BYTE addr) =  0;
@@ -42,7 +42,10 @@ class TProtocol {
 	   void clear(void);
 	   void clear_rx(void);
 	   void clear_tx(void);
-
+	   int* getRXidx(void);
+	   int* getTXidx(void);
+	   double get_raw_X();
+	   double get_raw_Y();
 
 };
 

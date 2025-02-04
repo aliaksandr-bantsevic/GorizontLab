@@ -21,8 +21,11 @@ TGLSensor::TGLSensor(WideString nm, TTreeNode* nd, int nn)
 	node = nd;
 	num = nn;
 
-	baud = 9600;
 	addr = 1;
+
+	type = SENSOR_TYPE_UNKN_UNKN;
+	protocol = NULL;
+
 }
 
 TGLSensor::~TGLSensor()
@@ -48,16 +51,6 @@ void TGLSensor::SetPlnum(int n)
 void TGLSensor::SetPrnum(int n)
 {
 	prnum = n;
-}
-
-void TGLSensor::SetBaud(DWORD bd)
-{
-	baud = bd;
-}
-
-DWORD TGLSensor::GetBaud(void)
-{
-	return baud;
 }
 
 WideString TGLSensor::GetName(void)
@@ -90,4 +83,93 @@ int TGLSensor::ReDraw(TTreeNode* n, int plnum, int prnum, int snnum)
 
 
 	return 0;
+}
+
+void TGLSensor::set_sensor(int type)
+{
+	 if (type == SENSOR_TYPE_IND3_IND3)
+	 {
+		protocol = new TProtocol_211();
+	 }
+	 else if (type == SENSOR_TYPE_IND3_AND3)
+	 {
+		protocol = new TProtocol_and3();
+	 }
+	 else if (type == SENSOR_TYPE_IND3_ASIN)
+	 {
+		//protocol = new TProtocol_asin();
+	 }
+	 else if (type == SENSOR_TYPE_AND3_AND3)
+	 {
+		protocol = new TProtocol_and3();
+	 }
+	 else
+	 {
+		//unknown protocol
+
+		return;
+	 }
+
+	 rxbuf = protocol->getRX();
+	 txbuf = protocol->getTX();
+
+	 rxidx = protocol->getRXidx();
+	 txidx = protocol->getTXidx();
+}
+
+int TGLSensor::request_curr_XY(BYTE* buf, int* len)
+{
+	 if (protocol->request_curr_XY(addr) == 0)
+	 {
+		 buf = protocol->getRX();
+		 len = protocol->getRXidx();
+		 return 0;
+	 }
+	 else
+	 {
+		 return -1;
+     }
+}
+
+int TGLSensor::accept_response_curr_XY()
+{
+	 if (protocol->accept_response_curr_XY(addr) ==  0)
+	 {
+		 raw_X = protocol->get_raw_X();
+		 raw_Y = protocol->get_raw_Y();
+		 return 0;
+	 }
+	 else
+	 {
+		 return -1;
+     }
+}
+
+BYTE* TGLSensor::getRX(void)
+{
+  //return protocol->getRX();
+  return rxbuf;
+}
+
+BYTE* TGLSensor::getTX(void)
+{
+  //return protocol->getTX();
+  return txbuf;
+}
+
+int* TGLSensor::getRXidx(void)
+{
+   //return protocol->getRXidx();
+   return rxidx;
+}
+
+int* TGLSensor::getTXidx(void)
+{
+  //return protocol->getTXidx();
+  return txidx;
+}
+
+void TGLSensor::clrTX(void)
+{
+    protocol->clear_tx();
 }

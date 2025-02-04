@@ -1,0 +1,16 @@
+//---------------------------------------------------------------------------
+
+#ifndef PortProcThreadH
+#define PortProcThreadH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+//---------------------------------------------------------------------------
+class TPortProcThread : public TThread
+{
+protected:
+	void __fastcall Execute();
+public:
+	__fastcall TPortProcThread(bool CreateSuspended);
+};
+//---------------------------------------------------------------------------
+#endif
