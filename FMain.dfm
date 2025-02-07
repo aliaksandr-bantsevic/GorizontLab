@@ -177,6 +177,8 @@ object Form_General: TForm_General
         ActivePage = TabSheet_console
         Align = alClient
         TabOrder = 0
+        ExplicitWidth = 721
+        ExplicitHeight = 161
         object TabSheet_console: TTabSheet
           Caption = #1046#1091#1088#1085#1072#1083
           object ListBox_console: TListBox
@@ -187,10 +189,8 @@ object Form_General: TForm_General
             Align = alClient
             ItemHeight = 15
             TabOrder = 0
-            ExplicitLeft = 32
-            ExplicitTop = 16
-            ExplicitWidth = 121
-            ExplicitHeight = 97
+            ExplicitWidth = 713
+            ExplicitHeight = 131
           end
         end
       end

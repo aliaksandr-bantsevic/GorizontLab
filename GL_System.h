@@ -17,6 +17,7 @@
 
 #include <list>
 
+#include "DataBaseMgr.h"
 
 
 class TGLPlace;
@@ -47,6 +48,7 @@ private:
 	TSysConfMgr* SysConfMgr;
 	std::list<TPortProcThread*> m_port_proc_thread_list;
 	TListBox* list_console;
+	TDataBaseMgr* DBMgr;
 
 public:
 
@@ -95,6 +97,9 @@ public:
 	void run_engine_resume ();
 	void set_console(TListBox* list);
 	void console(WideString  obj, WideString  msg);
+	int open_DB(void);
+	int store_sensor_data(TDateTime t);
+	std::list<dt_sensor_data_record_s> read_sensor_data_s(TGLSensor* sn, TDateTime t1, TDateTime t2);
 
 };
 

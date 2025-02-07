@@ -1,0 +1,37 @@
+//---------------------------------------------------------------------------
+
+#ifndef DataBaseMgrH
+#define DataBaseMgrH
+//---------------------------------------------------------------------------
+
+#include "sqlite3.h"
+//#include "sqlite3ext.h"
+
+#include "defs.h"
+
+class TDataBaseMgr
+{
+
+public:
+	 TDataBaseMgr();
+	 ~TDataBaseMgr();
+
+
+private:
+
+	sqlite3* l_sql_db;
+
+public:
+
+	int open_base(WideString path);
+
+};
+
+
+
+
+
+
+#endif
+
+

@@ -49,7 +49,7 @@ public:
 	int SaveConf(TSaveDialog* dlg);
 	TCHAR* GetLogFilePath(void);
     TCHAR* GetCurConfPath(void);
-
+    TCHAR* GetCurBasePath(void);
 };
 
 

@@ -19,6 +19,14 @@
 
 #define SENSOR_TYPE_UNKN_UNKN       255
 
+typedef struct {
+
+TDateTime t;
+double x;
+double y;
+
+} dt_sensor_data_record_s;
+
 class TGLSensor
 {
 
@@ -55,6 +63,8 @@ public:
 	void clrTX(void);
 	int* getRXidx(void);
 	int* getTXidx(void);
+	double get_rawX(void);
+	double get_rawY(void);
 
 private:
 
@@ -79,6 +89,8 @@ public:
 
 	int request_curr_XY(BYTE* buf, int* len);
 	int accept_response_curr_XY();
+    void subst(double x, double y);
+
 };
 
 

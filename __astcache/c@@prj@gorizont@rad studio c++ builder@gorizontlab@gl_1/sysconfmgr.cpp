@@ -58,6 +58,8 @@ void TSysConfMgr::IniCurPath(void)
 	baseFold = curBasePath;
 
 	curBasePath = curBasePath + curSysName + L"\\";
+    ::CreateDirectoryW(curBasePath.c_bstr(), 0);
+
 
 	logFilePath = curDir + L"\\" + L"GorizontLab.log";
 
@@ -279,4 +281,9 @@ int TSysConfMgr::SaveConf(TSaveDialog* dlg)
 TCHAR* TSysConfMgr::GetCurConfPath(void)
 {
 	return curConfPath.c_bstr();
+}
+
+TCHAR* TSysConfMgr::GetCurBasePath(void)
+{
+	return curBasePath.c_bstr();
 }

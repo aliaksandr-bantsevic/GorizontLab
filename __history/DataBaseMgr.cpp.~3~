@@ -1,0 +1,32 @@
+//---------------------------------------------------------------------------
+
+#pragma hdrstop
+
+#include "DataBaseMgr.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+
+
+TDataBaseMgr::TDataBaseMgr()
+{
+   l_sql_db = NULL;
+}
+
+TDataBaseMgr::~TDataBaseMgr()
+{
+
+}
+
+int TDataBaseMgr::open_base(TCHAR* path)
+{
+   int res = -1;
+
+   TCHAR pb[1024];
+
+   wcscpy(pb, path);
+   wcscat(pb, L"\\data_base.db");
+
+   res = sqlite3_open((char*)pb, &l_sql_db);
+
+   return res;
+}

@@ -29,6 +29,7 @@ TGLSystem::TGLSystem(TTreeView* t, TXMLDocument* xmlDoc)
 
    SysConfMgr = new TSysConfMgr();
    SysConfMgr->SetXMLDoc(xmlDoc);
+   DBMgr = new TDataBaseMgr();
 }
 
 TGLSystem::~TGLSystem()
@@ -607,4 +608,48 @@ void TGLSystem::console(WideString  obj, WideString  msg)
    fwrite(s.c_bstr(), wcslen(s.c_bstr())*2, 1, f);
 
    fclose(f);
+}
+
+int TGLSystem::open_DB(void)
+{
+   if (DBMgr->is_base_open() == false)
+   {
+		return DBMgr->open_base(SysConfMgr->GetCurBasePath());
+   }
+
+   return 0;
+}
+
+double x = 23.456;
+double y = 569.567;
+
+#pragma synchronous=OFF
+#pragma journal_mode=WAL
+
+int TGLSystem::store_sensor_data(TDateTime t)
+{
+
+	DBMgr->BEGIN_TRANSACTION();
+
+	for (auto itpl : place_list.m_list)
+	{
+		for (auto itpr : itpl->port_list.m_list)
+		{
+			for (auto itsn : itpr->sensor_list.m_list)
+			{
+               itsn->subst(x,y);
+
+			   DBMgr->save_sensor_data_s(t, itsn);
+
+			   x += 1.23; y += 4.56;
+			}
+		}
+	}
+
+	DBMgr->END_TRANSACTION();
+}
+
+std::list<dt_sensor_data_record_s> TGLSystem::read_sensor_data_s(TGLSensor* sn, TDateTime t1, TDateTime t2)
+{
+   return DBMgr->read_sensor_data_s(sn, t1, t2);
 }

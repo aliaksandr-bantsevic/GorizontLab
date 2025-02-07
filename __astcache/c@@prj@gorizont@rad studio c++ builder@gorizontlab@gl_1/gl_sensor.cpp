@@ -173,3 +173,19 @@ void TGLSensor::clrTX(void)
 {
     protocol->clear_tx();
 }
+
+double TGLSensor::get_rawX(void)
+{
+	return raw_X;
+}
+
+double TGLSensor::get_rawY(void)
+{
+	return raw_Y;
+}
+
+void TGLSensor::subst(double x, double y)
+{
+	raw_X = x;
+	raw_Y = y;
+}

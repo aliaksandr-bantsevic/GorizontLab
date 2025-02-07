@@ -1,0 +1,23 @@
+//---------------------------------------------------------------------------
+
+#ifndef DataBaseMgrH
+#define DataBaseMgrH
+//---------------------------------------------------------------------------
+
+#include "sqlite3.h"
+#include "sqlite3ext.h"
+
+class TDataBaseMgr
+{
+
+
+};
+
+
+
+
+
+
+#endif
+
+

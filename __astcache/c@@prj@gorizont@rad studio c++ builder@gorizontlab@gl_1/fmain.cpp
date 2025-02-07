@@ -245,7 +245,32 @@ void __fastcall TForm_General::N_AddSensorClick(TObject *Sender)
 
 void __fastcall TForm_General::ToolButton4Click(TObject *Sender)
 {
-	GLSystem->ReDraw();
+	GLSystem->open_DB();
+
+	double x = 23.456;
+	double y = 569.567;
+
+	TDateTime tt = Now();
+	TDateTime t1 = Now();
+
+	for (int i = 0; i < 100; i++)
+	{
+
+		GLSystem->store_sensor_data(tt);
+
+		tt += T_ONE_SEC;
+		x += 1.23; y += 4.56;
+	}
+
+	TDateTime t2 = Now();
+
+	double dt = (double)(t2 - t1)/4./100./T_ONE_MSEC;
+
+	WideString msg;
+
+	msg.printf(L"dt = %f", dt);
+	GLSystem->console(L"sys", msg);
+
 }
 //---------------------------------------------------------------------------
 
