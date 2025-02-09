@@ -1,0 +1,38 @@
+//---------------------------------------------------------------------------
+
+#pragma hdrstop
+
+#include "BBFMgr.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+
+TBBFMgr::TBBFMgr()
+{
+
+}
+TBBFMgr::~TBBFMgr()
+{
+
+}
+
+
+int TBBFMgr::save_sensor_data_s(TCHAR* bdir, TDateTime t, TGLSensor* sn)
+{
+
+	TCHAR tcdir[1024];
+	TCHAR tc[1024];
+	unsigned short y,m,d;
+	_stprintf(tcdir, L"%sSENSOR_DATA_S\\", bdir);
+	::CreateDirectoryW(tcdir,0);
+
+	t.DecodeDate(&y, &m, &d);
+
+	_stprintf(tcdir, L"%sSENSOR_DATA_S\\%03d\\", bdir, sn->get_uid());
+	::CreateDirectoryW(tcdir,0);
+
+	_stprintf(tcdir, L"%sSENSOR_DATA_S\\%03d\\SENSOR_DATA_S_%03d_%04d_%02d.bds", bdir, sn->get_uid(), y, m);
+
+
+
+	return 0;
+}

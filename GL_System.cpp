@@ -30,6 +30,9 @@ TGLSystem::TGLSystem(TTreeView* t, TXMLDocument* xmlDoc)
    SysConfMgr = new TSysConfMgr();
    SysConfMgr->SetXMLDoc(xmlDoc);
    DBMgr = new TDataBaseMgr();
+   BBFMgr = new TBBFMgr();
+
+   sens_uid_max = 1;
 }
 
 TGLSystem::~TGLSystem()
@@ -218,11 +221,18 @@ TGLPort* TGLSystem::add_port(WideString nm)
    return NULL;
 }
 
-TGLSensor* TGLSystem::add_sensor(WideString nm)
+TGLSensor* TGLSystem::add_sensor(WideString nm, int uid)
 {
+	TGLSensor* sn = NULL;
+
    if ((cur_pr != NULL) &&  (cur_pl != NULL))
    {
-	   return cur_pr->add_sensor(nm, cur_pl->num);
+	   sn = cur_pr->add_sensor(nm, cur_pl->num, 0);
+	   if (sn)
+	   {
+		   //sens_uid_max++;
+		   return sn;
+       }
    }
 
    return NULL;
@@ -281,8 +291,8 @@ int TGLSystem::SaveConf(void)
 				SensorNode->AddChild("name")->Text = itsn->GetName();
 				WideString s("");
 
-				//s.printf(L"%03d", itsn->GetBaud());
-				//SensorNode->AddChild("baud")->Text = s;
+				s.printf(L"%03d", itsn->get_uid());
+				SensorNode->AddChild("uid")->Text = s;
 			}
 		}
 
@@ -310,6 +320,8 @@ int TGLSystem::SaveConf(void)
 
 int TGLSystem::LoadConf(void)
 {
+   tree->Visible = false;
+
    TXMLDocument* XMLDoc = SysConfMgr->GetXMLDoc();
 
    int plid = 0;
@@ -327,24 +339,38 @@ int TGLSystem::LoadConf(void)
    try
    {
 	  TCHAR* path = SysConfMgr->GetXMLDocPath();
-	 _di_IXMLDocument xmlDoc = LoadXMLDocument(path);
+	  _di_IXMLDocument xmlDoc;
+
+	try
+	{
+			xmlDoc = LoadXMLDocument(path);
+	}
+	catch (...)
+	{
+		 ShowMessage(L"Конфигурация не найдена и будет создана заново!");
+		 return -1;
+	}
+
 	 _di_IXMLNode rootNode = xmlDoc->DocumentElement;
 
-	 for (int i = 0; i < rootNode->ChildNodes->Count; ++i)
+	 int tmp = rootNode->ChildNodes->Count;
+
+	 for (int i = 0; i < rootNode->ChildNodes->Count; i++)
 	 {
 		_di_IXMLNode objectNode = rootNode->ChildNodes->Nodes[i];
 		_di_IXMLNode nameNode = objectNode->ChildNodes->FindNode("name");
 		if (nameNode)
 		{
 			cur_pl = add_place (nameNode->Text);
-
 		}
 		else
 		{
 			//std::cout << "Тег name не найден в узле objectNode." << std::endl;
 		}
 
-		for (int i = 0; i < objectNode->ChildNodes->Count; ++i)
+		tmp = objectNode->ChildNodes->Count;
+
+		for (int i = 0; i < objectNode->ChildNodes->Count; i++)
 		{
 			_di_IXMLNode portNode = objectNode->ChildNodes->Nodes[i];
 			_di_IXMLNode nameNode = portNode->ChildNodes->FindNode("name");
@@ -362,21 +388,49 @@ int TGLSystem::LoadConf(void)
 			//std::cout << "Тег name не найден в узле objectNode." << std::endl;
 			}
 
-			for (int i = 0; i < portNode->ChildNodes->Count; ++i)
+			tmp = portNode->ChildNodes->Count;
+
+			for (int i = 0; i < portNode->ChildNodes->Count; i++)
 			{
-				TGLSensor* sn;
+				TGLSensor* sn = NULL;
 
 				_di_IXMLNode sensorNode = portNode->ChildNodes->Nodes[i];
 				_di_IXMLNode nameNode = sensorNode->ChildNodes->FindNode("name");
-				if (nameNode)
+				_di_IXMLNode uidNode = sensorNode->ChildNodes->FindNode("uid");
+
+				if (sensorNode)
 				{
-					sn =add_sensor (nameNode->Text);
+                   for (int i = 0; i < portNode->ChildNodes->Count; i++)
+				   {
+
+                   }
 				}
 				else
 				{
-				//std::cout << "Тег name не найден в узле objectNode." << std::endl;
+
+                }
+
+				if (nameNode)
+				{
+					sn = add_sensor (nameNode->Text, 0);
+				}
+				else
+				{
+
 				}
 
+				if (uidNode)
+				{
+					sn->set_uid (StrToIntDef(uidNode->Text, 0));
+					if (sens_uid_max <= sn->get_uid())
+					{
+						sens_uid_max = sn->get_uid() + 1;
+					}
+				}
+				else
+				{
+
+				}
 				//_di_IXMLNode baudNode = sensorNode->ChildNodes->FindNode("baud");
 				//if (baudNode)
 				//{
@@ -386,17 +440,62 @@ int TGLSystem::LoadConf(void)
 				//{
 				//std::cout << "Тег name не найден в узле objectNode." << std::endl;
 				//}
+
+					   /*
+				//try
+				//{
+					_di_IXMLNode uidNode = sensorNode->ChildNodes->FindNode("uid");
+					if (uidNode)
+					{
+						sn->set_uid(StrToIntDef(uidNode->Text, 0));
+
+						if (sn->get_uid() > sens_uid_max) sens_uid_max = sn->get_uid() + 1;
+					}
+					else
+					{
+						sn->set_uid(0);
+					//std::cout << "Тег name не найден в узле objectNode." << std::endl;
+					}   */
+				//}
+				//catch (...)
+				//{
+
+				//}
 			}
 
 		}
-     }
-	 //View();
+	 }
+
+	 //bool rflag = false;
+
+	 for (auto ipl: place_list.m_list)
+	 {
+		for (auto ipr: ipl->port_list.m_list)
+		{
+			for (auto isn: ipr->sensor_list.m_list)
+			{
+			   if (true)
+			   {
+				  if (isn->get_uid() == 0)
+				  {
+					 isn->set_uid(sens_uid_max++);
+				  }
+			   }
+			}
+		}
+	 }
+
+	 //if (rflag)
+
+	 tree->Visible = true;
+
+	 ReDraw();
 
 	 Sleep(1);
    }
    catch(...)
    {
-	   ShowMessage(L"Конфигурация не найдена и будет создана заново!");
+	   //ShowMessage(L"Конфигурация не найдена и будет создана заново!");
    }
 
 
@@ -411,6 +510,25 @@ TGLSensor* TGLSystem::GetCurSn(void)
 
 int TGLSystem::ReDraw(void)
 {
+	 for (auto ipl: place_list.m_list)
+	 {
+		for (auto ipr: ipl->port_list.m_list)
+		{
+			for (auto isn: ipr->sensor_list.m_list)
+			{
+			   if (true)
+			   {
+				  if (isn->get_uid() == 0)
+				  {
+					 isn->set_uid(sens_uid_max++);
+				  }
+			   }
+			}
+		}
+	 }
+
+	tree->Visible = false;
+
 	tree->Items->Clear();
 
 	node = this->tree->Items->Add(NULL, this->name);
@@ -439,6 +557,8 @@ int TGLSystem::ReDraw(void)
 
 		}
 	}
+
+     tree->Visible = true;
 
 	return 0;
 }
@@ -652,4 +772,48 @@ int TGLSystem::store_sensor_data(TDateTime t)
 std::list<dt_sensor_data_record_s> TGLSystem::read_sensor_data_s(TGLSensor* sn, TDateTime t1, TDateTime t2)
 {
    return DBMgr->read_sensor_data_s(sn, t1, t2);
+}
+
+TGLSensor* TGLSystem::get_cur_sensor(void)
+{
+	return cur_sn;
+}
+
+int TGLSystem::get_sens_uid_max(void)
+{
+	return sens_uid_max;
+}
+
+int TGLSystem::bbf_save_sensor_data_s(TDateTime t, TGLSensor* sn)
+{
+
+	BBFMgr->save_sensor_data_s(SysConfMgr->GetCurBasePath(), t, sn);
+
+	return 0;
+}
+
+int TGLSystem::bbf_store_sensor_data(TDateTime t)
+{
+
+	for (auto itpl : place_list.m_list)
+	{
+		for (auto itpr : itpl->port_list.m_list)
+		{
+			for (auto itsn : itpr->sensor_list.m_list)
+			{
+               itsn->subst(x,y);
+
+			   bbf_save_sensor_data_s(t, itsn);
+
+			   x += 1.23; y += 4.56;
+			}
+		}
+	}
+
+
+}
+
+std::list<dt_sensor_data_record_s> TGLSystem::bbf_read_sensor_data_s(TGLSensor* sn, TDateTime t1, TDateTime t2)
+{
+   return BBFMgr->read_sensor_data_s(SysConfMgr->GetCurBasePath(), sn, t1, t2);
 }

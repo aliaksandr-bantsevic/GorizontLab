@@ -1,0 +1,191 @@
+//---------------------------------------------------------------------------
+
+#pragma hdrstop
+
+#include "GL_Sensor.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+
+TGLSensor::TGLSensor()
+{
+	 name = L"New Sensor";
+	 mark = L"...";
+	 node = NULL;
+	 num = 0;
+}
+
+TGLSensor::TGLSensor(WideString nm, TTreeNode* nd, int nn)
+{
+	name = nm;
+	mark = L"...";
+	node = nd;
+	num = nn;
+
+	addr = 1;
+
+	type = SENSOR_TYPE_UNKN_UNKN;
+	protocol = NULL;
+
+}
+
+TGLSensor::~TGLSensor()
+{
+
+}
+
+void TGLSensor::SetTree(TTreeView* t)
+{
+	tree = t;
+}
+
+void TGLSensor::SetNode(TTreeNode* n)
+{
+	node = n;
+}
+
+void TGLSensor::SetPlnum(int n)
+{
+	plnum = n;
+}
+
+void TGLSensor::SetPrnum(int n)
+{
+	prnum = n;
+}
+
+WideString TGLSensor::GetName(void)
+{
+	return name;
+}
+
+BYTE TGLSensor::GetAddr(void)
+{
+	return addr;
+}
+
+void TGLSensor::SetAddr(Byte ad)
+{
+	addr = ad;
+}
+
+int TGLSensor::ReDraw(TTreeNode* n, int plnum, int prnum, int snnum)
+{
+   WideString ss;
+	ss.printf(L"%d.%d.%d [", plnum, prnum, snnum);
+	ss = ss + name;
+	ss = ss+L"]";
+	node = tree->Items->AddChild(n, ss); node->ImageIndex = 3; node->SelectedIndex = 3;
+	n->Expand(true);
+
+	this->plnum = plnum;
+	this->prnum = prnum;
+	num = snnum;
+
+
+	return 0;
+}
+
+void TGLSensor::set_sensor(int type)
+{
+	 if (type == SENSOR_TYPE_IND3_IND3)
+	 {
+		protocol = new TProtocol_211();
+	 }
+	 else if (type == SENSOR_TYPE_IND3_AND3)
+	 {
+		protocol = new TProtocol_and3();
+	 }
+	 else if (type == SENSOR_TYPE_IND3_ASIN)
+	 {
+		//protocol = new TProtocol_asin();
+	 }
+	 else if (type == SENSOR_TYPE_AND3_AND3)
+	 {
+		protocol = new TProtocol_and3();
+	 }
+	 else
+	 {
+		//unknown protocol
+
+		return;
+	 }
+
+	 rxbuf = protocol->getRX();
+	 txbuf = protocol->getTX();
+
+	 rxidx = protocol->getRXidx();
+	 txidx = protocol->getTXidx();
+}
+
+int TGLSensor::request_curr_XY(BYTE* buf, int* len)
+{
+	 if (protocol->request_curr_XY(addr) == 0)
+	 {
+		 buf = protocol->getRX();
+		 len = protocol->getRXidx();
+		 return 0;
+	 }
+	 else
+	 {
+		 return -1;
+     }
+}
+
+int TGLSensor::accept_response_curr_XY()
+{
+	 if (protocol->accept_response_curr_XY(addr) ==  0)
+	 {
+		 raw_X = protocol->get_raw_X();
+		 raw_Y = protocol->get_raw_Y();
+		 return 0;
+	 }
+	 else
+	 {
+		 return -1;
+     }
+}
+
+BYTE* TGLSensor::getRX(void)
+{
+  //return protocol->getRX();
+  return rxbuf;
+}
+
+BYTE* TGLSensor::getTX(void)
+{
+  //return protocol->getTX();
+  return txbuf;
+}
+
+int* TGLSensor::getRXidx(void)
+{
+   //return protocol->getRXidx();
+   return rxidx;
+}
+
+int* TGLSensor::getTXidx(void)
+{
+  //return protocol->getTXidx();
+  return txidx;
+}
+
+void TGLSensor::clrTX(void)
+{
+    protocol->clear_tx();
+}
+
+double TGLSensor::get_rawX(void)
+{
+	return raw_X;
+}
+
+double TGLSensor::get_rawY(void)
+{
+	return raw_Y;
+}
+
+void TGLSensor::subst(double x, double y)
+{
+	raw_X = x;
+	raw_Y = y;
+}

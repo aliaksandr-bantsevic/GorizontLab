@@ -166,15 +166,15 @@ std::list<dt_sensor_data_record_s> TDataBaseMgr::read_sensor_data_s(TGLSensor* s
 
 	   // Выполнение SQL-запроса
 		sqlite3_stmt* stmt;
-
 		res = sqlite3_prepare_v2(l_sql_db, sql, -1, &stmt, 0);
-
 		if (res != SQLITE_OK)
 		{
 			//std::cerr << "Ошибка подготовки SQL-запроса: " << sqlite3_errmsg(l_sql_db) << std::endl;
 		}
 		else
 		{
+
+			BEGIN_TRANSACTION();
 			while (sqlite3_step(stmt) == SQLITE_ROW)
 			{
 				// Получение значения столбцов TIME X и Y
@@ -182,9 +182,9 @@ std::list<dt_sensor_data_record_s> TDataBaseMgr::read_sensor_data_s(TGLSensor* s
 				record.x = sqlite3_column_double(stmt, 1); // Индекс столбца X
 				record.y = sqlite3_column_double(stmt, 2); // Индекс столбца Y
 				//std::cout << "X: " << x << ", Y: " << y << std::endl;
-
 				list.push_back(record);
 			}
+            END_TRANSACTION();
 		}
 
 		 // Освобождение ресурсов

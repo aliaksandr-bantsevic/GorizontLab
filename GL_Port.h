@@ -42,7 +42,7 @@ public:
 public:
 
 	int SetBaud(int b);
-	TGLSensor* add_sensor(WideString nm, int plnum);
+	TGLSensor* add_sensor(WideString nm, int plnum, int uid);
 	void SetTree(TTreeView* t);
 	void SetNode(TTreeNode* n);
 	TTreeNode* GetNode(void);

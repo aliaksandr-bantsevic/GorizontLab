@@ -69,7 +69,8 @@ void __fastcall TForm_Sensor_adjust::Button_OKClick(TObject *Sender)
 
 	if (sensor == NULL)
 	{
-	  sn = GLSystem->add_sensor(ssens);
+
+	  sn = GLSystem->add_sensor(ssens, GLSystem->get_sens_uid_max());
 	  if (sn == NULL)
 	  {
 		  ShowMessage(L"Не удалось добавить датчик!");

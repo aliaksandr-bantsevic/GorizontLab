@@ -1,0 +1,42 @@
+//---------------------------------------------------------------------------
+
+#ifndef BBFMgrH
+#define BBFMgrH
+
+#include "GL_Sensor.h"
+#include "defs.h"
+//---------------------------------------------------------------------------
+
+
+class TBBFMgr
+{
+
+public:
+
+   TBBFMgr();
+   ~TBBFMgr();
+
+public:
+
+	int save_sensor_data_s(TCHAR* bdir, TDateTime t, TGLSensor* sn);
+
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#endif

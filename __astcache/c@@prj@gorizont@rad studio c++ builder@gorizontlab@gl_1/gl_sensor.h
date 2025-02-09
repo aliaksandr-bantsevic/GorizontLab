@@ -85,11 +85,15 @@ private:
 	int* rxidx;
     int* txidx;
 
+	int uid;
+
 public:
 
 	int request_curr_XY(BYTE* buf, int* len);
 	int accept_response_curr_XY();
-    void subst(double x, double y);
+	void subst(double x, double y);
+	void set_uid(int id);
+	int get_uid(void);
 
 };
 

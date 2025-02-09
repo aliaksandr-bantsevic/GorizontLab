@@ -12,6 +12,7 @@ TGLSensor::TGLSensor()
 	 mark = L"...";
 	 node = NULL;
 	 num = 0;
+     uid = 0;
 }
 
 TGLSensor::TGLSensor(WideString nm, TTreeNode* nd, int nn)
@@ -25,7 +26,7 @@ TGLSensor::TGLSensor(WideString nm, TTreeNode* nd, int nn)
 
 	type = SENSOR_TYPE_UNKN_UNKN;
 	protocol = NULL;
-
+	uid = 0;
 }
 
 TGLSensor::~TGLSensor()
@@ -71,7 +72,7 @@ void TGLSensor::SetAddr(Byte ad)
 int TGLSensor::ReDraw(TTreeNode* n, int plnum, int prnum, int snnum)
 {
    WideString ss;
-	ss.printf(L"%d.%d.%d [", plnum, prnum, snnum);
+	ss.printf(L"[%03d] %d.%d.%d [", uid, plnum, prnum, snnum);
 	ss = ss + name;
 	ss = ss+L"]";
 	node = tree->Items->AddChild(n, ss); node->ImageIndex = 3; node->SelectedIndex = 3;
@@ -188,4 +189,14 @@ void TGLSensor::subst(double x, double y)
 {
 	raw_X = x;
 	raw_Y = y;
+}
+
+void TGLSensor::set_uid(int id)
+{
+	uid = id;
+}
+
+int TGLSensor::get_uid(void)
+{
+	return uid;
 }

@@ -18,7 +18,7 @@
 #include <list>
 
 #include "DataBaseMgr.h"
-
+#include "BBFMgr.h"
 
 class TGLPlace;
 //---------------------------------------------------------------------------
@@ -49,6 +49,8 @@ private:
 	std::list<TPortProcThread*> m_port_proc_thread_list;
 	TListBox* list_console;
 	TDataBaseMgr* DBMgr;
+    int sens_uid_max;
+	TBBFMgr* BBFMgr;
 
 public:
 
@@ -79,7 +81,7 @@ public:
 	TObject* GetBrowserElement(TTreeNode* nd, int* type);
 	void ProcBrowserСlick(TTreeNode* nd, int* tp);
 	TGLPort* add_port(WideString nm);
-	TGLSensor* add_sensor(WideString nm);
+	TGLSensor* add_sensor(WideString nm, int uid);
 	int SaveConf(void);
 	int LoadConf(void);
 	TGLSensor* GetCurSn(void);
@@ -100,7 +102,11 @@ public:
 	int open_DB(void);
 	int store_sensor_data(TDateTime t);
 	std::list<dt_sensor_data_record_s> read_sensor_data_s(TGLSensor* sn, TDateTime t1, TDateTime t2);
-
+	TGLSensor* get_cur_sensor(void);
+	int get_sens_uid_max(void);
+	int bbf_save_sensor_data_s(TDateTime t, TGLSensor* sn);
+	int bbf_store_sensor_data(TDateTime t);
+	std::list<dt_sensor_data_record_s> bbf_read_sensor_data_s(TGLSensor* sn, TDateTime t1, TDateTime t2);
 };
 
 

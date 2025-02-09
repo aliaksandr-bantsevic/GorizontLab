@@ -44,7 +44,7 @@ int TGLPort::SetBaud(int b)
     return 0;
 }
 
-TGLSensor* TGLPort::add_sensor(WideString nm, int plnum)
+TGLSensor* TGLPort::add_sensor(WideString nm, int plnum, int uid)
 {
 	int nmb = sensor_list.count() + 1;
 	sns = new TGLSensor(nm, NULL, nmb);
@@ -56,8 +56,10 @@ TGLSensor* TGLPort::add_sensor(WideString nm, int plnum)
 	}
 	else
 	{
+		sns->set_uid(uid);
+
 		WideString ss;
-		ss.printf(L"%d.%d.%d [", plnum, num, nmb);
+		ss.printf(L"[%03d] %d.%d.%d [", uid, plnum, num, nmb);
 		ss = ss+nm;
 		ss = ss+L"]";
 		TTreeNode* ndd = tree->Items->AddChild(node, ss); ndd->ImageIndex = 3; ndd->SelectedIndex = 3;

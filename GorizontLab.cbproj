@@ -124,6 +124,10 @@
         <BCC_UseClassicCompiler>false</BCC_UseClassicCompiler>
     </PropertyGroup>
     <ItemGroup>
+        <CppCompile Include="BBFMgr.cpp">
+            <DependentOn>BBFMgr.h</DependentOn>
+            <BuildOrder>19</BuildOrder>
+        </CppCompile>
         <CppCompile Include="COMPort.cpp">
             <DependentOn>COMPort.h</DependentOn>
             <BuildOrder>15</BuildOrder>
@@ -205,9 +209,9 @@
             <DependentOn>SysConfMgr.h</DependentOn>
             <BuildOrder>15</BuildOrder>
         </CppCompile>
-        <FormResources Include="FPort_adjust.dfm"/>
         <FormResources Include="FPlace_adjust.dfm"/>
         <FormResources Include="FMain.dfm"/>
+        <FormResources Include="FPort_adjust.dfm"/>
         <FormResources Include="FSensor_adjust.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
