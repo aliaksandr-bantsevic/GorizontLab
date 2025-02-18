@@ -6,8 +6,8 @@
 //---------------------------------------------------------------------------
 USEFORM("FPlace_adjust.cpp", Form_Place_adjust);
 USEFORM("FMain.cpp", Form_General);
-USEFORM("FPort_adjust.cpp", Form_Port_adjust);
 USEFORM("FSensor_adjust.cpp", Form_Sensor_adjust);
+USEFORM("FPort_adjust.cpp", Form_Port_adjust);
 //---------------------------------------------------------------------------
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {

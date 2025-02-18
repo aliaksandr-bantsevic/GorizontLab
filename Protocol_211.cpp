@@ -6,6 +6,16 @@
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
+TProtocol_211::TProtocol_211()
+{
+   setProtocol();
+}
+
+TProtocol_211::~TProtocol_211()
+{
+
+}
+
 void TProtocol_211::setProtocol(void)
 {
    protocol_type = PROTOCOL_TYPE_IND3;
@@ -165,6 +175,34 @@ void TProtocol_211::RequestMainMeterPacket(unsigned char addr, main_packet_211_i
 
 }
 
+//Основной протокол пакета запроса внешний буфер
+void TProtocol_211::RequestMainMeterPacket(unsigned char addr, main_packet_211_id packet, BYTE* buf, int* idx)
+{
+	int idxx = 0;
+	unsigned char chsum = 0;
+
+//Инициализация
+	 *idx = 0; memset(buf,0,8448);
+//Начало пакета
+	  buf[idxx] = PACKET_START; idxx++;
+//Тип протокола
+	  buf[idxx] = MAIN_PR_211;           chsum=chsum^buf[idxx]; idxx++;
+//Тип пакета
+	  buf[idxx] = packet;                chsum=chsum^buf[idxx]; idxx++;
+//Адрес измерителя
+	  buf[idxx] = addr;                  chsum=chsum^buf[idxx]; idxx++;
+//Контрольная сумма
+	  buf[idxx] = chsum;                                          idxx++;
+//Конец пакета
+	  buf[idxx] = PACKET_END;                                     idxx++;
+
+//Кодируем ESCAP Eпоследовательности
+	 this->EscapeBytesEncode(buf, &idxx, 1);
+
+	 *idx = idxx;
+}
+
+
 /*
 	заполняет запрос на углы x y
 	запрос сформирован в buftx
@@ -178,10 +216,39 @@ int TProtocol_211::request_curr_XY(BYTE addr)
 	return 0;
 }
 
+//внешний буффер
+int TProtocol_211::request_curr_XY(BYTE addr, BYTE* buf, int* idx)
+{
+	RequestMainMeterPacket(addr, MEAS_VAL, buf, idx);
+
+	return 0;
+}
+
 int TProtocol_211::accept_response_curr_XY(BYTE addr)
 {
+	int len = 0;
 
-     return 0;
+	if (packet_proc(bufrx, &len, addr) == 0)
+	{
+
+		return 0;
+	}
+
+	return -1;
+}
+
+//external buffer
+int TProtocol_211::accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx)
+{
+	int len = 0;
+
+	if (packet_proc(buf, idx, addr) == 0)
+	{
+
+		return 0;
+	}
+
+	return -1;
 }
 
 /*

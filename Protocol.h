@@ -12,13 +12,16 @@
 
 class TProtocol {
 
-	   public:
+public:
 
 		TProtocol();
 
 		~TProtocol();
 
-	   protected:
+private:
+
+
+protected:
 
 	   virtual void setProtocol() = 0;
 
@@ -35,7 +38,10 @@ class TProtocol {
 public:
 
 	   virtual int request_curr_XY(BYTE addr) = 0;
+	   virtual int request_curr_XY(BYTE addr, BYTE* buf, int* idx) = 0;
+
 	   virtual int accept_response_curr_XY(BYTE addr) =  0;
+       virtual int accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx) =  0;
 
 	   BYTE* getRX(void);
 	   BYTE* getTX(void);

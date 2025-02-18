@@ -28,6 +28,8 @@ TGLSensor::TGLSensor(WideString nm, TTreeNode* nd, int nn)
 	protocol = NULL;
 	uid = 0;
 	on = false;
+
+    set_sensor(0);
 }
 
 TGLSensor::~TGLSensor()
@@ -95,7 +97,7 @@ void TGLSensor::set_sensor(int type)
 	 }
 	 else if (type == SENSOR_TYPE_IND3_AND3)
 	 {
-		protocol = new TProtocol_and3();
+		//protocol = new TProtocol_and3();
 	 }
 	 else if (type == SENSOR_TYPE_IND3_ASIN)
 	 {
@@ -103,7 +105,7 @@ void TGLSensor::set_sensor(int type)
 	 }
 	 else if (type == SENSOR_TYPE_AND3_AND3)
 	 {
-		protocol = new TProtocol_and3();
+		//protocol = new TProtocol_and3();
 	 }
 	 else
 	 {
@@ -119,34 +121,63 @@ void TGLSensor::set_sensor(int type)
 	 txidx = protocol->getTXidx();
 }
 
-int TGLSensor::request_curr_XY(BYTE* buf, int* len)
+int TGLSensor::request_curr_XY(BYTE** buf, int** len)
 {
 	 if (protocol->request_curr_XY(addr) == 0)
 	 {
-		 //buf = protocol->getRX();
-		 //len = protocol->getRXidx();
+		 *buf = protocol->getTX();
+		 *len = protocol->getTXidx();
 
 		 return 0;
 	 }
 	 else
 	 {
 		 return -1;
-     }
+	 }
+}
+
+//external buf
+int TGLSensor::request_curr_XY(BYTE* buf, int* len)
+{
+	 if (protocol->request_curr_XY(addr, buf, len) == 0)
+	 {
+		 return 0;
+	 }
+	 else
+	 {
+		 return -1;
+	 }
 }
 
 int TGLSensor::accept_response_curr_XY()
 {
 	 if (protocol->accept_response_curr_XY(addr) ==  0)
 	 {
-		 //raw_X = protocol->get_raw_X();
-		 //raw_Y = protocol->get_raw_Y();
+		 raw_X = protocol->get_raw_X();
+		 raw_Y = protocol->get_raw_Y();
 
 		 return 0;
 	 }
 	 else
 	 {
 		 return -1;
-     }
+	 }
+}
+
+//external buf
+int TGLSensor::accept_response_curr_XY(BYTE* buf, int* idx)
+{
+	 if (protocol->accept_response_curr_XY(addr, buf, idx) ==  0)
+	 {
+		 raw_X = protocol->get_raw_X();
+		 raw_Y = protocol->get_raw_Y();
+
+		 return 0;
+	 }
+	 else
+	 {
+		 return -1;
+	 }
 }
 
 BYTE* TGLSensor::getRX(void)
@@ -175,7 +206,7 @@ int* TGLSensor::getTXidx(void)
 
 void TGLSensor::clrTX(void)
 {
-    protocol->clear_tx();
+    //protocol->clear_tx();
 }
 
 double TGLSensor::get_rawX(void)

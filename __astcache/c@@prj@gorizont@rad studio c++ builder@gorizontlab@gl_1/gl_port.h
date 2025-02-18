@@ -54,7 +54,9 @@ public:
 	void syspend_cycle ();
 	void start_cycle ();
 
-    int transact_request_XY(TGLSensor* sn);
+	int transact_request_XY(TGLSensor* sn);
+	int transact_request_XY_ex(TGLSensor* sn);
+
 	bool is_suspended ();
 	int cycle ();
 	bool is_run_engine_suspended ();
@@ -87,6 +89,11 @@ private:
 	WideString mark;
 	DWORD baud;
 	int type;
+
+	BYTE buftx[8448];
+	int txidx;
+	BYTE bufrx[8448];
+	int rxidx;
 
 };
 

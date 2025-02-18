@@ -7,7 +7,7 @@
 #include "GL_List.h"
 
 #include "Protocol_211.h"
-#include "Protocol_and3.h"
+//#include "Protocol_and3.h"
 //---------------------------------------------------------------------------
 #define SENSOR_TYPE_IND3_IND3       0
 #define SENSOR_TYPE_IND3_AND3       1
@@ -90,8 +90,12 @@ private:
 
 public:
 
-	int request_curr_XY(BYTE* buf, int* len);
+	int request_curr_XY(BYTE** buf, int** len);
+    int request_curr_XY(BYTE* buf, int* len);
+
 	int accept_response_curr_XY();
+	int accept_response_curr_XY(BYTE* buf, int* idx);
+
 	void subst(double x, double y);
 	void set_uid(int id);
 	int get_uid(void);

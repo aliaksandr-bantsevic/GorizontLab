@@ -194,13 +194,13 @@
             <DependentOn>PortProcThread.h</DependentOn>
             <BuildOrder>16</BuildOrder>
         </CppCompile>
+        <CppCompile Include="Protocol.cpp">
+            <DependentOn>Protocol.h</DependentOn>
+            <BuildOrder>18</BuildOrder>
+        </CppCompile>
         <CppCompile Include="Protocol_211.cpp">
             <DependentOn>Protocol_211.h</DependentOn>
-            <BuildOrder>14</BuildOrder>
-        </CppCompile>
-        <CppCompile Include="Protocol_AND3.cpp">
-            <DependentOn>Protocol_AND3.h</DependentOn>
-            <BuildOrder>15</BuildOrder>
+            <BuildOrder>19</BuildOrder>
         </CppCompile>
         <CppCompile Include="SQLite\sqlite3.c">
             <BuildOrder>18</BuildOrder>

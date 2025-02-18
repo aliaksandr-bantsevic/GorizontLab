@@ -134,11 +134,12 @@ void TGLPort::start_cycle ()
 	  BYTE* buf = NULL;
 	  int* len = NULL;
 
+	  sn->clrTX();
 
-	  buf = sn->getRX();
-	  len = sn->getRXidx();
+ //	  buf = sn->getRX();
+ //	  len = sn->getRXidx();
 
-	  if (sn->request_curr_XY(buf, len) == 0)
+	  if (sn->request_curr_XY(&buf, &len) == 0)
 	  {
 		 com->Purge();
 
@@ -148,27 +149,65 @@ void TGLPort::start_cycle ()
          }
 	  }
 
-	  /*
 	  Sleep(delay_set.delay_cmd_exec);
 
-	  sn->clrTX();
+	  //sn->clrRX();
 
-	  buf = sn->getTX();
-	  len = sn->getTXidx();
+	  buf = sn->getRX();
+	  len = sn->getRXidx();
+
+	  int i = 1;
 
 	  if (com->PortNRead(1, buf))
 	  {
 		  *len++;
-		  while(com->PortNRead(1, buf))
+
+		  while(com->PortNRead(1, &buf[i]))
 		  {
-			  *len++;
+			  *len++; i++;
           }
 	  }
 
-      sn->accept_response_curr_XY();
-	  */
+	  sn->accept_response_curr_XY();
+
 	  return 0;
  }
+
+ //extended buffers
+ int TGLPort::transact_request_XY_ex(TGLSensor* sn)
+ {
+	  txidx = 0; rxidx = 0;
+	  memset(buftx, 0, 8448); memset(buftx, 0, 8448);
+
+	  if (sn->request_curr_XY(buftx, &txidx) == 0)
+	  {
+		 com->Purge();
+
+		 if (!com->PortNWrite((DWORD)txidx, buftx))
+		 {
+			 return -1;
+         }
+	  }
+
+	  Sleep(delay_set.delay_cmd_exec);
+
+	  int i = 1;
+
+	  if (com->PortNRead(1, bufrx))
+	  {
+		  rxidx++;
+
+		  while(com->PortNRead(1, &bufrx[i]))
+		  {
+			  rxidx++; i++;
+          }
+	  }
+
+	  sn->accept_response_curr_XY(bufrx, &rxidx);
+
+	  return 0;
+ }
+
 
 bool TGLPort::is_suspended ()
 {
@@ -182,6 +221,8 @@ int TGLPort::cycle ()
 		Sleep(delay_set.delay_default);
 	}
 
+    com->Close();
+
 	if (com->Open(true, sys_port_num) == false)
 	{
 		Sleep(delay_set.delay_default);
@@ -190,7 +231,7 @@ int TGLPort::cycle ()
 	{
 		for (auto itsn : sensor_list.m_list)
 		{
-			transact_request_XY(itsn);
+			transact_request_XY_ex(itsn);
 		}
 	}
 

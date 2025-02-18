@@ -71,13 +71,24 @@ cGET_PERD=0x1E,        //Запросить период усреднения
 
 class TProtocol_211 : public TProtocol
 {
-	void setProtocol(void) override;
-	int request_curr_XY(BYTE addr) override;
-	int accept_response_curr_XY(BYTE addr) override;
+public:
 
-	private:
+	TProtocol_211();
+	~TProtocol_211();
+
+	void setProtocol(void) override;
+
+	int request_curr_XY(BYTE addr) override;
+	int request_curr_XY(BYTE addr, BYTE* buf, int* idx)  override;
+
+	int accept_response_curr_XY(BYTE addr) override;
+    int accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx) override;
+
+private:
 
 	void RequestMainMeterPacket(unsigned char addr, main_packet_211_id packet);
+	void RequestMainMeterPacket(unsigned char addr, main_packet_211_id packet, BYTE* buf, int* idx);
+
 	int EscapeBytesEncode(unsigned char* buf, int* len, int frame);
 	int EscapeBytesDecode(unsigned char* buf, int* len, int frame);
 	int packet_proc();

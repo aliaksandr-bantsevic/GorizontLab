@@ -24,9 +24,10 @@ TGLSensor::TGLSensor(WideString nm, TTreeNode* nd, int nn)
 
 	addr = 1;
 
-	type = SENSOR_TYPE_UNKN_UNKN;
+	type = SENSOR_TYPE_IND3_IND3;
 	protocol = NULL;
 	uid = 0;
+	on = false;
 }
 
 TGLSensor::~TGLSensor()
@@ -122,8 +123,9 @@ int TGLSensor::request_curr_XY(BYTE* buf, int* len)
 {
 	 if (protocol->request_curr_XY(addr) == 0)
 	 {
-		 buf = protocol->getRX();
-		 len = protocol->getRXidx();
+		 //buf = protocol->getRX();
+		 //len = protocol->getRXidx();
+
 		 return 0;
 	 }
 	 else
@@ -136,8 +138,9 @@ int TGLSensor::accept_response_curr_XY()
 {
 	 if (protocol->accept_response_curr_XY(addr) ==  0)
 	 {
-		 raw_X = protocol->get_raw_X();
-		 raw_Y = protocol->get_raw_Y();
+		 //raw_X = protocol->get_raw_X();
+		 //raw_Y = protocol->get_raw_Y();
+
 		 return 0;
 	 }
 	 else
@@ -199,4 +202,56 @@ void TGLSensor::set_uid(int id)
 int TGLSensor::get_uid(void)
 {
 	return uid;
+}
+
+void TGLSensor::set_on(int n)
+{
+	on = (bool)n;
+}
+
+int TGLSensor::get_on(void)
+{
+	return (int)on;
+}
+
+void TGLSensor::set_type(int t)
+{
+	type = t;
+}
+
+int TGLSensor::get_type(void)
+{
+	return type;
+}
+
+void TGLSensor::set_mark(TCHAR* mr)
+{
+   mark = mr;
+}
+
+TCHAR* TGLSensor::get_mark(void)
+{
+	WideString s = this->mark;
+
+   return this->mark.c_bstr();
+}
+
+void TGLSensor::set_addr(BYTE a)
+{
+	addr = a;
+}
+
+BYTE TGLSensor::get_addr(void)
+{
+	return addr;
+}
+
+void TGLSensor::set_name(TCHAR* nm)
+{
+	name = nm;
+}
+
+TCHAR* TGLSensor::get_name(void)
+{
+	return name.c_bstr();
 }
