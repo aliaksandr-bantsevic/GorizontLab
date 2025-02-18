@@ -107,6 +107,7 @@ public:
 	int bbf_save_sensor_data_s(TDateTime t, TGLSensor* sn);
 	int bbf_store_sensor_data(TDateTime t);
 	std::list<dt_sensor_data_record_s> bbf_read_sensor_data_s(TGLSensor* sn, TDateTime t1, TDateTime t2);
+    TGLPort* GetCurPr(void);
 };
 
 

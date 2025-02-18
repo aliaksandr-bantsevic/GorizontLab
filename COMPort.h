@@ -63,6 +63,7 @@ public:
 	void  Clr();
 	bool  CSend(int n,BYTE *pb,DWORD rtime,DWORD wtime);
 	bool  CReceive(int n,BYTE *pb,DWORD rtime,DWORD wtime);
+	void set_baud(DWORD b);
 
 public:
 

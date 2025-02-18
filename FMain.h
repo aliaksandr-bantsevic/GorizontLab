@@ -96,6 +96,10 @@ __published:	// IDE-managed Components
 	void __fastcall ToolButton2Click(TObject *Sender);
 	void __fastcall ToolButton5Click(TObject *Sender);
 	void __fastcall ToolButton6Click(TObject *Sender);
+	void __fastcall N_AdjustPortClick(TObject *Sender);
+	void __fastcall TreeView_BrowserDblClick(TObject *Sender);
+	void __fastcall TreeView_BrowserMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y);
 
 private:	// User declarations
 public:		// User declarations
@@ -114,7 +118,8 @@ private:     //Window property management
 	void AddPort(void);
 	void AddSensor(void);
 	void AdjustSensor(void);
-    void SetGeneralCaption(void);
+	void SetGeneralCaption(void);
+    void AdjustPort(void);
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_General *Form_General;

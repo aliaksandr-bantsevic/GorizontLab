@@ -259,12 +259,16 @@ int TGLSystem::SaveConf(void)
    int snid = 0;
 
    WideString sid ("");
+   WideString spar ("");
 
+   _di_IXMLNode PlacesListNode = RootNode->AddChild("objects_list");
 
 
 	for (auto itpl : place_list.m_list)
 	{
-		_di_IXMLNode ObjectNode = RootNode->AddChild("object");
+		//_di_IXMLNode ObjectNode = RootNode->AddChild("object");
+
+		_di_IXMLNode ObjectNode = PlacesListNode->AddChild("object");
 
 		sid.printf(L"%d", ++plid);
 		ObjectNode->Attributes["ID"] = sid;
@@ -272,19 +276,42 @@ int TGLSystem::SaveConf(void)
 
 		prid = 0;
 
+		_di_IXMLNode PortsListNode = ObjectNode->AddChild("ports_list");
+
 		for (auto itpr : itpl->port_list.m_list)
 		{
-			_di_IXMLNode PortNode = ObjectNode->AddChild("port");
+			//_di_IXMLNode PortNode = ObjectNode->AddChild("port");
+
+			_di_IXMLNode PortNode = PortsListNode->AddChild("port");
 
 			sid.printf(L"%d.%d", plid, ++prid);
+
 			PortNode->Attributes["ID"] = sid;
 			PortNode->AddChild("name")->Text = itpr->name;
 
-            snid = 0;
+			spar.printf(L"%d", itpr->get_sys_port_num());
+			PortNode->AddChild("sys_port_num")->Text = spar;
+
+			spar.printf(L"%d", itpr->get_baud());
+			PortNode->AddChild("baud_rate")->Text = spar;
+
+			spar.printf(L"%d", itpr->get_on());
+			PortNode->AddChild("on")->Text = spar;
+
+			PortNode->AddChild("mark")->Text = itpr->get_mark();
+
+			spar.printf(L"%d", itpr->get_type());
+			PortNode->AddChild("type")->Text = spar;
+
+			snid = 0;
+
+			_di_IXMLNode SensorsListNode = PortNode->AddChild("sensors_list");
 
 			for (auto itsn : itpr->sensor_list.m_list)
 			{
-				_di_IXMLNode SensorNode = PortNode->AddChild("sensor");
+				//_di_IXMLNode SensorNode = PortNode->AddChild("sensor");
+
+				_di_IXMLNode SensorNode = SensorsListNode->AddChild("sensor");
 
 				sid.printf(L"%d.%d.%d", plid, prid, ++snid);
 				SensorNode->Attributes["ID"] = sid;
@@ -293,6 +320,15 @@ int TGLSystem::SaveConf(void)
 
 				s.printf(L"%03d", itsn->get_uid());
 				SensorNode->AddChild("uid")->Text = s;
+
+				s.printf(L"%03d", itsn->get_addr());
+				SensorNode->AddChild("addr")->Text = s;
+
+				s.printf(L"%d", itsn->get_on());
+				SensorNode->AddChild("on")->Text = s;
+
+				SensorNode->AddChild("mark")->Text = itsn->get_mark();
+				SensorNode->AddChild("name")->Text = itsn->get_name();
 			}
 		}
 
@@ -352,6 +388,156 @@ int TGLSystem::LoadConf(void)
 	}
 
 	 _di_IXMLNode rootNode = xmlDoc->DocumentElement;
+
+	 //no any tags for systyem level
+
+	 _di_IXMLNode ObjectsListNode = rootNode->ChildNodes->FindNode("objects_list");
+
+	 if (ObjectsListNode)
+	 {
+		for (int i = 0; i < ObjectsListNode->ChildNodes->Count; i++)
+		{
+
+			_di_IXMLNode PlaceNode = ObjectsListNode->ChildNodes->Nodes[i];
+			_di_IXMLNode PlaceNameNode = PlaceNode->ChildNodes->FindNode("name");
+
+			if (PlaceNameNode)
+			{
+				cur_pl = add_place (PlaceNameNode->Text);
+			}
+			else
+			{
+				//std::cout << "Тег name не найден в узле objectNode." << std::endl;
+			}
+
+			//here load other place params
+
+			_di_IXMLNode PortsListNode = PlaceNode->ChildNodes->FindNode("ports_list");
+
+			for (int i = 0; i < PortsListNode->ChildNodes->Count; i++)
+			{
+				_di_IXMLNode PortNode = PortsListNode->ChildNodes->Nodes[i];
+				_di_IXMLNode PortNameNode = PortNode->ChildNodes->FindNode("name");
+
+				if (PortNode)
+				{
+					cur_pr = add_port (PortNameNode->Text);
+
+					TPortProcThread* ppt = new TPortProcThread(true, cur_pr);
+					m_port_proc_thread_list.push_back(ppt);
+
+					Sleep(1);
+				}
+				else
+				{
+				//std::cout << "Тег name не найден в узле objectNode." << std::endl;
+				}
+
+				_di_IXMLNode PorSysNumNode = PortNode->ChildNodes->FindNode("sys_port_num");
+				if ( PorSysNumNode)
+				{
+					cur_pr->set_sys_port_num(PorSysNumNode->Text.ToInt());
+				}
+
+				_di_IXMLNode PorBaudNode = PortNode->ChildNodes->FindNode("baud_rate");
+				if ( PorBaudNode)
+				{
+					cur_pr->set_baud((DWORD)PorBaudNode->Text.ToInt());
+				}
+
+				_di_IXMLNode PorOnNode = PortNode->ChildNodes->FindNode("on");
+				if ( PorOnNode)
+				{
+					cur_pr->set_on(PorOnNode->Text.ToInt());
+				}
+
+				_di_IXMLNode PorMarkNode = PortNode->ChildNodes->FindNode("mark");
+				if ( PorMarkNode)
+				{
+					cur_pr->set_mark(PorMarkNode->Text.c_str());
+				}
+
+				_di_IXMLNode PorTypeNode = PortNode->ChildNodes->FindNode("type");
+				if ( PorTypeNode)
+				{
+					cur_pr->set_type(PorTypeNode->Text.ToInt());
+				}
+
+                cur_pr->set_com();
+				//load other port attr here
+
+				_di_IXMLNode SensorsListNode = PortNode->ChildNodes->FindNode("sensors_list");
+
+				for (int i = 0; i < SensorsListNode->ChildNodes->Count; i++)
+				{
+					_di_IXMLNode SensorNode = SensorsListNode->ChildNodes->Nodes[i];
+					_di_IXMLNode SensorNameNode = SensorNode->ChildNodes->FindNode("name");
+
+					if (SensorNameNode)
+					{
+						cur_sn = add_sensor (SensorNameNode->Text, 0);
+					}
+					else
+					{
+
+					}
+
+					_di_IXMLNode uidNode = SensorNode->ChildNodes->FindNode("uid");
+
+					if (uidNode)
+					{
+						cur_sn->set_uid (StrToIntDef(uidNode->Text, 0));
+						if (sens_uid_max <= cur_sn->get_uid())
+						{
+							sens_uid_max = cur_sn->get_uid() + 1;
+						}
+					}
+					else
+					{
+
+					}
+
+					_di_IXMLNode addrNode = SensorNode->ChildNodes->FindNode("addr");
+					if (addrNode)
+					{
+						cur_sn->set_addr (StrToIntDef(addrNode->Text, 0));
+					}
+
+
+					_di_IXMLNode onNode = SensorNode->ChildNodes->FindNode("on");
+					if (onNode)
+					{
+						cur_sn->set_on (StrToIntDef(onNode->Text, 0));
+					}
+
+					_di_IXMLNode markNode = SensorNode->ChildNodes->FindNode("mark");
+					if (markNode)
+					{
+						cur_sn->set_mark (markNode->Text.c_str());
+					}
+
+					_di_IXMLNode nameNode = SensorNode->ChildNodes->FindNode("name");
+					if (nameNode)
+					{
+						cur_sn->set_name (nameNode->Text.c_str());
+					}
+				}
+
+
+			}
+		}
+
+
+		Sleep(1);
+	 }
+
+
+	 tree->Visible = true;
+
+	 ReDraw();
+
+
+	 return 0;//
 
 	 int tmp = rootNode->ChildNodes->Count;
 
@@ -816,4 +1002,9 @@ int TGLSystem::bbf_store_sensor_data(TDateTime t)
 std::list<dt_sensor_data_record_s> TGLSystem::bbf_read_sensor_data_s(TGLSensor* sn, TDateTime t1, TDateTime t2)
 {
    return BBFMgr->read_sensor_data_s(SysConfMgr->GetCurBasePath(), sn, t1, t2);
+}
+
+TGLPort* TGLSystem::GetCurPr(void)
+{
+	return cur_pr;
 }

@@ -14,9 +14,6 @@
 #define SENSOR_TYPE_IND3_ASIN       2
 #define SENSOR_TYPE_AND3_AND3       3
 
-#define SENSOR_TYPE_AND3_AND3       3
-
-
 #define SENSOR_TYPE_UNKN_UNKN       255
 
 typedef struct {
@@ -39,7 +36,7 @@ public:
 public:
 
 	WideString name;
-	WideString mark;
+
 	TTreeNode* node;
 	int num;
 
@@ -66,7 +63,10 @@ public:
 	double get_rawX(void);
 	double get_rawY(void);
 
+
 private:
+
+    WideString mark;
 
 	TTreeView* tree;
 	BYTE addr;
@@ -86,6 +86,7 @@ private:
     int* txidx;
 
 	int uid;
+	bool on;
 
 public:
 
@@ -94,6 +95,16 @@ public:
 	void subst(double x, double y);
 	void set_uid(int id);
 	int get_uid(void);
+    void set_on(int n);
+	int get_on(void);
+	void set_type(int t);
+	int get_type(void);
+    void set_mark(TCHAR* mr);
+	TCHAR* get_mark(void);
+	void set_addr(BYTE a);
+	BYTE get_addr(void);
+	void set_name(TCHAR* nm);
+    TCHAR* get_name(void);
 
 };
 

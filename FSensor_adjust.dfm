@@ -1,9 +1,10 @@
-object Form_Sensor_adjust: TForm_Sensor_adjust
+﻿object Form_Sensor_adjust: TForm_Sensor_adjust
   Left = 0
   Top = 0
+  BorderStyle = bsDialog
   Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1076#1072#1090#1095#1080#1082
-  ClientHeight = 140
-  ClientWidth = 541
+  ClientHeight = 173
+  ClientWidth = 259
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,15 +13,22 @@ object Form_Sensor_adjust: TForm_Sensor_adjust
   Font.Style = []
   TextHeight = 15
   object Label1: TLabel
-    Left = 8
-    Top = 16
-    Width = 39
+    Left = 127
+    Top = 8
+    Width = 9
     Height = 15
-    Caption = 'IND3 # '
+    Caption = '#'
+  end
+  object Протокол: TLabel
+    Left = 58
+    Top = 42
+    Width = 71
+    Height = 15
+    Caption = #1055#1088#1086#1090#1086#1082#1086#1083
   end
   object Button_OK: TButton
-    Left = 465
-    Top = 105
+    Left = 176
+    Top = 140
     Width = 75
     Height = 25
     Caption = 'OK'
@@ -28,8 +36,8 @@ object Form_Sensor_adjust: TForm_Sensor_adjust
     OnClick = Button_OKClick
   end
   object Button_cancel: TButton
-    Left = 384
-    Top = 105
+    Left = 95
+    Top = 140
     Width = 75
     Height = 25
     Caption = 'Cancel'
@@ -37,17 +45,50 @@ object Form_Sensor_adjust: TForm_Sensor_adjust
     OnClick = Button_cancelClick
   end
   object ComboBox_addr: TComboBox
-    Left = 61
-    Top = 13
-    Width = 145
+    Left = 142
+    Top = 5
+    Width = 108
     Height = 23
     TabOrder = 2
     Text = 'ComboBox_addr'
   end
+  object ComboBox_type: TComboBox
+    Left = 8
+    Top = 5
+    Width = 105
+    Height = 23
+    TabOrder = 3
+    Text = 'ComboBox_type'
+  end
+  object Memo_mark: TMemo
+    Left = 8
+    Top = 63
+    Width = 242
+    Height = 55
+    Lines.Strings = (
+      'Memo_mark')
+    TabOrder = 4
+  end
+  object CheckBox_on: TCheckBox
+    Left = 16
+    Top = 144
+    Width = 49
+    Height = 17
+    Caption = #1042#1082#1083'.'
+    TabOrder = 5
+  end
+  object ComboBox_prt: TComboBox
+    Left = 142
+    Top = 34
+    Width = 109
+    Height = 23
+    TabOrder = 6
+    Text = 'ComboBox_prt'
+  end
   object Timer_start: TTimer
     Interval = 100
     OnTimer = Timer_startTimer
-    Left = 240
-    Top = 24
+    Left = 112
+    Top = 96
   end
 end

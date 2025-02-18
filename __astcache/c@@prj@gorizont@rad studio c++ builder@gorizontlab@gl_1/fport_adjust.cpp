@@ -18,6 +18,8 @@ __fastcall TForm_Port_adjust::TForm_Port_adjust(TComponent* Owner)
 
 void TForm_Port_adjust::start(TGLPort* pr)
 {
+	WideString s;
+
 	port = pr;
 
 	ComboBox_COM->Clear();
@@ -29,22 +31,80 @@ void TForm_Port_adjust::start(TGLPort* pr)
 
 	ComboBox_COM->ItemIndex = 0;
 
+	ComboBox_type->Clear();
+	ComboBox_type->Items->Add(L"COM");
+	ComboBox_type->Items->Add(L"TCP");
+	ComboBox_type->ItemIndex = 0;
+
+	ComboBox_baud->Clear();
+	ComboBox_baud->Items->Add(115200);
+	ComboBox_baud->Items->Add(9600);
+	ComboBox_baud->ItemIndex = 0;
+
+	CheckBox_on->Checked= false;
+
+    Memo_mark->Text = L"Порт опроса датчиков";
+
+	if (port)
+	{
+	  ComboBox_type->ItemIndex = port->get_type();
+	  ComboBox_COM->ItemIndex = port->get_sys_port_num() - 1;
+	  CheckBox_on->Checked = (bool)port->get_on();
+	  s.printf(L"%d", port->get_baud());
+	  ComboBox_baud->Text = s;
+	  TCHAR* m = port->get_mark();
+	  Memo_mark->Text = port->get_mark();
+	}
+
 	ShowModal();
 }
 void __fastcall TForm_Port_adjust::Button_okClick(TObject *Sender)
 {
 	WideString sport;
-	sport.printf(L"COM_%03d", ComboBox_COM->ItemIndex + 1);
 
-		if (GLSystem->add_port(sport))
+	if (ComboBox_type->ItemIndex == 0)
+	{
+		sport.printf(L"COM_%03d", ComboBox_COM->ItemIndex + 1);
+	}
+	else
+	{
+	   sport.printf(L"TCP_%03d", ComboBox_COM->ItemIndex + 1);
+	}
+
+	if (port == NULL)
+	{
+
+		if (port = GLSystem->add_port(sport))
 		{
 
 		}
 		else
 		{
-			//ShowMessage(L"Не удалось добавить порт!");
+			 ShowMessage(L"Не удалось добавить порт!");
 			//    delete port;
 		}
+
+	}
+
+	if (port)
+	{
+		if (ComboBox_type->ItemIndex == 0)
+		{
+			sport.printf(L"COM_%03d", ComboBox_COM->ItemIndex + 1);
+		}
+		else
+		{
+		   sport.printf(L"TCP_%03d", ComboBox_COM->ItemIndex + 1);
+		}
+
+		port->name = sport;
+
+		port->set_type(ComboBox_type->ItemIndex);
+		port->set_sys_port_num(ComboBox_COM->ItemIndex + 1);
+		port->set_on(CheckBox_on->Checked);
+		port->set_baud(ComboBox_baud->Text.ToInt());
+		port->set_mark(Memo_mark->Text.c_str());
+	}
 
 	Close();
 }
@@ -53,6 +113,13 @@ void __fastcall TForm_Port_adjust::Button_okClick(TObject *Sender)
 void __fastcall TForm_Port_adjust::Timer_startTimer(TObject *Sender)
 {
 	Timer_start->Enabled = false;
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TForm_Port_adjust::Button_cancelClick(TObject *Sender)
+{
+	Close();
 }
 //---------------------------------------------------------------------------
 

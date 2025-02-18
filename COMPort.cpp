@@ -8,7 +8,7 @@
 
 TCOMPort::TCOMPort()
 {
-	type = PORT_TYPE_COM;
+	this->type = PORT_TYPE_COM;
 
 	h=INVALID_HANDLE_VALUE;
 	st.p=255;
@@ -22,12 +22,30 @@ TCOMPort::TCOMPort()
 	InitDCB(&dcb);
 	TmOpen=Now();TmClose=TmOpen;
 
+	SetTimeouts(100, 100);
+
 	st.baud=115200;
 }
 
 TCOMPort::TCOMPort(int type, DWORD baud)
 {
+	this->type = PORT_TYPE_COM;
 
+	h=INVALID_HANDLE_VALUE;
+	st.p=255;
+	br=0;bw=0;er=0;ew=0;ec=0;eo=0;lerr=0;
+	st.on=false;st.run=false;st.res=true;st.cmd=0;
+	to.ReadIntervalTimeout=0;
+	to.ReadTotalTimeoutMultiplier=0;
+	to.ReadTotalTimeoutConstant=500;
+	to.WriteTotalTimeoutMultiplier=0;
+	to.WriteTotalTimeoutConstant=500;
+	InitDCB(&dcb);
+	TmOpen=Now();TmClose=TmOpen;
+
+	SetTimeouts(100, 100);
+
+	st.baud=baud;
 }
 
 TCOMPort::~TCOMPort()
@@ -215,7 +233,7 @@ void TCOMPort::InitDCB(DCB* PortDCB)
 //-----------------------------------------------------------------------------
 bool TCOMPort::Open(bool clr_err, DWORD port)
 {
-  char Name[200];
+  TCHAR Name[200];
 
   if(st.on) Close();
 
@@ -226,7 +244,7 @@ bool TCOMPort::Open(bool clr_err, DWORD port)
 
   if(type == PORT_TYPE_COM)
   {
-	sprintf(Name,"\\\\.\\COM%d",st.p+1);
+	_stprintf(Name,L"\\\\.\\COM%d",st.p);
 
 	h = CreateFileW((TCHAR*)Name,
 				  GENERIC_READ|GENERIC_WRITE,
@@ -246,7 +264,7 @@ bool TCOMPort::Open(bool clr_err, DWORD port)
     {
       st.cmd=1;st.run=false;st.on=true;
       TmOpen=Now();TmClose=TmOpen-1.0/24.0/3600.0/1000.0;
-      return st.res;
+	  return st.res;
     }
 
     Close();
@@ -363,4 +381,9 @@ bool TCOMPort::PortNRead(DWORD n,BYTE *b)
   st.run=false;
 
   return st.res;
+}
+
+void TCOMPort::set_baud(DWORD b)
+{
+	st.baud = b;
 }

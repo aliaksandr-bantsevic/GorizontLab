@@ -2,8 +2,8 @@ object Form_General: TForm_General
   Left = 0
   Top = 0
   Caption = 'GorizontLab'
-  ClientHeight = 772
-  ClientWidth = 1032
+  ClientHeight = 771
+  ClientWidth = 1028
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,7 +15,7 @@ object Form_General: TForm_General
   object Splitter1: TSplitter
     Left = 300
     Top = 40
-    Height = 713
+    Height = 712
     Beveled = True
     ExplicitLeft = 576
     ExplicitTop = 472
@@ -24,14 +24,14 @@ object Form_General: TForm_General
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 1032
+    Width = 1028
     Height = 40
     ButtonHeight = 44
     ButtonWidth = 39
     Caption = 'ToolBar'
     Images = ImageList_Tool_bar
     TabOrder = 0
-    ExplicitWidth = 1028
+    ExplicitWidth = 1024
     object ToolButton1: TToolButton
       Left = 0
       Top = 0
@@ -77,8 +77,8 @@ object Form_General: TForm_General
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 753
-    Width = 1032
+    Top = 752
+    Width = 1028
     Height = 19
     Panels = <
       item
@@ -93,47 +93,50 @@ object Form_General: TForm_General
       item
         Width = 500
       end>
-    ExplicitTop = 752
-    ExplicitWidth = 1028
+    ExplicitTop = 751
+    ExplicitWidth = 1024
   end
   object Panel_Browser: TPanel
     Left = 0
     Top = 40
     Width = 300
-    Height = 713
+    Height = 712
     Align = alLeft
     Caption = 'Panel_Browser'
     TabOrder = 2
-    ExplicitHeight = 712
+    ExplicitHeight = 711
     object TreeView_Browser: TTreeView
       Left = 1
       Top = 1
       Width = 298
-      Height = 711
+      Height = 710
       Align = alClient
+      AutoExpand = True
       Images = ImageList_Tree_browser
       Indent = 25
       PopupMenu = PopupMenu
       RightClickSelect = True
       TabOrder = 0
       OnClick = TreeView_BrowserClick
-      ExplicitHeight = 710
+      OnDblClick = TreeView_BrowserDblClick
+      OnMouseDown = TreeView_BrowserMouseDown
+      ExplicitHeight = 709
     end
   end
   object Panel_Work: TPanel
     Left = 303
     Top = 40
-    Width = 729
-    Height = 713
+    Width = 725
+    Height = 712
     Align = alClient
     Caption = 'Panel_Work'
     TabOrder = 3
-    ExplicitWidth = 725
-    ExplicitHeight = 712
+    ExplicitWidth = 721
+    ExplicitHeight = 711
     object Splitter2: TSplitter
       Left = 1
       Top = 545
-      Width = 727
+      Width = 723
       Height = 3
       Cursor = crVSplit
       Align = alTop
@@ -143,54 +146,54 @@ object Form_General: TForm_General
     object Panel_Data: TPanel
       Left = 1
       Top = 1
-      Width = 727
+      Width = 723
       Height = 544
       Align = alTop
       Caption = 'Panel_Data'
       TabOrder = 0
-      ExplicitWidth = 723
+      ExplicitWidth = 719
       object PageControl_Data: TPageControl
         Left = 1
         Top = 1
-        Width = 725
+        Width = 721
         Height = 542
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 721
+        ExplicitWidth = 717
       end
     end
     object Panel_Console: TPanel
       Left = 1
       Top = 548
-      Width = 727
-      Height = 164
+      Width = 723
+      Height = 163
       Align = alClient
       Caption = 'Panel_Console'
       TabOrder = 1
-      ExplicitWidth = 723
-      ExplicitHeight = 163
+      ExplicitWidth = 719
+      ExplicitHeight = 162
       object PageControl_Console: TPageControl
         Left = 1
         Top = 1
-        Width = 725
-        Height = 162
+        Width = 721
+        Height = 161
         ActivePage = TabSheet_console
         Align = alClient
         TabOrder = 0
-        ExplicitWidth = 721
-        ExplicitHeight = 161
+        ExplicitWidth = 717
+        ExplicitHeight = 160
         object TabSheet_console: TTabSheet
           Caption = #1046#1091#1088#1085#1072#1083
           object ListBox_console: TListBox
             Left = 0
             Top = 0
-            Width = 717
-            Height = 132
+            Width = 713
+            Height = 131
             Align = alClient
             ItemHeight = 15
             TabOrder = 0
-            ExplicitWidth = 713
-            ExplicitHeight = 131
+            ExplicitWidth = 709
+            ExplicitHeight = 130
           end
         end
       end
@@ -1309,6 +1312,7 @@ object Form_General: TForm_General
     end
     object N_AdjustPort: TMenuItem
       Caption = #1053#1072#1089#1090#1088#1086#1080#1090#1100' '#1087#1086#1088#1090
+      OnClick = N_AdjustPortClick
     end
     object N_AdjustSensor: TMenuItem
       Caption = #1053#1072#1089#1090#1088#1086#1080#1090#1100' '#1076#1072#1090#1095#1080#1082

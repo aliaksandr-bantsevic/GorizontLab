@@ -13,6 +13,8 @@ TGLPort::TGLPort()
 	 mark = L"...";
 	 node = NULL;
 	 num = 0;
+
+	 com = new TCOMPort(115200);
 }
 
 TGLPort::TGLPort(WideString nm, TTreeNode* nd, int nn, int comtype)
@@ -30,6 +32,11 @@ TGLPort::TGLPort(WideString nm, TTreeNode* nd, int nn, int comtype)
 	com = new TCOMPort(115200);
 
 	suspend_run_engine = false;
+	on = false;
+	mark = L"Ïîğò îïğîñà äàò÷èêîâ";
+	sys_port_num = 0;
+	baud = 115200;
+	type = PORT_TYPE_COM;
 }
 
 TGLPort::~TGLPort()
@@ -131,8 +138,6 @@ void TGLPort::start_cycle ()
 	  buf = sn->getRX();
 	  len = sn->getRXidx();
 
-      /*
-
 	  if (sn->request_curr_XY(buf, len) == 0)
 	  {
 		 com->Purge();
@@ -143,6 +148,7 @@ void TGLPort::start_cycle ()
          }
 	  }
 
+	  /*
 	  Sleep(delay_set.delay_cmd_exec);
 
 	  sn->clrTX();
@@ -206,4 +212,59 @@ void TGLPort::run_engine_suspend ()
 void TGLPort::run_engine_resume ()
 {
 	suspend_run_engine = false;
+}
+
+void TGLPort::set_mark(TCHAR* mr)
+{
+   mark = mr;
+}
+
+TCHAR* TGLPort::get_mark(void)
+{
+   return mark.c_bstr();
+}
+
+void TGLPort::set_sys_port_num(DWORD n)
+{
+	sys_port_num = n;
+}
+
+DWORD TGLPort::get_sys_port_num(void)
+{
+	return sys_port_num;
+}
+
+void TGLPort::set_baud(DWORD b)
+{
+	baud = b;
+}
+
+DWORD TGLPort::get_baud(void)
+{
+	return baud;
+}
+
+void TGLPort::set_on(int n)
+{
+	on = (bool)n;
+}
+
+int TGLPort::get_on(void)
+{
+	return (int)on;
+}
+
+void TGLPort::set_type(int t)
+{
+	type = t;
+}
+
+int TGLPort::get_type(void)
+{
+	return type;
+}
+
+void TGLPort::set_com(void)
+{
+	com->set_baud(baud);
 }

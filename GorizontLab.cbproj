@@ -211,8 +211,8 @@
         </CppCompile>
         <FormResources Include="FPlace_adjust.dfm"/>
         <FormResources Include="FMain.dfm"/>
-        <FormResources Include="FPort_adjust.dfm"/>
         <FormResources Include="FSensor_adjust.dfm"/>
+        <FormResources Include="FPort_adjust.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

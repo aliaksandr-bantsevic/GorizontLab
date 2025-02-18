@@ -147,47 +147,47 @@ void __fastcall TForm_General::TreeView_BrowserClick(TObject* Sender)
 {
     //this->GLSystem->
 
-    TTreeNode* nd = NULL;
-    nd = TreeView_Browser->Selected;
+	TTreeNode* nd = NULL;
+	nd = TreeView_Browser->Selected;
 
-    int type = OBJ_TYPE_NONE;
+	int type = OBJ_TYPE_NONE;
 
-    GLSystem->ProcBrowserСlick(nd, &type);
+	GLSystem->ProcBrowserСlick(nd, &type);
 
-    HidePopupMenu();
+	HidePopupMenu();
 
-    switch (type) {
-        case OBJ_TYPE_SYST:
-            this->N_AddPlace->Visible = true;
-            this->N_AdjustSystem->Visible = true;
-            break;
+	switch (type) {
+		case OBJ_TYPE_SYST:
+			this->N_AddPlace->Visible = true;
+			this->N_AdjustSystem->Visible = true;
+			break;
 
-        case OBJ_TYPE_PLCE:
-            this->N_AdjustPlace->Visible = true;
-            this->N_DeletePlace->Visible = true;
-            this->N_AddPort->Visible = true;
-            break;
+		case OBJ_TYPE_PLCE:
+			this->N_AdjustPlace->Visible = true;
+			this->N_DeletePlace->Visible = true;
+			this->N_AddPort->Visible = true;
+			break;
 
-        case OBJ_TYPE_PORT:
-            this->N_DeletePort->Visible = true;
-            this->N_AdjustPort->Visible = true;
-            this->N_AddSensor->Visible = true;
-            break;
+		case OBJ_TYPE_PORT:
+			this->N_DeletePort->Visible = true;
+			this->N_AdjustPort->Visible = true;
+			this->N_AddSensor->Visible = true;
+			break;
 
-        case OBJ_TYPE_SNSR:
+		case OBJ_TYPE_SNSR:
             this->N_DeleteSensor->Visible = true;
-            this->N_AdjustSensor->Visible = true;
+			this->N_AdjustSensor->Visible = true;
             break;
 
         default:;
-    }
+	}
 
-    ShowSystemElement(g_ws_msg);
+	ShowSystemElement(g_ws_msg);
 }
 //---------------------------------------------------------------------------
 void __fastcall TForm_General::PopupMenuPopup(TObject* Sender)
 {
-    TreeView_BrowserClick(NULL);
+	TreeView_BrowserClick(NULL);
 }
 //---------------------------------------------------------------------------
 void TForm_General::ShowSystemElement(WideString s)
@@ -235,6 +235,12 @@ void __fastcall TForm_General::N_AddSensorClick(TObject* Sender)
 
 void __fastcall TForm_General::ToolButton4Click(TObject* Sender)
 {
+
+TGLPort* pr = GLSystem->GetCurPr();
+
+	pr->cycle();
+
+	return;
 
 	//GLSystem->bbf_save_sensor_data_s(Now(), GLSystem->get_cur_sensor());
 
@@ -307,12 +313,13 @@ void __fastcall TForm_General::FormClose(TObject* Sender, TCloseAction &Action)
 
 void __fastcall TForm_General::N_AdjustSensorClick(TObject* Sender)
 {
-    AdjustSensor();
+	AdjustSensor();
+    GLSystem->ReDraw();
 }
 //---------------------------------------------------------------------------
 void TForm_General::AdjustSensor(void)
 {
-    Form_Sensor_adjust->start(GLSystem->GetCurSn());
+	Form_Sensor_adjust->start(GLSystem->GetCurSn());
 }
 void __fastcall TForm_General::N_DeleteSensorClick(TObject* Sender)
 {
@@ -351,5 +358,89 @@ void __fastcall TForm_General::ToolButton6Click(TObject* Sender)
     GLSystem->SaveConf(SaveDialog);
     SetGeneralCaption();
 }
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::N_AdjustPortClick(TObject *Sender)
+{
+	AdjustPort();
+}
+//---------------------------------------------------------------------------
+
+void TForm_General::AdjustPort(void)
+{
+   Form_Port_adjust->start(GLSystem->GetCurPr());
+   GLSystem->ReDraw();
+}
+void __fastcall TForm_General::TreeView_BrowserDblClick(TObject *Sender)
+{
+  	TTreeNode* nd = NULL;
+	nd = TreeView_Browser->Selected;
+	//nd->Expand(!nd->Expanded);
+
+	//nd->Expanded = (!nd->Expanded);
+
+	/*
+	if (nd->Expanded)
+	{
+		TreeView_Browser->AutoExpand = true;
+	}
+	else
+	{
+	   TreeView_Browser->AutoExpand = false;
+	}
+	*/
+
+	int type = OBJ_TYPE_NONE;
+
+	GLSystem->ProcBrowserСlick(nd, &type);
+
+
+
+	switch (type)
+	{
+
+		case OBJ_TYPE_SYST:
+
+			break;
+
+		case OBJ_TYPE_PLCE:
+
+			break;
+
+		case OBJ_TYPE_PORT:
+
+			AdjustPort();
+			//nd = GLSystem->GetCurPr()->GetNode();
+
+			break;
+
+		case OBJ_TYPE_SNSR:
+			AdjustSensor();
+			break;
+
+		default:
+
+			;
+	}
+
+
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TForm_General::TreeView_BrowserMouseDown(TObject *Sender, TMouseButton Button,
+          TShiftState Shift, int X, int Y)
+{   /*
+    if (Button == mbLeft && Shift.Contains(ssDouble)) {
+        TTreeView* treeView = dynamic_cast<TTreeView*>(Sender);
+        if (treeView) {
+            TTreeNode* node = treeView->GetNodeAt(X, Y);
+            if (node) {
+                // Двойной щелчок по узлу дерева
+				node->Expand(  !node->Expanded);
+            }
+        }
+	} */
+}
+
 //---------------------------------------------------------------------------
 
