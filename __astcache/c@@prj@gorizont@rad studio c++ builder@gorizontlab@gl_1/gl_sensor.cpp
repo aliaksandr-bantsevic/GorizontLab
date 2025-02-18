@@ -114,13 +114,19 @@ void TGLSensor::set_sensor(int type)
 		return;
 	 }
 
+	 /*
 	 rxbuf = protocol->getRX();
 	 txbuf = protocol->getTX();
 
 	 rxidx = protocol->getRXidx();
 	 txidx = protocol->getTXidx();
+	 */
+
+	 protocol->set_raw_X(&raw_X);
+	 protocol->set_raw_Y(&raw_Y);
 }
 
+/*
 int TGLSensor::request_curr_XY(BYTE** buf, int** len)
 {
 	 if (protocol->request_curr_XY(addr) == 0)
@@ -135,6 +141,7 @@ int TGLSensor::request_curr_XY(BYTE** buf, int** len)
 		 return -1;
 	 }
 }
+*/
 
 //external buf
 int TGLSensor::request_curr_XY(BYTE* buf, int* len)
@@ -149,6 +156,7 @@ int TGLSensor::request_curr_XY(BYTE* buf, int* len)
 	 }
 }
 
+/*
 int TGLSensor::accept_response_curr_XY()
 {
 	 if (protocol->accept_response_curr_XY(addr) ==  0)
@@ -163,14 +171,15 @@ int TGLSensor::accept_response_curr_XY()
 		 return -1;
 	 }
 }
+*/
 
 //external buf
 int TGLSensor::accept_response_curr_XY(BYTE* buf, int* idx)
 {
 	 if (protocol->accept_response_curr_XY(addr, buf, idx) ==  0)
 	 {
-		 raw_X = protocol->get_raw_X();
-		 raw_Y = protocol->get_raw_Y();
+		 raw_X;// = protocol->get_raw_X();
+		 raw_Y;// = protocol->get_raw_Y();
 
 		 return 0;
 	 }
@@ -180,6 +189,7 @@ int TGLSensor::accept_response_curr_XY(BYTE* buf, int* idx)
 	 }
 }
 
+/*
 BYTE* TGLSensor::getRX(void)
 {
   //return protocol->getRX();
@@ -208,6 +218,7 @@ void TGLSensor::clrTX(void)
 {
     //protocol->clear_tx();
 }
+*/
 
 double TGLSensor::get_rawX(void)
 {

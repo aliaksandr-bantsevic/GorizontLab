@@ -129,6 +129,7 @@ void TGLPort::start_cycle ()
 	cycle_syspend_flag = false;
 }
 
+/*
  int TGLPort::transact_request_XY(TGLSensor* sn)
  {
 	  BYTE* buf = NULL;
@@ -172,6 +173,7 @@ void TGLPort::start_cycle ()
 
 	  return 0;
  }
+ */
 
  //extended buffers
  int TGLPort::transact_request_XY_ex(TGLSensor* sn)

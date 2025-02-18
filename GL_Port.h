@@ -54,7 +54,7 @@ public:
 	void syspend_cycle ();
 	void start_cycle ();
 
-	int transact_request_XY(TGLSensor* sn);
+	//int transact_request_XY(TGLSensor* sn);
 	int transact_request_XY_ex(TGLSensor* sn);
 
 	bool is_suspended ();

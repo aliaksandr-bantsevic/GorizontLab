@@ -78,24 +78,30 @@ public:
 
 	void setProtocol(void) override;
 
-	int request_curr_XY(BYTE addr) override;
+	//int request_curr_XY(BYTE addr) override;
 	int request_curr_XY(BYTE addr, BYTE* buf, int* idx)  override;
 
-	int accept_response_curr_XY(BYTE addr) override;
+	//int accept_response_curr_XY(BYTE addr) override;
     int accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx) override;
 
 private:
 
-	void RequestMainMeterPacket(unsigned char addr, main_packet_211_id packet);
+	//void RequestMainMeterPacket(unsigned char addr, main_packet_211_id packet);
 	void RequestMainMeterPacket(unsigned char addr, main_packet_211_id packet, BYTE* buf, int* idx);
 
 	int EscapeBytesEncode(unsigned char* buf, int* len, int frame);
 	int EscapeBytesDecode(unsigned char* buf, int* len, int frame);
 	int packet_proc();
 	int packet_proc(unsigned char* buf, int* len, BYTE addr);
-	int ChceckSumCheck(void);
-	int ChceckSumCalculate(void);
-	int AcceptSensorMeasVal();
+
+	//int ChceckSumCheck(void);
+	int ChceckSumCheck(BYTE* buf, int* idx);
+
+	//int ChceckSumCalculate(void);
+	int ChceckSumCalculate(BYTE* buf, int* idx);
+
+	//int AcceptSensorMeasVal();
+	int AcceptSensorMeasVal(BYTE* buf, int* len);
 
 };
 

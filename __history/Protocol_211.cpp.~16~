@@ -6,6 +6,16 @@
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
+TProtocol_211::TProtocol_211()
+{
+   setProtocol();
+}
+
+TProtocol_211::~TProtocol_211()
+{
+
+}
+
 void TProtocol_211::setProtocol(void)
 {
    protocol_type = PROTOCOL_TYPE_IND3;
@@ -165,6 +175,34 @@ void TProtocol_211::RequestMainMeterPacket(unsigned char addr, main_packet_211_i
 
 }
 
+//Основной протокол пакета запроса внешний буфер
+void TProtocol_211::RequestMainMeterPacket(unsigned char addr, main_packet_211_id packet, BYTE* buf, int* idx)
+{
+	int idxx = 0;
+	unsigned char chsum = 0;
+
+//Инициализация
+	 *idx = 0; memset(buf,0,8448);
+//Начало пакета
+	  buf[idxx] = PACKET_START; idxx++;
+//Тип протокола
+	  buf[idxx] = MAIN_PR_211;           chsum=chsum^buf[idxx]; idxx++;
+//Тип пакета
+	  buf[idxx] = packet;                chsum=chsum^buf[idxx]; idxx++;
+//Адрес измерителя
+	  buf[idxx] = addr;                  chsum=chsum^buf[idxx]; idxx++;
+//Контрольная сумма
+	  buf[idxx] = chsum;                                          idxx++;
+//Конец пакета
+	  buf[idxx] = PACKET_END;                                     idxx++;
+
+//Кодируем ESCAP Eпоследовательности
+	 this->EscapeBytesEncode(buf, &idxx, 1);
+
+	 *idx = idxx;
+}
+
+
 /*
 	заполняет запрос на углы x y
 	запрос сформирован в buftx
@@ -178,74 +216,101 @@ int TProtocol_211::request_curr_XY(BYTE addr)
 	return 0;
 }
 
+//внешний буффер
+int TProtocol_211::request_curr_XY(BYTE addr, BYTE* buf, int* idx)
+{
+	RequestMainMeterPacket(addr, MEAS_VAL, buf, idx);
+
+	return 0;
+}
+
 int TProtocol_211::accept_response_curr_XY(BYTE addr)
 {
+	int len = 0;
 
-     return 0;
+	if (packet_proc(bufrx, &len, addr) == 0)
+	{
+
+		return 0;
+	}
+
+	return -1;
+}
+
+//external buffer
+int TProtocol_211::accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx)
+{
+	int len = 0;
+
+	if (packet_proc(buf, idx, addr) == 0)
+	{
+
+		return 0;
+	}
+
+	return -1;
 }
 
 /*
   процессинг принятого пакета
 */
-int  TProtocol_211::packet_proc()
-{/*
-		int idx=0;
-		memset (packetBUF,0,PACKETBUF_LEN);
+int  TProtocol_211::packet_proc(unsigned char* buf, int* len, BYTE addr)
+{
+		int idx = 0;
+		BYTE packetBUF [1024];
+		memset (packetBUF,0,1024);
 
 //Проверяем разделитель пакета
 
 		if (buf[0]!=PACKET_START)
 						 return -1;//Нет разделителя пакета
 
-//        if (buf[len-1]!=PACKET_START)
-//                         return -1;//Нет разделителя пакета
-
 //Проверяем тип протокола
-		protocol_211_id pr_id=(protocol_211_id)buf[1];
+		protocol_211_id pr_id = (protocol_211_id) buf[1];
 
-        if (
+		if (
 				(pr_id!=MAIN_PR_211)&&
-                (pr_id!=ADDN_PR_211)
-           )
+				(pr_id!=ADDN_PR_211)
+		   )
 	   return -2; //неправильный тип протокола
 
 //Проверяем тип пакета
 
-        main_packet_211_id main_pc_id=MEAS_VAL;
+		main_packet_211_id main_pc_id = MEAS_VAL;
 
-        if (pr_id==MAIN_PR_211)
+		if (pr_id == MAIN_PR_211)
         {
-                main_pc_id=(main_packet_211_id)buf[2];
+				main_pc_id = (main_packet_211_id)buf[2];
 
                 if (
                         (main_pc_id!=MEAS_VAL)&&
                         (main_pc_id!=MEAS_VER)&&
                         (main_pc_id!=PACK_ERR)
-                   )
+				   )
           return -3; //неправильный тип пакета
 		}
 
 //Считаем реальную длину пакета
 
-       idx=1;
+	   idx=1;
 
        while (buf[idx]!=0x7E)
 	   {
            idx++;
-           if (idx>1000) return -1;//Нет разделителя пакета в конце
-       }
+		   if (idx > 1000) return -4;//Нет разделителя пакета в конце
+	   }
 
        idx++;
-	   len=idx;
+	   *len = idx;
 
-       addn_packet_211_id addn_pc_id=GET_BAUD;
+	   addn_packet_211_id addn_pc_id = GET_BAUD;
 
-        if (pr_id==ADDN_PR_211)
+		if (pr_id == ADDN_PR_211)
 		{
-                addn_pc_id=((addn_packet_211_id)buf[2]);
+				addn_pc_id = ((addn_packet_211_id)buf[2]);
 
                 if (
-                        (addn_pc_id!=GET_BAUD)&&
+						(addn_pc_id!=GET_BAUD)&&
 						(addn_pc_id!=SET_BAUD)&&
                         (addn_pc_id!=GET_NAME)&&
                         (addn_pc_id!=SET_NAME)&&
@@ -257,56 +322,59 @@ int  TProtocol_211::packet_proc()
                         (addn_pc_id!=GET_TACT)&&
                         (addn_pc_id!=SET_TACT)&&
 						(addn_pc_id!=GET_PERD)&&
-                        (addn_pc_id!=SET_PERD)
+						(addn_pc_id!=SET_PERD)
                  )
 
 		  return -3; //неправильный тип пакета
         }
 
 //Забираем пакет к себе в буфер
-memcpy(packetBUF,buf,len);
-packetLEN=len;
+memcpy(packetBUF,buf,*len);
+int packetLEN = *len;
 
 //Раскодируем ESCAPE последовательности в принятом пакете
 this->EscapeBytesDecode(packetBUF,&packetLEN,1);
+
+//кидаем в bufrx
+
+clear_rx();
+memcpy(bufrx, packetBUF, packetLEN);
+rx_idx = packetLEN;
 
 //Теперь можно проверить контрольную сумму
 
 	   if (ChceckSumCheck()!=0)
        {
-        return -6; //ошибка контрольной суммы
-       }
+			return -6; //ошибка контрольной суммы
+	   }
 
 //Адрес измерителя лежит в байте 3
-        sensorADDR=packetBUF[3];
-//Извлекаем образ датчикаиз списка
-		sensor_IND3=sensorsList->GetIND3Sensor(sensorADDR);
+		int sensorADDR=packetBUF[3];
 //датчика c таким адресом нет в списке
-        if (sensor_IND3==NULL)
-        {
-			return -5;
-        }
+		if (sensorADDR != addr)
+		{
+			return -7;  //wrong addr
+		}
 
 //Обработка пакетов основного протокола
-		if(pr_id==MAIN_PR_211)
-        {
+		if(pr_id == MAIN_PR_211)
+		{
 
-		   request_TYPE=(ind3_common_request_type)(int)main_pc_id;
-		   //request_TYPE = main_pc_id;
+		   ind3_common_request_type request_TYPE = (ind3_common_request_type)(int)main_pc_id;
 
-           switch(main_pc_id)
+		   switch(main_pc_id)
            {
 
                 case  MEAS_VAL:
-                   AcceptSensorMeasVal();
+				   AcceptSensorMeasVal();
                 break;
 
                 case  MEAS_VER:
-                   AcceptSensorMeasVer();
-                break;
+				   //AcceptSensorMeasVer();
+				break;
 
-                case PACK_ERR:
-                   AcceptSensorLastErr();
+				case PACK_ERR:
+				   //AcceptSensorLastErr();
                 break;
 
            }
@@ -314,63 +382,145 @@ this->EscapeBytesDecode(packetBUF,&packetLEN,1);
 
 //Обработка пакетов дополнительного протокола
         if(pr_id==ADDN_PR_211)
-        {
+		{
 
-		  request_TYPE=(ind3_common_request_type)(int)(addn_pc_id|(0x10));
+		  ind3_common_request_type request_TYPE=(ind3_common_request_type)(int)(addn_pc_id|(0x10));
 
            switch(addn_pc_id)
            {
 				case GET_BAUD:
-                   AcceptSensorBaudRate();
+				   //AcceptSensorBaudRate();
                 break;
-
-				//case SET_BAUD:
-                //break;
 
                 case GET_NAME:
-					AcceptSensorName();
-                break;
-
-                //case SET_NAME:
-				//break;
-
-                case GET_ZOFF:
-                    AcceptSensorZeroOffset();
+					//AcceptSensorName();
 				break;
 
-                //case SET_ZOFF:
-                //break;
-
-                //case SET_ADDR:
-                //break;
+                case GET_ZOFF:
+					//AcceptSensorZeroOffset();
+				break;
 
 				case GET_SVER:
-                    AcceptSensorSoftVer();
+					//AcceptSensorSoftVer();
                 break;
 
 				case GET_SERN:
-                     AcceptSensorSerialNumber();
-                break;
+					 //AcceptSensorSerialNumber();
+				break;
 
 				case GET_TACT:
-                     AcceptSensorAveragingTacts();
+					 //AcceptSensorAveragingTacts();
                 break;
 
-				//case SET_TACT:
-                //break;
-
-                case GET_PERD:
-					  AcceptSensorAveragingPeriod();
-                break;
-
-                //case SET_PERD:
-				//break;
+				case GET_PERD:
+					  //AcceptSensorAveragingPeriod();
+				break;
             }
 
         }
 
-//Вызываем обработчик принятых данных в выхывающем объекте
-       if (accept_data_func!=NULL) (*accept_data_func)();
- */
+	   //Вызываем обработчик принятых данных в выхывающем объекте
+	   //if (accept_data_func!=NULL) (*accept_data_func)();
+
 	   return 0;
 }
+
+int TProtocol_211::ChceckSumCheck(void)
+{
+		if (ChceckSumCalculate() != bufrx[rx_idx - 2])
+		{
+			 return -1; //неправильная контрольная сумма
+		}
+        else
+		{
+			 return 0 ;
+		}
+}
+
+/*
+Контрольная сумма (1 байт) равна сумме по модулю 2 всех байт пакета. Escape-последовательности декодированы и в расчете контрольной суммы участия не принимают.
+Таким образом, контрольная сумма рассчитывается по формуле 1:
+CheckSum=ProtocolID?PacketID?Address???Data_i
+*/
+int TProtocol_211::ChceckSumCalculate(void)
+{
+        unsigned char chsum=0;
+
+		for (int i=1; i<rx_idx - 2; i++)
+        {
+				 chsum=chsum^bufrx[i];
+        }
+
+		return chsum;
+}
+
+int TProtocol_211::AcceptSensorMeasVal(void)
+{
+
+//D5.7 знак угла по оси X
+  unsigned char signX=(bufrx[DATAOFFSET+5])&(1<<7);
+
+//D5.6 размерность углапо оси X
+  unsigned char unitsX=(bufrx[DATAOFFSET+5])&(1<<6);
+
+//D5.5 - D4.0 целая часть угла по X
+  unsigned int intX=((unsigned int) (bufrx[DATAOFFSET+5])&0x3F)<<8;
+			   intX+=(unsigned int) (bufrx[DATAOFFSET+4]);
+
+//D3.7 - D3.0 дробная часть угла по X
+  unsigned int flX=(unsigned int) (bufrx[DATAOFFSET+3]);
+
+//D2.7 знак угла по оси Y
+  unsigned char signY=(bufrx[DATAOFFSET+2])&(1<<7);
+
+//D2.6 размерность угла по оси Y
+  unsigned char unitsY=(bufrx[DATAOFFSET+2])&(1<<6);
+
+//D2.5-D1.0 - целая часть угла Y
+  unsigned int intY=((unsigned int) (bufrx[DATAOFFSET+2])&0x3F)<<8;
+			   intY+=(unsigned int) (bufrx[DATAOFFSET+1]);
+
+//D3.7 - D3.0 дробная часть угла по X
+  unsigned int flY=(unsigned int) (bufrx[DATAOFFSET+0]);
+
+//Устанавливаем датчику единицы по Х
+//  if (unitsX==0)        sensor_IND3->SetUnitsX(ANGLE_SECONDS);
+//  else                  sensor_IND3->SetUnitsX(ANGLE_MINUTES);
+
+//Устанавливаем датчику единицы по Y
+//  if (unitsY==0)        sensor_IND3->SetUnitsY(ANGLE_SECONDS);
+//  else                  sensor_IND3->SetUnitsY(ANGLE_MINUTES);
+
+//Вычисляем и устанавливаем значение угла по X
+  double angle = (double)intX+((double)flX/(double)0x100);
+
+//Приводимк 3знакам послезапятой
+//  angle*=1000; angle=floor(angle); angle/=1000;
+
+  if (signX) angle*=-1;
+  //sensor_IND3->SetAngleX(angle);
+  if (unitsX)
+  {
+	angle *= 360;
+  }
+
+  raw_X = angle;
+
+//Вычисляем и устанавливаем значение угла пл Y
+  angle = (double)intY+((double)flY/(double)0x100);
+
+//Приводимк 3знакам послезапятой
+//  angle*=1000; angle=floor(angle); angle/=1000;
+
+  if (signY) angle*=-1;
+  //sensor_IND3->SetAngleY(angle);
+  if (unitsY)
+  {
+	angle *= 360;
+  }
+
+  raw_Y = angle;
+
+  return 0;
+}
+

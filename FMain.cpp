@@ -238,6 +238,7 @@ void __fastcall TForm_General::ToolButton4Click(TObject* Sender)
 
 TGLPort* pr = GLSystem->GetCurPr();
 
+	pr->start_cycle();
 	pr->cycle();
 
 	return;

@@ -25,33 +25,33 @@ protected:
 
 	   virtual void setProtocol() = 0;
 
-	   BYTE bufrx[1024];
-	   BYTE buftx[1024];
-	   int rx_idx;
-	   int tx_idx;
+	   //BYTE bufrx[1024];
+	   //BYTE buftx[1024];
+	   //int rx_idx;
+	   //int tx_idx;
 
-	   double raw_X;
-	   double raw_Y;
+	   double* raw_X;
+	   double* raw_Y;
 
 	   int protocol_type;
 
 public:
 
-	   virtual int request_curr_XY(BYTE addr) = 0;
+	   //virtual int request_curr_XY(BYTE addr) = 0;
 	   virtual int request_curr_XY(BYTE addr, BYTE* buf, int* idx) = 0;
 
-	   virtual int accept_response_curr_XY(BYTE addr) =  0;
-       virtual int accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx) =  0;
+	   //virtual int accept_response_curr_XY(BYTE addr) =  0;
+	   virtual int accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx) =  0;
 
-	   BYTE* getRX(void);
-	   BYTE* getTX(void);
+	   //BYTE* getRX(void);
+	   //BYTE* getTX(void);
 	   void clear(void);
-	   void clear_rx(void);
-	   void clear_tx(void);
-	   int* getRXidx(void);
-	   int* getTXidx(void);
-	   double get_raw_X();
-	   double get_raw_Y();
+	   //void clear_rx(void);
+	   //void clear_tx(void);
+	   //int* getRXidx(void);
+	   //int* getTXidx(void);
+	   void	set_raw_X(double* x);
+	   void	set_raw_Y(double* y);
 
 };
 

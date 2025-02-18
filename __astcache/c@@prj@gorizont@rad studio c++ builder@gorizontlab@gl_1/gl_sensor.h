@@ -55,11 +55,11 @@ public:
 	void SetAddr(Byte ad);
 	int ReDraw(TTreeNode* n, int plnum, int prnum, int snnum);
 
-	BYTE* getRX(void);
-	BYTE* getTX(void);
-	void clrTX(void);
-	int* getRXidx(void);
-	int* getTXidx(void);
+	//BYTE* getRX(void);
+	//BYTE* getTX(void);
+	//void clrTX(void);
+	//int* getRXidx(void);
+	//int* getTXidx(void);
 	double get_rawX(void);
 	double get_rawY(void);
 
@@ -80,20 +80,22 @@ private:
 
 	int type;
 
+	/*
 	BYTE* rxbuf;
 	BYTE* txbuf;
 	int* rxidx;
     int* txidx;
+	*/
 
 	int uid;
 	bool on;
 
 public:
 
-	int request_curr_XY(BYTE** buf, int** len);
-    int request_curr_XY(BYTE* buf, int* len);
+	//int request_curr_XY(BYTE** buf, int** len);
+	int request_curr_XY(BYTE* buf, int* len);
 
-	int accept_response_curr_XY();
+	//int accept_response_curr_XY();
 	int accept_response_curr_XY(BYTE* buf, int* idx);
 
 	void subst(double x, double y);

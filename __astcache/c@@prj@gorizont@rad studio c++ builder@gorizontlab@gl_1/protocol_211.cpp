@@ -152,6 +152,7 @@ int TProtocol_211::EscapeBytesEncode(unsigned char* buf, int* len, int frame)
 
 //-------------------------------------------------------------------------------
 
+/*
 //Основной протокол пакета запроса
 void TProtocol_211::RequestMainMeterPacket(unsigned char addr, main_packet_211_id packet)
 {
@@ -174,6 +175,7 @@ void TProtocol_211::RequestMainMeterPacket(unsigned char addr, main_packet_211_i
 	 this->EscapeBytesEncode(buftx, &tx_idx, 1);
 
 }
+*/
 
 //Основной протокол пакета запроса внешний буфер
 void TProtocol_211::RequestMainMeterPacket(unsigned char addr, main_packet_211_id packet, BYTE* buf, int* idx)
@@ -209,12 +211,16 @@ void TProtocol_211::RequestMainMeterPacket(unsigned char addr, main_packet_211_i
 	длина пакета сформирована в tx_idx
 
 */
+
+/*
 int TProtocol_211::request_curr_XY(BYTE addr)
 {
 	RequestMainMeterPacket(addr, MEAS_VAL);
 
 	return 0;
 }
+*/
+
 
 //внешний буффер
 int TProtocol_211::request_curr_XY(BYTE addr, BYTE* buf, int* idx)
@@ -224,6 +230,7 @@ int TProtocol_211::request_curr_XY(BYTE addr, BYTE* buf, int* idx)
 	return 0;
 }
 
+/*
 int TProtocol_211::accept_response_curr_XY(BYTE addr)
 {
 	int len = 0;
@@ -236,6 +243,7 @@ int TProtocol_211::accept_response_curr_XY(BYTE addr)
 
 	return -1;
 }
+*/
 
 //external buffer
 int TProtocol_211::accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx)
@@ -262,7 +270,7 @@ int  TProtocol_211::packet_proc(unsigned char* buf, int* len, BYTE addr)
 
 //Проверяем разделитель пакета
 
-		if (buf[0]!=PACKET_START)
+		if (buf[0] != PACKET_START)
 						 return -1;//Нет разделителя пакета
 
 //Проверяем тип протокола
@@ -337,19 +345,21 @@ this->EscapeBytesDecode(packetBUF,&packetLEN,1);
 
 //кидаем в bufrx
 
-clear_rx();
-memcpy(bufrx, packetBUF, packetLEN);
-rx_idx = packetLEN;
+//clear_rx();
+memset(buf, 0, 8448);
+memcpy(buf, packetBUF, packetLEN);
+*len = packetLEN;
 
 //Теперь можно проверить контрольную сумму
 
-	   if (ChceckSumCheck()!=0)
+	   //if (ChceckSumCheck()!=0)
+	   if (ChceckSumCheck(buf, len)!=0)
        {
 			return -6; //ошибка контрольной суммы
 	   }
 
 //Адрес измерителя лежит в байте 3
-		int sensorADDR=packetBUF[3];
+		int sensorADDR = packetBUF[3];
 //датчика c таким адресом нет в списке
 		if (sensorADDR != addr)
 		{
@@ -366,7 +376,8 @@ rx_idx = packetLEN;
            {
 
                 case  MEAS_VAL:
-				   AcceptSensorMeasVal();
+				   //AcceptSensorMeasVal();
+				   AcceptSensorMeasVal(buf, len);
                 break;
 
                 case  MEAS_VER:
@@ -381,7 +392,7 @@ rx_idx = packetLEN;
         }
 
 //Обработка пакетов дополнительного протокола
-        if(pr_id==ADDN_PR_211)
+		if(pr_id == ADDN_PR_211)
 		{
 
 		  ind3_common_request_type request_TYPE=(ind3_common_request_type)(int)(addn_pc_id|(0x10));
@@ -425,13 +436,28 @@ rx_idx = packetLEN;
 	   return 0;
 }
 
+/*
 int TProtocol_211::ChceckSumCheck(void)
 {
 		if (ChceckSumCalculate() != bufrx[rx_idx - 2])
 		{
 			 return -1; //неправильная контрольная сумма
 		}
-        else
+		else
+		{
+			 return 0 ;
+		}
+}
+*/
+
+//external buf
+int TProtocol_211::ChceckSumCheck(BYTE* buf, int* idx)
+{
+		if (ChceckSumCalculate(buf, idx) != buf[*idx - 2])
+		{
+			 return -1; //неправильная контрольная сумма
+		}
+		else
 		{
 			 return 0 ;
 		}
@@ -442,18 +468,35 @@ int TProtocol_211::ChceckSumCheck(void)
 Таким образом, контрольная сумма рассчитывается по формуле 1:
 CheckSum=ProtocolID?PacketID?Address???Data_i
 */
+
+/*
 int TProtocol_211::ChceckSumCalculate(void)
 {
-        unsigned char chsum=0;
+		unsigned char chsum=0;
 
 		for (int i=1; i<rx_idx - 2; i++)
-        {
+		{
 				 chsum=chsum^bufrx[i];
-        }
+		}
+
+		return chsum;
+}
+*/
+
+//external buf
+int TProtocol_211::ChceckSumCalculate(BYTE* buf, int* idx)
+{
+		unsigned char chsum=0;
+
+		for (int i=1; i< *idx - 2; i++)
+		{
+				 chsum=chsum^buf[i];
+		}
 
 		return chsum;
 }
 
+/*
 int TProtocol_211::AcceptSensorMeasVal(void)
 {
 
@@ -520,6 +563,78 @@ int TProtocol_211::AcceptSensorMeasVal(void)
   }
 
   raw_Y = angle;
+
+  return 0;
+}
+*/
+
+//extern buffer
+int TProtocol_211::AcceptSensorMeasVal(BYTE* buf, int* len)
+{
+
+//D5.7 знак угла по оси X
+  unsigned char signX=(buf[DATAOFFSET+5])&(1<<7);
+
+//D5.6 размерность углапо оси X
+  unsigned char unitsX=(buf[DATAOFFSET+5])&(1<<6);
+
+//D5.5 - D4.0 целая часть угла по X
+  unsigned int intX=((unsigned int) (buf[DATAOFFSET+5])&0x3F)<<8;
+			   intX+=(unsigned int) (buf[DATAOFFSET+4]);
+
+//D3.7 - D3.0 дробная часть угла по X
+  unsigned int flX=(unsigned int) (buf[DATAOFFSET+3]);
+
+//D2.7 знак угла по оси Y
+  unsigned char signY=(buf[DATAOFFSET+2])&(1<<7);
+
+//D2.6 размерность угла по оси Y
+  unsigned char unitsY=(buf[DATAOFFSET+2])&(1<<6);
+
+//D2.5-D1.0 - целая часть угла Y
+  unsigned int intY=((unsigned int) (buf[DATAOFFSET+2])&0x3F)<<8;
+			   intY+=(unsigned int) (buf[DATAOFFSET+1]);
+
+//D3.7 - D3.0 дробная часть угла по X
+  unsigned int flY=(unsigned int) (buf[DATAOFFSET+0]);
+
+//Устанавливаем датчику единицы по Х
+//  if (unitsX==0)        sensor_IND3->SetUnitsX(ANGLE_SECONDS);
+//  else                  sensor_IND3->SetUnitsX(ANGLE_MINUTES);
+
+//Устанавливаем датчику единицы по Y
+//  if (unitsY==0)        sensor_IND3->SetUnitsY(ANGLE_SECONDS);
+//  else                  sensor_IND3->SetUnitsY(ANGLE_MINUTES);
+
+//Вычисляем и устанавливаем значение угла по X
+  double angle = (double)intX+((double)flX/(double)0x100);
+
+//Приводимк 3знакам послезапятой
+//  angle*=1000; angle=floor(angle); angle/=1000;
+
+  if (signX) angle*=-1;
+  //sensor_IND3->SetAngleX(angle);
+  if (unitsX)
+  {
+	angle *= 360;
+  }
+
+  *raw_X = angle;
+
+//Вычисляем и устанавливаем значение угла пл Y
+  angle = (double)intY+((double)flY/(double)0x100);
+
+//Приводим к 3 знакам после запятой
+//  angle*=1000; angle=floor(angle); angle/=1000;
+
+  if (signY) angle*=-1;
+  //sensor_IND3->SetAngleY(angle);
+  if (unitsY)
+  {
+	angle *= 360;
+  }
+
+  *raw_Y = angle;
 
   return 0;
 }

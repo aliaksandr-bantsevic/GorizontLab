@@ -20,14 +20,15 @@ TProtocol::~TProtocol()
 
 void TProtocol::clear(void)
 {
-	memset(bufrx,0,1024);
-	memset(buftx,0,1024);
-	rx_idx = 0;
-	tx_idx = 0;
-	raw_X = 0;
-	raw_Y = 0;
+	//memset(bufrx,0,1024);
+	//memset(buftx,0,1024);
+	//rx_idx = 0;
+	//tx_idx = 0;
+	//raw_X = 0;
+	//raw_Y = 0;
 }
 
+/*
 void TProtocol::clear_rx(void)
 {
 	memset(bufrx,0,1024);
@@ -61,14 +62,15 @@ int* TProtocol::getTXidx(void)
 {
 	return &tx_idx;
 }
+*/
 
-double TProtocol::get_raw_X()
+void TProtocol::set_raw_X(double* x)
 {
-	return raw_X;
+	raw_X = x;
 }
 
-double TProtocol::get_raw_Y()
+void TProtocol::set_raw_Y(double* y)
 {
-	return raw_Y;
+	raw_Y = y;
 }
 
