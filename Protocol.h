@@ -38,7 +38,7 @@ protected:
 public:
 
 	   //virtual int request_curr_XY(BYTE addr) = 0;
-	   virtual int request_curr_XY(BYTE addr, BYTE* buf, int* idx) = 0;
+	   virtual int request_curr_XY(BYTE addr, BYTE* buf, int* idx, int *exp_response_len, bool* exp_response_regular) = 0;
 
 	   //virtual int accept_response_curr_XY(BYTE addr) =  0;
 	   virtual int accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx) =  0;

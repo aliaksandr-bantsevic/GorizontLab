@@ -23,12 +23,18 @@ __fastcall TForm_General::TForm_General(TComponent* Owner) : TForm(Owner)
 //---------------------GLOBALS-----------------------------------------------
 
 TGLSystem* GLSystem;
+TMainMonitorThread*  MainMonitorThread;
+
 TDateTime g_global_second_timer = 0.;
+TDateTime g_monitor_second_timer = Now();
+
 WideString g_ws_msg;
 int g_global_system_mode = SYS_MODE_ADJ;
 
 TIMECAPS tc;
 UINT wTimerRes;
+
+TDateTime g_time_all_data_request = Now();
 //--------------------------------------------------------------------------
 void TForm_General::SetGeneralCaption(void)
 {
@@ -75,12 +81,14 @@ void TForm_General::DevideMainWindow(int browser_part, int data_part)
 
 void __fastcall TForm_General::Timer_General_1sTimer(TObject* Sender)
 {
-    //Show Current time
-    StatusBar->Panels->Items[0]->Text = GetCurrentTimeStr();
+    WideString smonsectime = FormatDateTime(L"yyyy-mm-dd hh:mm:ss:zzz", g_monitor_second_timer);
 
-    //Show global time
-    StatusBar->Panels->Items[1]->Text =
-        GetGlobalSecondTimerStr(&g_global_second_timer);
+	//Show Current time
+    StatusBar->Panels->Items[0]->Text = smonsectime;//GetCurrentTimeStr();
+
+	//Show global time
+	StatusBar->Panels->Items[1]->Text =
+		GetGlobalSecondTimerStr(&g_global_second_timer);
 }
 //---------------------------------------------------------------------------
 
@@ -88,7 +96,9 @@ void TForm_General::InitApplication(void)
 {
     // FMaincaptionPointer& = Form_General->Caption;
 
-    GLSystem = new TGLSystem(TreeView_Browser, XMLDocument_conf);
+	GLSystem = new TGLSystem(TreeView_Browser, XMLDocument_conf);
+	MainMonitorThread = new TMainMonitorThread(false , GLSystem);
+
     GLSystem->set_console(ListBox_console);
     GLSystem->console(L"Приложение", L"Инициализация ...");
 
@@ -100,8 +110,8 @@ void TForm_General::InitApplication(void)
     GLSystem->LoadConf();
 
     //WideString cap;
-    //TCHAR* cp = GLSystem->GetConfPath();
-    //cap.printf(L"GorizontLab [%s]", cp);
+	//TCHAR* cp = GLSystem->GetConfPath();
+	//cap.printf(L"GorizontLab [%s]", cp);
     //Caption = cap;
 
     SetGeneralCaption();
@@ -111,8 +121,11 @@ void TForm_General::InitApplication(void)
 
 void __fastcall TForm_General::Timer_Init_appTimer(TObject* Sender)
 {
-    Timer_Init_app->Enabled = false;
-    InitApplication();
+	Timer_Init_app->Enabled = false;
+	InitApplication();
+	GLSystem->view_ports_status(ListView_ports);
+	GLSystem->view_sensors_status(ListView_sensors);
+	GLSystem->view_data_status(ListView_data);
 }
 //---------------------------------------------------------------------------
 
@@ -235,6 +248,11 @@ void __fastcall TForm_General::N_AddSensorClick(TObject* Sender)
 
 void __fastcall TForm_General::ToolButton4Click(TObject* Sender)
 {
+   //GLSystem->view_ports_status(ListView_ports);
+   //GLSystem->view_sensors_status(ListView_sensors);
+   GLSystem->view_data_status(ListView_data);
+
+return;
 
 TGLPort* pr = GLSystem->GetCurPr();
 
@@ -277,7 +295,14 @@ TGLPort* pr = GLSystem->GetCurPr();
 
 void __fastcall TForm_General::ToolButton3Click(TObject* Sender)
 {
-    GLSystem->open_DB();
+
+	//GLSystem->update_view_ports_status();
+	//GLSystem->update_view_sensors_status();
+
+	MainMonitorThread->resume();
+	return;
+
+	GLSystem->open_DB();
 
     TGLSensor* sn = GLSystem->get_cur_sensor();
 
@@ -444,4 +469,5 @@ void __fastcall TForm_General::TreeView_BrowserMouseDown(TObject *Sender, TMouse
 }
 
 //---------------------------------------------------------------------------
+
 

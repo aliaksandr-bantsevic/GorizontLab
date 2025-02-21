@@ -6,6 +6,8 @@
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
+
+
 TGLSensor::TGLSensor()
 {
 	 name = L"New Sensor";
@@ -25,11 +27,16 @@ TGLSensor::TGLSensor(WideString nm, TTreeNode* nd, int nn)
 	addr = 1;
 
 	type = SENSOR_TYPE_IND3_IND3;
+	//type = SENSOR_TYPE_IND3_AND3;
+
 	protocol = NULL;
 	uid = 0;
 	on = false;
 
-    set_sensor(0);
+	set_sensor();
+	memset(&sn_state, 0, sizeof(sn_state));
+	list_item = NULL;
+
 }
 
 TGLSensor::~TGLSensor()
@@ -89,7 +96,7 @@ int TGLSensor::ReDraw(TTreeNode* n, int plnum, int prnum, int snnum)
 	return 0;
 }
 
-void TGLSensor::set_sensor(int type)
+void TGLSensor::set_sensor()
 {
 	 if (type == SENSOR_TYPE_IND3_IND3)
 	 {
@@ -97,7 +104,7 @@ void TGLSensor::set_sensor(int type)
 	 }
 	 else if (type == SENSOR_TYPE_IND3_AND3)
 	 {
-		//protocol = new TProtocol_and3();
+		protocol = new TProtocol_and3();
 	 }
 	 else if (type == SENSOR_TYPE_IND3_ASIN)
 	 {
@@ -144,9 +151,13 @@ int TGLSensor::request_curr_XY(BYTE** buf, int** len)
 */
 
 //external buf
-int TGLSensor::request_curr_XY(BYTE* buf, int* len)
+int TGLSensor::request_curr_XY(BYTE* buf, int* len, int *exp_response_len, bool* exp_response_regular)
 {
-	 if (protocol->request_curr_XY(addr, buf, len) == 0)
+	//expectedf response len is regular 22 bytes
+	//*exp_response_len = 22;
+	//*exp_response_regular = true;
+
+	 if (protocol->request_curr_XY(addr, buf, len, exp_response_len, exp_response_regular) == 0)
 	 {
 		 return 0;
 	 }
@@ -178,8 +189,8 @@ int TGLSensor::accept_response_curr_XY(BYTE* buf, int* idx)
 {
 	 if (protocol->accept_response_curr_XY(addr, buf, idx) ==  0)
 	 {
-		 raw_X;// = protocol->get_raw_X();
-		 raw_Y;// = protocol->get_raw_Y();
+		 //raw_X;// = protocol->get_raw_X();
+		 //raw_Y;// = protocol->get_raw_Y();
 
 		 return 0;
 	 }
@@ -296,4 +307,52 @@ void TGLSensor::set_name(TCHAR* nm)
 TCHAR* TGLSensor::get_name(void)
 {
 	return name.c_bstr();
+}
+
+void TGLSensor::reset(void)
+{
+	 raw_X = DATA_LOST_DBL_CONSTANT;
+	 raw_Y = DATA_LOST_DBL_CONSTANT;
+}
+
+void TGLSensor::update(TDateTime timestamp)
+{
+	 for (auto dtst : data_stream_list)
+	 {
+		 dtst->update(timestamp);
+	 }
+}
+
+sns_st* TGLSensor::get_sn_state(void)
+{
+	return &sn_state;
+}
+
+TCHAR* TGLSensor::get_str_ID(void)
+{
+	WideString s;
+	s.printf(L"%d.%d.%d", plnum, prnum, num);
+	return s.c_bstr();
+}
+
+void TGLSensor::set_list_item( TListItem *it)
+{
+	list_item = it;
+}
+
+TListItem * TGLSensor::get_list_item(void)
+{
+	return list_item;
+}
+
+
+void TGLSensor::data_stream_setup(void)
+{
+	data_stream_list.clear();
+
+	TDataStream_IND3* ds = new TDataStream_IND3(name.c_bstr(), L"chan_X", mark.c_bstr(), &raw_X, &uid, L"Угл. сек.");
+	data_stream_list.push_back(ds);
+	ds = new TDataStream_IND3(name.c_bstr(), L"chan_Y", mark.c_bstr(), &raw_Y, &uid, L"Угл. сек.");
+	data_stream_list.push_back(ds);
+
 }

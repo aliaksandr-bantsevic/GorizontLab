@@ -3,7 +3,7 @@
 #pragma hdrstop
 
 #include "Protocol.h"
-#include "Protocol_and3.h"
+#include "Protocol_AND3.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
@@ -12,9 +12,13 @@ void TProtocol_and3::setProtocol(void)
    protocol_type = PROTOCOL_TYPE_AND3;
 }
 
-int TProtocol_and3::request_curr_XY(BYTE addr)
+int TProtocol_and3::request_curr_XY(BYTE addr, BYTE* buf, int* idx, int *exp_response_len, bool* exp_response_regular)
 {
-   return RequestMeasureResult(addr, buftx, &tx_idx);
+	//expectedf response len is regular 22 bytes
+	*exp_response_len = 22;
+	*exp_response_regular = true;
+
+   return RequestMeasureResult(addr, buf, idx);
 }
 
 int  TProtocol_and3::RequestMeasureResult(unsigned char addr, unsigned char* buf, int* len)
@@ -27,22 +31,22 @@ int  TProtocol_and3::RequestMeasureResult(unsigned char addr, unsigned char* buf
 	buf[idx] = AND3_DAT1_GETALL; idx++;
 	buf[idx] = AND3_DAT2_GETALL; idx++;
 
-	*((WORD*)(buf+2+2)) = CRC16CCITT(2+2,buf);
+	*((WORD*)(buf+2+2)) = CRC16CCITT(2+2, buf);
 
 	*len = AND3_LEN_CMD;
 
 	return 0;
 }
 
-int TProtocol_and3::accept_response_curr_XY(BYTE addr)
+int TProtocol_and3::accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx)
 {
-	return AcceptSensorMeasVal(addr, bufrx, &raw_X, &raw_Y);
+	return AcceptSensorMeasVal(addr, buf, idx);
 }
 
-int TProtocol_and3::AcceptSensorMeasVal(BYTE addr, BYTE* buf, double* x, double* y)
+int TProtocol_and3::AcceptSensorMeasVal(BYTE addr, BYTE* buf, int* idx)
 {
 
-	if (CheckPacket(addr, bufrx, &rx_idx) != 0)
+	if (CheckPacket(addr, buf, idx) != 0)
 	{
 		return -1; //bad packet
 	}
@@ -52,8 +56,8 @@ int TProtocol_and3::AcceptSensorMeasVal(BYTE addr, BYTE* buf, double* x, double*
 
 	 if (res->sw.fdr)
 	 {
-		  *x= (double) res->X;
-		  *y= (double) res->Y;
+		  *raw_X = (double) res->X;
+		  *raw_Y = (double) res->Y;
 	 }
 	 else
 	 {
@@ -68,9 +72,16 @@ int TProtocol_and3::AcceptSensorMeasVal(BYTE addr, BYTE* buf, double* x, double*
 
 int TProtocol_and3::CheckPacket(unsigned char addr, unsigned char* buf, int* len)
 {
+	BYTE bb[100];
+
+	memcpy(bb, buf, 100);
+
 	if (buf[0] != addr) return -1; //wrong address
 
-	if(*((WORD*)(buf+2+*len))!=CRC16CCITT((unsigned short)(2+*len),buf)) return -2; //wrong crc
+	WORD crc16 = *(WORD*)(buf+(*len)-2);
+	WORD crc16_rc = CRC16CCITT((unsigned short)((*len)-2),buf) ;
+
+	if(*((WORD*)(buf+(*len)-2))!=CRC16CCITT((unsigned short)((*len)-2),buf)) return -2; //wrong crc
 
 	return 0;
 }

@@ -42,7 +42,7 @@ extern WORD Calc_CRC(WORD start, WORD stop, int n,BYTE *b);
 extern WORD Calc_CRC16(int n,BYTE *b);
 extern WORD Calc_CITT16(int n,BYTE *b);
 extern WORD Calc_CSum(int n,BYTE *b);
-extern WORD CRC16CCITT(WORD n,BYTE *b);
+extern WORD CRC16CCITT(WORD n, BYTE *b);
 
 extern int CreateTextFile_UTF16LEBOM (TCHAR* pszFilePath);
 extern int ConvertTextFile_UTF16LEBOM (TCHAR* pszFilePath);

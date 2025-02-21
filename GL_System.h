@@ -70,6 +70,9 @@ public:
 	WideString mark;
 
 	TTreeView* tree;
+	TListView* ports_list;
+	TListView* sensors_list;
+    TListView* data_list;
 
 
 public:
@@ -107,7 +110,15 @@ public:
 	int bbf_save_sensor_data_s(TDateTime t, TGLSensor* sn);
 	int bbf_store_sensor_data(TDateTime t);
 	std::list<dt_sensor_data_record_s> bbf_read_sensor_data_s(TGLSensor* sn, TDateTime t1, TDateTime t2);
-    TGLPort* GetCurPr(void);
+	TGLPort* GetCurPr(void);
+	void cycle(void);
+	void view_ports_status(TListView* list);
+	void update_view_ports_status();
+	void view_sensors_status(TListView* list);
+	void update_view_sensors_status();
+	void update_data(TDateTime t);
+	void view_data_status(TListView* list);
+    void update_view_data_status();
 };
 
 

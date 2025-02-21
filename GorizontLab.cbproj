@@ -136,6 +136,14 @@
             <DependentOn>DataBaseMgr.h</DependentOn>
             <BuildOrder>17</BuildOrder>
         </CppCompile>
+        <CppCompile Include="DataStream.cpp">
+            <DependentOn>DataStream.h</DependentOn>
+            <BuildOrder>22</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="DataStream_IND3.cpp">
+            <DependentOn>DataStream_IND3.h</DependentOn>
+            <BuildOrder>23</BuildOrder>
+        </CppCompile>
         <CppCompile Include="FMain.cpp">
             <Form>Form_General</Form>
             <FormType>dfm</FormType>
@@ -190,6 +198,10 @@
             <BuildOrder>1</BuildOrder>
             <PCH>true</PCH>
         </PCHCompile>
+        <CppCompile Include="MainMonitorThread.cpp">
+            <DependentOn>MainMonitorThread.h</DependentOn>
+            <BuildOrder>24</BuildOrder>
+        </CppCompile>
         <CppCompile Include="PortProcThread.cpp">
             <DependentOn>PortProcThread.h</DependentOn>
             <BuildOrder>16</BuildOrder>
@@ -202,6 +214,9 @@
             <DependentOn>Protocol_211.h</DependentOn>
             <BuildOrder>19</BuildOrder>
         </CppCompile>
+        <CppCompile Include="Protocol_AND3.cpp">
+            <BuildOrder>20</BuildOrder>
+        </CppCompile>
         <CppCompile Include="SQLite\sqlite3.c">
             <BuildOrder>18</BuildOrder>
         </CppCompile>
@@ -209,10 +224,14 @@
             <DependentOn>SysConfMgr.h</DependentOn>
             <BuildOrder>15</BuildOrder>
         </CppCompile>
-        <FormResources Include="FPlace_adjust.dfm"/>
+        <CppCompile Include="utils.cpp">
+            <DependentOn>utils.h</DependentOn>
+            <BuildOrder>21</BuildOrder>
+        </CppCompile>
         <FormResources Include="FMain.dfm"/>
-        <FormResources Include="FSensor_adjust.dfm"/>
+        <FormResources Include="FPlace_adjust.dfm"/>
         <FormResources Include="FPort_adjust.dfm"/>
+        <FormResources Include="FSensor_adjust.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

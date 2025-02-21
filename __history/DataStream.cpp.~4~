@@ -1,0 +1,22 @@
+//---------------------------------------------------------------------------
+
+#pragma hdrstop
+
+#include "DataStream.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+
+TDataStream::TDataStream()
+{
+
+}
+
+TDataStream::TDataStream(TCHAR* nm,TCHAR* psfx, TCHAR* mark, int* raw, int* uid)
+{
+
+}
+
+TDataStream::~TDataStream()
+{
+
+}

@@ -1,0 +1,20 @@
+//---------------------------------------------------------------------------
+
+#ifndef DataStream_IND3H
+#define DataStream_IND3H
+
+#include "DataStream.h"
+
+//---------------------------------------------------------------------------
+
+class TDataStream_IND3 : public TDataStream
+{
+
+	void calculate(void) override;
+
+};
+
+
+#endif
+
+

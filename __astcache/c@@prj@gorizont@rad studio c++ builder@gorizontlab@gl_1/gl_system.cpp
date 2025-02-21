@@ -13,6 +13,8 @@
 #include <System.SysUtils.hpp>
 //---------------------------------------------------------------------------
 
+extern TDateTime g_monitor_second_timer;
+
 TGLSystem::TGLSystem()
 {
    name = L"GorizontLab Monitoring System";
@@ -33,6 +35,9 @@ TGLSystem::TGLSystem(TTreeView* t, TXMLDocument* xmlDoc)
    BBFMgr = new TBBFMgr();
 
    sens_uid_max = 1;
+   ports_list = NULL;
+   sensors_list = NULL;
+   data_list = NULL;
 }
 
 TGLSystem::~TGLSystem()
@@ -1008,3 +1013,516 @@ TGLPort* TGLSystem::GetCurPr(void)
 {
 	return cur_pr;
 }
+
+void TGLSystem::cycle(void)
+{
+	for (auto itpl: place_list.m_list)
+	{
+		  for (auto itpr: itpl->port_list.m_list)
+		  {
+			 itpr->start_cycle();
+			 itpr->cycle();
+		  }
+	}
+
+	update_data(g_monitor_second_timer);
+}
+
+void TGLSystem::view_ports_status(TListView* list)
+{
+   if (ports_list)
+   {
+        return;
+   }
+
+   ports_list = list;
+
+   list->Items->Clear();
+   list->Columns->Clear();
+
+   TGLPort* pr = NULL;
+   WideString s;
+   TListColumn* col;
+   TListItem *item;
+
+   col = list->Columns->Add();
+   col->Caption = L"Порт";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"ID";
+   col->Width = 50;
+
+   col = list->Columns->Add();
+   col->Caption = L"Статус";
+   col->Width = 150;
+
+   col = list->Columns->Add();
+   col->Caption = L"Err tou";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"Err crc";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"Байт Tx";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"Байт Rx";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"T cur, ms";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"T mid, ms";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"Info";
+   col->Width = 1000;
+
+   for (auto itpl : place_list.m_list)
+   {
+
+	  for (auto itpr : itpl->port_list.m_list)
+	  {
+		  prt_st* st = itpr->get_state();
+
+		  item = list->Items->Add();
+		  itpr->set_list_item(item);
+		  item->Caption = itpr->name;
+
+		  item->SubItems->Add(itpr->get_str_ID());
+
+		  if (itpr->get_on() == false)
+		  {
+			 s = L"Отключен";
+		  }
+		  else if (itpr->get_is_open_in_cycle())
+		  {
+			 s = L"Открыт";
+		  }
+		  else
+		  {
+			s = L"Не доступен";
+		  }
+
+		  item->SubItems->Add(s);
+
+		  s.printf(L"%d", st->err_tou);
+		  item->SubItems->Add(s);
+
+		  s.printf(L"%d", st->err_crc);
+		  item->SubItems->Add(s);
+
+		  s.printf(L"%d", st->bytes_tx);
+		  item->SubItems->Add(s);
+
+		  s.printf(L"%d", st->bytes_rx);
+		  item->SubItems->Add(s);
+
+		  s.printf(L"%.2f", st->t_req);
+		  item->SubItems->Add(s);
+
+		   s.printf(L"%.2f", st->t_req_mid);
+		  item->SubItems->Add(s);
+
+		  item->SubItems->Add(itpr->get_mark());
+	  }
+
+
+   }
+}
+
+void TGLSystem::update_view_ports_status()
+{
+   if (ports_list == NULL)
+   {
+		return;
+   }
+
+   int itm_idx = 0;
+   int sub_idx = 0;
+   WideString s("");
+
+   TListView* list = ports_list;
+   TListItem *item;
+
+   for (auto itpl : place_list.m_list)
+   {
+	  for (auto itpr : itpl->port_list.m_list)
+	  {
+		  prt_st* st = itpr->get_state();
+
+		  item = itpr->get_list_item();
+
+		  if (itpr->get_on() == false)
+		  {
+			 s = L"Отключен";
+		  }
+		  else if (itpr->get_is_open_in_cycle())
+		  {
+			 s = L"Открыт";
+		  }
+		  else
+		  {
+			s = L"Не доступен";
+		  }
+
+		  sub_idx = 1;
+
+		  item->SubItems->Strings[sub_idx] = s; sub_idx++;
+
+		  s.printf(L"%d", st->err_tou);
+		  item->SubItems->Strings[sub_idx] = s; sub_idx++;
+
+		  s.printf(L"%d", st->err_crc);
+		  item->SubItems->Strings[sub_idx] = s; sub_idx++;
+
+		  s.printf(L"%d", st->bytes_tx);
+		  item->SubItems->Strings[sub_idx] = s; sub_idx++;
+
+		  s.printf(L"%d", st->bytes_rx);
+		  item->SubItems->Strings[sub_idx] = s; sub_idx++;
+
+		  s.printf(L"%.2f", st->t_req);
+		  item->SubItems->Strings[sub_idx] = s; sub_idx++;
+
+		  s.printf(L"%.2f", st->t_req_mid);
+		  item->SubItems->Strings[sub_idx] = s; sub_idx++;
+	  }
+   }
+
+}
+
+void TGLSystem::view_sensors_status(TListView* list)
+{
+   if (sensors_list)
+   {
+        return;
+   }
+
+   sensors_list = list;
+
+   list->Items->Clear();
+   list->Columns->Clear();
+
+   TGLSensor* sn = NULL;
+   WideString s;
+   TListColumn* col;
+   TListItem *item;
+
+   col = list->Columns->Add();
+   col->Caption = L"Датчик";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"ID";
+   col->Width = 50;
+
+   col = list->Columns->Add();
+   col->Caption = L"UID";
+   col->Width = 50;
+
+   col = list->Columns->Add();
+   col->Caption = L"Статус";
+   col->Width = 150;
+
+   col = list->Columns->Add();
+   col->Caption = L"Err tou";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"Err crc";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"T cur, ms";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"T mid, ms";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"Info";
+   col->Width = 1000;
+
+
+   for (auto itpl : place_list.m_list)
+   {
+
+	  for (auto itpr : itpl->port_list.m_list)
+	  {
+
+		  for (auto itsn : itpr->sensor_list.m_list)
+		  {
+			  sns_st* st = itsn->get_sn_state();
+
+			  item = list->Items->Add();
+			  itsn->set_list_item(item);
+			  item->Caption = itsn->name;
+
+			  item->SubItems->Add(itsn->get_str_ID());
+
+			  s.printf(L"%03d", itsn->get_uid());
+			  item->SubItems->Add(s);
+
+			  if (itsn->get_on() != 1)
+			  {
+				 s = L"Отключен";
+			  }
+			  else
+			  {
+				 s = L"Включен";
+			  }
+
+			  item->SubItems->Add(s);
+
+			  s.printf(L"%d", st->err_tou);
+			  item->SubItems->Add(s);
+
+			  s.printf(L"%d", st->err_crc);
+			  item->SubItems->Add(s);
+
+			  s.printf(L"%.2f", st->t_req);
+			  item->SubItems->Add(s);
+
+			   s.printf(L"%.2f", st->t_req_mid);
+			  item->SubItems->Add(s);
+
+			  item->SubItems->Add(itsn->get_mark());
+		  }
+
+	  }
+
+
+   }
+}
+
+void TGLSystem::update_view_sensors_status()
+{
+   if (sensors_list == NULL)
+   {
+		return;
+   }
+
+   int itm_idx = 0;
+   int sub_idx = 0;
+   WideString s("");
+
+   TListView* list = sensors_list;
+   TListItem *item;
+
+   for (auto itpl : place_list.m_list)
+   {
+	  for (auto itpr : itpl->port_list.m_list)
+	  {
+
+		  for (auto itsn : itpr->sensor_list.m_list)
+		  {
+			  sns_st* st = itsn->get_sn_state();
+
+			  item = itsn->get_list_item();
+
+			  sub_idx = 2;
+
+			  if (itsn->get_on() != 1)
+			  {
+				 s = L"Отключен";
+			  }
+			  else
+			  {
+				 s = L"Включен";
+			  }
+
+			  item->SubItems->Strings[sub_idx] = s; sub_idx++;
+
+			  s.printf(L"%d", st->err_tou);
+			  item->SubItems->Strings[sub_idx] = s; sub_idx++;
+
+			  s.printf(L"%d", st->err_crc);
+			  item->SubItems->Strings[sub_idx] = s; sub_idx++;
+
+			  s.printf(L"%.2f", st->t_req);
+			  item->SubItems->Strings[sub_idx] = s; sub_idx++;
+
+			  s.printf(L"%.2f", st->t_req_mid);
+			  item->SubItems->Strings[sub_idx] = s; sub_idx++;
+
+		  }
+	  }
+   }
+
+}
+
+void TGLSystem::update_data(TDateTime t)
+{
+	for (auto itpl : place_list.m_list)
+	{
+	  for (auto itpr : itpl->port_list.m_list)
+	  {
+		  for (auto itsn : itpr->sensor_list.m_list)
+		  {
+			  for (auto itds : itsn->data_stream_list)
+			  {
+					if (itpr->get_on()&&itsn->get_on())
+					{
+						itds->update(t);
+					}
+			  }
+          }
+	  }
+	}
+
+}
+
+void TGLSystem::view_data_status(TListView* list)
+{
+   if (data_list)
+   {
+		return;
+   }
+
+   data_list = list;
+
+   list->Items->Clear();
+   list->Columns->Clear();
+
+   TGLSensor* sn = NULL;
+   WideString s;
+   TListColumn* col;
+   TListItem *item;
+
+   col = list->Columns->Add();
+   col->Caption = L"Данные";
+   col->Width = 200;
+
+   col = list->Columns->Add();
+   col->Caption = L"Статус";
+   col->Width = 150;
+
+   col = list->Columns->Add();
+   col->Caption = L"raw data";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"calc data";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"Единицы";
+   col->Width = 100;
+
+   col = list->Columns->Add();
+   col->Caption = L"Timestamp";
+   col->Width = 200;
+
+   col = list->Columns->Add();
+   col->Caption = L"Info";
+   col->Width = 1000;
+
+
+   for (auto itpl : place_list.m_list)
+   {
+	  for (auto itpr : itpl->port_list.m_list)
+	  {
+		  for (auto itsn : itpr->sensor_list.m_list)
+		  {
+
+			  itsn->data_stream_setup();
+
+			  for (auto itds : itsn->data_stream_list)
+			  {
+				  item = list->Items->Add();
+				  itds->item = item;
+				  item->Caption = itds->name;
+
+				  if (itsn->get_on()&&itpr->get_on())
+				  {
+						s.printf(L"Run");
+				  }
+				  else
+				  {
+					   s.printf(L"Suspended");
+				  }
+
+				  item->SubItems->Add(s);
+
+				  s.printf(L"%.02f", *itds->raw);
+				  item->SubItems->Add(s);
+
+				  s.printf(L"%.02f", itds->val);
+				  item->SubItems->Add(s);
+
+				  item->SubItems->Add(itds->units);
+
+				  item->SubItems->Add(L"");
+
+				  item->SubItems->Add(itds->mark);
+			  }
+		  }
+	  }
+   }
+}
+
+void TGLSystem::update_view_data_status()
+{
+   if (data_list == NULL)
+   {
+		return;
+   }
+
+   int itm_idx = 0;
+   int sub_idx = 0;
+   WideString s("");
+
+   TListView* list = data_list;
+
+   for (auto itpl : place_list.m_list)
+   {
+	  for (auto itpr : itpl->port_list.m_list)
+	  {
+		  for (auto itsn : itpr->sensor_list.m_list)
+		  {
+				for (auto itds : itsn->data_stream_list)
+				{
+
+				  int idx = 0;
+				  TListItem *item = itds->item;
+
+
+				  if (itsn->get_on()&&itpr->get_on())
+				  {
+						s.printf(L"Run");
+				  }
+				  else
+				  {
+					   s.printf(L"Suspended");
+				  }
+
+                  item->SubItems->Strings[idx] = s; idx++;
+
+				  s.printf(L"%.02f", *itds->raw);
+				  item->SubItems->Strings[idx] = s; idx++;
+
+				  s.printf(L"%.02f", itds->val);
+				  item->SubItems->Strings[idx] = s; idx++;
+
+				  item->SubItems->Strings[idx] = itds->units; idx++;
+
+				  s = FormatDateTime(L"yyyy-mm-dd hh:mm:ss:zzz",itds->last_update_timestamp);
+                  item->SubItems->Strings[idx] = s; idx++;
+
+				}
+
+		  }
+	  }
+   }
+
+}
+

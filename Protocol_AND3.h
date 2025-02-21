@@ -5,6 +5,7 @@
 //---------------------------------------------------------------------------
 
 #include "defs.h"
+#include "utils.h"
 
 #define AND3_CMD_GETALL 		201
 #define AND3_LEN_GETALL 		18
@@ -85,13 +86,13 @@ and3_MODE md;
 class TProtocol_and3 : public TProtocol
 {
 	void setProtocol(void) override;
-	int request_curr_XY(BYTE addr) override;
-	int accept_response_curr_XY(BYTE addr) override;
+	int request_curr_XY(BYTE addr, BYTE* buf, int* idx, int *exp_response_len, bool* exp_response_regular) override;
+	int accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx) override;
 
 	private:
 
 	int RequestMeasureResult(unsigned char addr, unsigned char* buf, int* len);
-	int AcceptSensorMeasVal(unsigned char addr, BYTE* buf,double* x, double* y);
+	int AcceptSensorMeasVal(unsigned char addr, BYTE* buf, int* idx);
 	int CheckPacket(unsigned char addr, unsigned char* buf, int* len);
 
 };

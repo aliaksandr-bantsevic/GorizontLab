@@ -34,6 +34,8 @@ extern bool b_MessageConfirmParamsetShow;
 #include "utils.h"
 #include "minwindef.h"
 #include "GL_Time_utils.h"
+#include <System.SysUtils.hpp>
+#include <iostream>
 
 /*
 	For debug development mode

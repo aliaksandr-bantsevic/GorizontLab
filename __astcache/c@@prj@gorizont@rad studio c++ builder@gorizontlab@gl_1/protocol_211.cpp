@@ -223,8 +223,13 @@ int TProtocol_211::request_curr_XY(BYTE addr)
 
 
 //внешний буффер
-int TProtocol_211::request_curr_XY(BYTE addr, BYTE* buf, int* idx)
+int TProtocol_211::request_curr_XY(BYTE addr, BYTE* buf, int* idx, int *exp_response_len, bool* exp_response_regular)
 {
+   //expectedf response len is тще regular 1 bytes
+	*exp_response_len = 12;
+	*exp_response_regular = false;
+
+
 	RequestMainMeterPacket(addr, MEAS_VAL, buf, idx);
 
 	return 0;

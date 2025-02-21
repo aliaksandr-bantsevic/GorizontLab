@@ -14,6 +14,8 @@ class TGLSensor;
 #define PORT_TYPE_COM      0
 #define PORT_TYPE_TCP      1
 
+#define OPERATION_ATTEMPS_THRESHOLD_DEFAULT     3
+
 typedef struct {
 
 	DWORD delay_cmd_exec;
@@ -22,6 +24,21 @@ typedef struct {
 	DWORD delay_default;
 
 } delays;
+
+typedef struct {
+
+	int err_tou;
+	int err_crc;
+	int err_wrt;
+	long bytes_tx;
+	long bytes_rx;
+	long rep;
+	double t_req;
+	double t_req_mid;
+	double t_req_total;
+	long total_cnt;
+
+} prt_st;
 
 class TGLPort
 {
@@ -72,7 +89,14 @@ public:
 	int get_on(void);
 	void set_type(int t);
 	int get_type(void);
-    void set_com(void);
+	void set_com(void);
+	prt_st* get_state(void);
+	void set_list_item( TListItem *it);
+	TCHAR* get_str_ID(void);
+	void set_is_open_in_cycle(bool op);
+	bool get_is_open_in_cycle(void);
+	//TCHAR* get_mark(void);
+    TListItem* get_list_item(void);
 
 private:
 
@@ -94,6 +118,11 @@ private:
 	int txidx;
 	BYTE bufrx[8448];
 	int rxidx;
+	int operation_attempts_tgreshold;
+	prt_st port_state;
+	TListItem* list_item;
+	bool is_open_in_cycle;
+
 
 };
 

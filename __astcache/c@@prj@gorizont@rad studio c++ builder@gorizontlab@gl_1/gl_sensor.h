@@ -7,7 +7,12 @@
 #include "GL_List.h"
 
 #include "Protocol_211.h"
-//#include "Protocol_and3.h"
+#include "Protocol_AND3.h"
+
+#include "DataStream_IND3.h"
+
+#include <list>
+
 //---------------------------------------------------------------------------
 #define SENSOR_TYPE_IND3_IND3       0
 #define SENSOR_TYPE_IND3_AND3       1
@@ -23,6 +28,21 @@ double x;
 double y;
 
 } dt_sensor_data_record_s;
+
+typedef struct {
+
+	int err_tou;
+	int err_crc;
+	int err_wrt;
+	long bytes_tx;
+	long bytes_rx;
+	long rep;
+	double t_req;
+	double t_req_mid;
+	double t_req_total;
+	long total_cnt;
+
+} sns_st;
 
 class TGLSensor
 {
@@ -76,7 +96,7 @@ private:
 
 	TProtocol* protocol;
 
-	void set_sensor(int type);
+	void set_sensor();
 
 	int type;
 
@@ -89,11 +109,18 @@ private:
 
 	int uid;
 	bool on;
+	sns_st sn_state;
+
+
+	//TDataStream* ss;
+    TListItem* list_item;
 
 public:
 
+	std::list<TDataStream*> data_stream_list;
+
 	//int request_curr_XY(BYTE** buf, int** len);
-	int request_curr_XY(BYTE* buf, int* len);
+	int request_curr_XY(BYTE* buf, int* len, int *exp_response_len, bool* exp_response_regular);
 
 	//int accept_response_curr_XY();
 	int accept_response_curr_XY(BYTE* buf, int* idx);
@@ -110,8 +137,14 @@ public:
 	void set_addr(BYTE a);
 	BYTE get_addr(void);
 	void set_name(TCHAR* nm);
-    TCHAR* get_name(void);
-
+	TCHAR* get_name(void);
+	void reset(void);
+	void update(TDateTime timestamp);
+	sns_st* get_sn_state(void);
+	TCHAR* get_str_ID(void);
+	void set_list_item( TListItem *it);
+	TListItem * get_list_item(void);
+    void data_stream_setup(void);
 };
 
 

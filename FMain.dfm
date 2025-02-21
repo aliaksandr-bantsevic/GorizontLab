@@ -157,9 +157,62 @@ object Form_General: TForm_General
         Top = 1
         Width = 721
         Height = 542
+        ActivePage = TabSheet_data
         Align = alClient
         TabOrder = 0
         ExplicitWidth = 717
+        object TabSheet_ports: TTabSheet
+          Caption = #1055#1086#1088#1090#1099
+          object ListView_ports: TListView
+            Left = 0
+            Top = 0
+            Width = 713
+            Height = 512
+            Align = alClient
+            Columns = <>
+            GridLines = True
+            TabOrder = 0
+            ViewStyle = vsReport
+            ExplicitWidth = 709
+          end
+        end
+        object TabSheet_sensors: TTabSheet
+          Caption = #1044#1072#1090#1095#1080#1082#1080
+          ImageIndex = 1
+          object ListView_sensors: TListView
+            Left = 0
+            Top = 0
+            Width = 713
+            Height = 512
+            Align = alClient
+            Columns = <>
+            GridLines = True
+            TabOrder = 0
+            ViewStyle = vsReport
+            ExplicitLeft = -4
+            ExplicitWidth = 250
+            ExplicitHeight = 150
+          end
+        end
+        object TabSheet_data: TTabSheet
+          Caption = #1044#1072#1085#1085#1099#1077
+          ImageIndex = 2
+          object ListView_data: TListView
+            Left = 0
+            Top = 0
+            Width = 713
+            Height = 512
+            Align = alClient
+            Columns = <>
+            GridLines = True
+            TabOrder = 0
+            ViewStyle = vsReport
+            ExplicitLeft = -4
+            ExplicitTop = -8
+            ExplicitWidth = 250
+            ExplicitHeight = 150
+          end
+        end
       end
     end
     object Panel_Console: TPanel

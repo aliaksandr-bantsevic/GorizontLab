@@ -1,0 +1,16 @@
+//---------------------------------------------------------------------------
+
+#ifndef MainMonitorThreadH
+#define MainMonitorThreadH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+//---------------------------------------------------------------------------
+class TMainMonitorThread : public TThread
+{
+protected:
+	void __fastcall Execute();
+public:
+	__fastcall TMainMonitorThread(bool CreateSuspended);
+};
+//---------------------------------------------------------------------------
+#endif

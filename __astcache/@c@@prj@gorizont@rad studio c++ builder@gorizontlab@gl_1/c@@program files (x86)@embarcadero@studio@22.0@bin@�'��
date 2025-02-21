@@ -1,0 +1,13 @@
+//---------------------------------------------------------------------------
+
+#pragma hdrstop
+
+#include "DataStream_IND3.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+
+
+void TDataStream_IND3::calculate(void)
+{
+    val = *raw;
+}

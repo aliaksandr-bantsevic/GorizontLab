@@ -29,6 +29,7 @@
 #include "FPort_adjust.h"
 #include "FPlace_adjust.h"
 #include "FSensor_adjust.h"
+#include "MainMonitorThread.h"
 
 #define SYS_MODE_ADJ 0
 #define SYS_MODE_RUN 1
@@ -78,6 +79,12 @@ __published:	// IDE-managed Components
 	TOpenDialog *OpenDialog;
 	TTabSheet *TabSheet_console;
 	TListBox *ListBox_console;
+	TTabSheet *TabSheet_ports;
+	TTabSheet *TabSheet_sensors;
+	TTabSheet *TabSheet_data;
+	TListView *ListView_ports;
+	TListView *ListView_sensors;
+	TListView *ListView_data;
 	void __fastcall Timer_General_1sTimer(TObject *Sender);
 	void __fastcall Timer_Init_appTimer(TObject *Sender);
 	void __fastcall ToolButton1Click(TObject *Sender);

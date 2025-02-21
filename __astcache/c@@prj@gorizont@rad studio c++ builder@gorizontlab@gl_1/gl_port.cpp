@@ -7,6 +7,9 @@
 
 #include "GL_Sensor.h"
 //---------------------------------------------------------------------------
+
+extern TDateTime g_time_all_data_request;
+
 TGLPort::TGLPort()
 {
 	 name = L"New Port";
@@ -27,7 +30,7 @@ TGLPort::TGLPort(WideString nm, TTreeNode* nd, int nn, int comtype)
 	delay_set.delay_debug = 100;
 	delay_set.delay_default = 10;
 	delay_set.delay_addr_change = 20;
-	delay_set.delay_cmd_exec = 20;
+	delay_set.delay_cmd_exec = 10;
 
 	com = new TCOMPort(115200);
 
@@ -37,6 +40,10 @@ TGLPort::TGLPort(WideString nm, TTreeNode* nd, int nn, int comtype)
 	sys_port_num = 0;
 	baud = 115200;
 	type = PORT_TYPE_COM;
+
+	operation_attempts_tgreshold = OPERATION_ATTEMPS_THRESHOLD_DEFAULT;
+	memset(&port_state, 0, sizeof(port_state));
+	set_is_open_in_cycle(false);
 }
 
 TGLPort::~TGLPort()
@@ -178,36 +185,113 @@ void TGLPort::start_cycle ()
  //extended buffers
  int TGLPort::transact_request_XY_ex(TGLSensor* sn)
  {
+      com->SetTimeouts(10, 10);
+
+	  TDateTime t1 = Now();
+	  TDateTime t2 = Now();
+
+	  int res = 0;
+	  sns_st* sn_state = sn->get_sn_state();
+
+	  if (!sn->get_on())
+	  {
+		return -1;// sensor is off
+	  }
+
 	  txidx = 0; rxidx = 0;
 	  memset(buftx, 0, 8448); memset(buftx, 0, 8448);
+	  sn->reset();
 
-	  if (sn->request_curr_XY(buftx, &txidx) == 0)
+	  int ires = 0;
+	  int bres = false;
+
+	  int  exp_response_len = 0;
+	  bool exp_response_regular = false;
+
+	  if (sn->request_curr_XY(buftx, &txidx, &exp_response_len, &exp_response_regular) == 0)
 	  {
-		 com->Purge();
+		com->Purge();
 
-		 if (!com->PortNWrite((DWORD)txidx, buftx))
-		 {
-			 return -1;
-         }
+		for (int i = 0; i < operation_attempts_tgreshold; i++)
+		{
+			bres = com->PortNWrite((DWORD)txidx, buftx);
+
+			if ( bres == true)
+			{
+				break;
+			}
+		}
 	  }
+
+	  if (bres != true)
+	  {
+		port_state.err_wrt++;
+		res = -1;   //port write err
+	  }
+
+	  port_state.bytes_tx += txidx;
 
 	  Sleep(delay_set.delay_cmd_exec);
 
-	  int i = 1;
-
-	  if (com->PortNRead(1, bufrx))
+      if (res == 0)
 	  {
-		  rxidx++;
-
-		  while(com->PortNRead(1, &bufrx[i]))
+          for (int i = 0; i < operation_attempts_tgreshold; i++)
 		  {
-			  rxidx++; i++;
+			 ires = com->PortNRead(exp_response_len, bufrx);
+
+			 if (ires != 0)
+			 {
+				 break;
+			 }
           }
+      }
+
+	  if (ires == 0)
+	  {
+		  port_state.err_tou++;
+		  sn_state->err_tou++;
+		  res = -2;//tout read
+	  }
+	  else
+	  {
+          //rxidx = ires;
+      }
+
+	  if (res == 0)
+	  {
+			rxidx += exp_response_len;
+			int i = exp_response_len;
+
+			if (exp_response_regular == false)
+			{
+				 while(com->PortNRead(1, &bufrx[i]))
+				 {
+					rxidx++; i++;
+				 }
+			}
+
+			port_state.bytes_rx += rxidx;
+
+			if (sn->accept_response_curr_XY(bufrx, &rxidx) != 0)
+			{
+				  port_state.err_crc++;
+				  sn_state->err_crc++;
+
+				  res = -3; //crc err
+			}
+
 	  }
 
-	  sn->accept_response_curr_XY(bufrx, &rxidx);
+	  sn->update(g_time_all_data_request);
 
-	  return 0;
+	  t2 = Now();
+
+	  sn_state->total_cnt ++;
+	  sn_state->t_req = ((double)t2 - (double)t1)/T_ONE_MSEC;
+	  sn_state->t_req_total  += ((double)t2 - (double)t1)/T_ONE_MSEC;
+	  sn_state->t_req_mid  = sn_state->t_req_total / (double)sn_state->total_cnt;
+
+	  return res;
  }
 
 
@@ -218,6 +302,14 @@ bool TGLPort::is_suspended ()
 
 int TGLPort::cycle ()
 {
+	TDateTime t1 = Now();
+	TDateTime t2 = Now();
+
+	if (on == false)
+	{
+		return -1;//port is off
+	}
+
 	while (is_suspended())
 	{
 		Sleep(delay_set.delay_default);
@@ -228,13 +320,28 @@ int TGLPort::cycle ()
 	if (com->Open(true, sys_port_num) == false)
 	{
 		Sleep(delay_set.delay_default);
+		set_is_open_in_cycle(false);
 	}
 	else
 	{
+
+		//t2 = Now();
+		set_is_open_in_cycle(true);
+
 		for (auto itsn : sensor_list.m_list)
 		{
+
 			transact_request_XY_ex(itsn);
+
+			//Sleep(10);
 		}
+
+		t2 = Now();
+
+		port_state.total_cnt ++;
+		port_state.t_req = ((double)t2 - (double)t1)/T_ONE_MSEC;
+		port_state.t_req_total  += ((double)t2 - (double)t1)/T_ONE_MSEC;
+		port_state.t_req_mid  = port_state.t_req_total / (double)port_state.total_cnt;
 	}
 
 	syspend_cycle ();
@@ -310,4 +417,43 @@ int TGLPort::get_type(void)
 void TGLPort::set_com(void)
 {
 	com->set_baud(baud);
+}
+
+prt_st* TGLPort::get_state(void)
+{
+	return &port_state;
+}
+
+void TGLPort::set_list_item( TListItem *it)
+{
+	list_item = it;
+}
+
+TCHAR* TGLPort::get_str_ID(void)
+{
+	WideString s;
+	s.printf(L"%d.%d", plnum, num);
+	return s.c_bstr();
+}
+
+void TGLPort::set_is_open_in_cycle(bool op)
+{
+	is_open_in_cycle = op;
+}
+
+bool TGLPort::get_is_open_in_cycle(void)
+{
+	return  is_open_in_cycle;
+}
+
+/*
+TCHAR* TGLPort::get_mark(void)
+{
+	return mark.c_bstr();
+}
+*/
+
+TListItem* TGLPort::get_list_item(void)
+{
+	return list_item;
 }

@@ -2,6 +2,46 @@
 
 #pragma hdrstop
 
-#include "GL_Place.h"
+#include "DataStream.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
+
+TDataStream::TDataStream()
+{
+
+}
+
+TDataStream::TDataStream(TCHAR* nm,TCHAR* psfx, TCHAR* mark, int* raw, int* uid)
+{
+  name.printf(L"%s_s_%03d", nm, psfx, uid);
+  uid = uid;
+  mark = mark;
+  raw = raw;
+}
+
+TDataStream::~TDataStream()
+{
+
+}
+
+void TDataStream::update(TDateTime timestamp)
+{
+   last_update_timestamp = timestamp;
+
+   if (*raw == DATA_LOST_DBL_CONSTANT)
+   {
+		if (data_lost_cnt < data_lost_threshold)
+		{
+		   data_lost_cnt++;
+		}
+		else
+		{
+			val = DATA_LOST_DBL_CONSTANT;
+        }
+   }
+   else
+   {
+	   data_lost_cnt = 0;
+	   calculate();
+   }
+}

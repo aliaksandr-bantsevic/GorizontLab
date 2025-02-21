@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -22,7 +22,7 @@ TCOMPort::TCOMPort()
 	InitDCB(&dcb);
 	TmOpen=Now();TmClose=TmOpen;
 
-	SetTimeouts(100, 100);
+	SetTimeouts(5, 5);
 
 	st.baud=115200;
 }
@@ -66,9 +66,9 @@ bool TCOMPort::SetTimeouts(DWORD rtime,DWORD wtime)
   if(!st.on) { st.res=false;st.run=false;return false;}
   to.ReadIntervalTimeout=0;
   to.ReadTotalTimeoutMultiplier=0;
-  to.ReadTotalTimeoutConstant=rtime;
+  to.ReadTotalTimeoutConstant = rtime;
   to.WriteTotalTimeoutMultiplier=0;
-  to.WriteTotalTimeoutConstant=wtime;
+  to.WriteTotalTimeoutConstant = wtime;
 
   st.res=SetCommTimeouts(h,&(to));
 

@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #pragma hdrstop
 
@@ -124,7 +124,7 @@ WORD Calc_CITT16(int n,BYTE *b) { return Calc_CRC(0xffff,0,n,b);}
 WORD Calc_CSum(int n,BYTE *b) { WORD res;int i;res=0;for(i=0;i<n;i++) res+=b[i];return res;}
 
 //-----------------------------------------------------------------------------
-WORD CRC16CCITT(WORD n,BYTE *b) // Calc_CITT16
+WORD CRC16CCITT(WORD n, BYTE *b) // Calc_CITT16
 {
   WORD crc=0xFFFF;
   while (n--) crc=(crc<<8)^crc_16_table[(crc>>8)^*b++];

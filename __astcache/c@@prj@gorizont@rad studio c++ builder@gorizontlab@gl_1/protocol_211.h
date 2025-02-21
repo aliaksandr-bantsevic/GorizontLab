@@ -79,7 +79,7 @@ public:
 	void setProtocol(void) override;
 
 	//int request_curr_XY(BYTE addr) override;
-	int request_curr_XY(BYTE addr, BYTE* buf, int* idx)  override;
+	int request_curr_XY(BYTE addr, BYTE* buf, int* idx, int *exp_response_len, bool* exp_response_regular)  override;
 
 	//int accept_response_curr_XY(BYTE addr) override;
     int accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx) override;

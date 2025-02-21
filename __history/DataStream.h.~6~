@@ -1,0 +1,49 @@
+//---------------------------------------------------------------------------
+
+#ifndef DataStreamH
+#define DataStreamH
+//---------------------------------------------------------------------------
+
+#include "defs.h"
+//#include "GL_Sensor.h"
+
+#include <list>
+
+typedef struct {
+
+	WideString name;
+	double val;
+
+} calc_param;
+
+class TDataStream
+{
+
+public:
+
+	TDataStream();
+	TDataStream(TCHAR* nm,TCHAR* psfx, TCHAR* mark, int* raw);
+	~TDataStream();
+
+	virtual void calculate(void) = 0;
+
+protected:
+
+	WideString name;
+	WideString mark;
+	//TGLSensor* sensor;
+	double* raw;
+	double* val;
+	int data_lost_threshold;
+	int data_lost_cnt;
+	std::list<calc_param> calc_param_list;
+
+public:
+
+	void view(TListView* list);
+    void update(void);
+
+};
+
+
+#endif
