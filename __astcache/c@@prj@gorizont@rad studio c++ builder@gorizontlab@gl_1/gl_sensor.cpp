@@ -26,8 +26,9 @@ TGLSensor::TGLSensor(WideString nm, TTreeNode* nd, int nn)
 
 	addr = 1;
 
-	type = SENSOR_TYPE_IND3_IND3;
+	//type = SENSOR_TYPE_IND3_IND3;
 	//type = SENSOR_TYPE_IND3_AND3;
+	type = SENSOR_TYPE_IND3_RTU;
 
 	protocol = NULL;
 	uid = 0;
@@ -36,6 +37,11 @@ TGLSensor::TGLSensor(WideString nm, TTreeNode* nd, int nn)
 	set_sensor();
 	memset(&sn_state, 0, sizeof(sn_state));
 	list_item = NULL;
+	protocol_type = 0;
+	sensor_type = 0;
+	data_stream_rate = 1;
+	data_stream_rate_cur = data_stream_rate;
+	refresh_data_flag = true;
 
 }
 
@@ -98,6 +104,8 @@ int TGLSensor::ReDraw(TTreeNode* n, int plnum, int prnum, int snnum)
 
 void TGLSensor::set_sensor()
 {
+    return;//!!!
+
 	 if (type == SENSOR_TYPE_IND3_IND3)
 	 {
 		protocol = new TProtocol_211();
@@ -109,6 +117,10 @@ void TGLSensor::set_sensor()
 	 else if (type == SENSOR_TYPE_IND3_ASIN)
 	 {
 		//protocol = new TProtocol_asin();
+	 }
+	 else if (type == SENSOR_TYPE_IND3_RTU)
+	 {
+		protocol = new TProtocol_Modbus_RTU();
 	 }
 	 else if (type == SENSOR_TYPE_AND3_AND3)
 	 {
@@ -317,6 +329,11 @@ void TGLSensor::reset(void)
 
 void TGLSensor::update(TDateTime timestamp)
 {
+	if (refresh_data_flag == false) {
+
+		return;
+	}
+
 	 for (auto dtst : data_stream_list)
 	 {
 		 dtst->update(timestamp);
@@ -350,9 +367,88 @@ void TGLSensor::data_stream_setup(void)
 {
 	data_stream_list.clear();
 
-	TDataStream_IND3* ds = new TDataStream_IND3(name.c_bstr(), L"chan_X", mark.c_bstr(), &raw_X, &uid, L"Угл. сек.");
+	TDataStream_IND3* ds = new TDataStream_IND3(name.c_bstr(), L"отклонение X", mark.c_bstr(), &raw_X, &uid, L"Угл. сек.");
 	data_stream_list.push_back(ds);
-	ds = new TDataStream_IND3(name.c_bstr(), L"chan_Y", mark.c_bstr(), &raw_Y, &uid, L"Угл. сек.");
+	ds = new TDataStream_IND3(name.c_bstr(), L"отклонение Y", mark.c_bstr(), &raw_Y, &uid, L"Угл. сек.");
 	data_stream_list.push_back(ds);
 
+}
+
+int TGLSensor::get_protocol_type(void)
+{
+   return protocol_type;
+}
+
+void TGLSensor::set_protocol_type(int pr)
+{
+   protocol_type = pr;
+}
+
+int TGLSensor::get_sensor_type(void)
+{
+   return sensor_type;
+}
+
+void TGLSensor::set_sensor_type(int tp)
+{
+   sensor_type = tp;
+}
+
+int TGLSensor::init_sensor(void)
+{
+	if (protocol)
+	{
+		delete protocol;
+	}
+
+	if (protocol_type == PROTOCOL_TYPE_IND3)
+	{
+		protocol = new TProtocol_211();
+	}
+	else if (protocol_type == PROTOCOL_TYPE_AND3)
+	{
+		protocol = new TProtocol_and3();
+	}
+	else if (protocol_type == PROTOCOL_TYPE_MODBUS_RTU)
+	{
+		protocol = new TProtocol_Modbus_RTU();
+	}
+	else
+	{
+
+	}
+
+	protocol->set_raw_X(&raw_X);
+	protocol->set_raw_Y(&raw_Y);
+
+
+	if (sensor_type == SENSOR_TYPE_IND3)
+	{
+		name.printf(L"ИН-Д3#%03d", addr);
+	}
+	else if (sensor_type == SENSOR_TYPE_IND3)
+	{
+		name.printf(L"AН-Д3#%03d", addr);
+	}
+	else
+	{
+	   name.printf(L"UNKNOWN#%03d", addr);
+	}
+}
+
+bool TGLSensor::stream_rate_enable(void)
+{
+	data_stream_rate_cur--;
+
+	if (data_stream_rate_cur <= 0)
+	{
+		data_stream_rate_cur = data_stream_rate;
+		refresh_data_flag = true;
+		return true;
+	}
+	else
+	{
+		refresh_data_flag = false;
+		return false;
+    }
 }

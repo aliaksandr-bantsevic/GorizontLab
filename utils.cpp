@@ -7,6 +7,7 @@
 #pragma package(smart_init)
 
 
+
 void utils_ShowMessage(WideString s)
 {
    Application->MessageBoxW(s.c_bstr(),L"ВНИМАНИЕ!", 0);
@@ -879,3 +880,27 @@ WideString DblToEdit_1 (double* d, TEdit* e)
 	return s;
 }
 
+//void parseRange(const std::wstring& str, std::vector<BYTE>& result);
+//void parseString(const std::wstring& input, std::vector<BYTE>& result);
+
+void parseRange(const std::wstring& str, std::vector<BYTE>& result) {
+	size_t dashPos = str.find(L'-');
+    if (dashPos != std::wstring::npos) {
+		int start = std::stoi(str.substr(0, dashPos));
+        int end = std::stoi(str.substr(dashPos + 1));
+        for (int i = start; i <= end; ++i) {
+            result.push_back(static_cast<BYTE>(i));
+        }
+    } else {
+        result.push_back(static_cast<BYTE>(std::stoi(str)));
+    }
+}
+
+void parseString(const std::wstring& input, std::vector<BYTE>& result) {
+	std::wstringstream ss(input);
+    std::wstring token;
+    while (std::getline(ss, token, L',')) {
+        token.erase(0, token.find_first_not_of(L" \t"));
+        parseRange(token, result);
+    }
+}

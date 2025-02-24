@@ -1,0 +1,53 @@
+//---------------------------------------------------------------------------
+
+#pragma hdrstop
+
+#include "Modbus_tiny.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+
+WORD crc16(uint8_t *buffer, WORD buffer_length)
+{
+	BYTE crc_hi = 0xFF; /* high CRC byte initialized */
+	BYTE crc_lo = 0xFF; /* low CRC byte initialized */
+    unsigned int i; /* will index into CRC lookup */
+
+	/* pass through message buffer */
+    while (buffer_length--) {
+		i = crc_hi ^ *buffer++; /* calculate the CRC  */
+        crc_hi = crc_lo ^ table_crc_hi[i];
+		crc_lo = table_crc_lo[i];
+    }
+
+    return (crc_hi << 8 | crc_lo);
+}
+
+int request_modbus_rtu (modbus_rtu_cmd cmd, BYTE* buf, int* len)
+{
+	int idx = 0;
+
+	//slave addr
+	buf[idx++] = cmd.addr;
+	//functional code
+	buf[idx++] = cmd.fc;
+	//Адрес первого регистра Hi байт
+	buf[idx++] = (BYTE)(cmd.start_reg_addr&0xff00)>>8;
+	//Адрес первого регистра Lo байт
+	buf[idx++] = (BYTE)(cmd.start_reg_addr&0x00ff);
+	//Количество регистров Hi байт
+	buf[idx++] = (BYTE)(cmd.numb_regs&0xff00)>>8;
+	//Количество регистров Lo байт
+	buf[idx++] = (BYTE)(cmd.numb_regs&0x00ff);
+
+	WORD crc = crc16(buf, idx);
+
+	//crc Lo
+	buf[idx++] = (BYTE)(crc&0x00ff);
+	//crc Hi
+	buf[idx++] = (BYTE)(crc&0xff00)>>8;
+
+	*len = idx;
+
+	return 0;
+
+}

@@ -22,6 +22,47 @@ void TForm_Port_adjust::start(TGLPort* pr)
 
 	port = pr;
 
+	ComboBox_tout_rd->Clear();
+	ComboBox_tout_wr->Clear();
+	ComboBox_dl_df->Clear();
+	ComboBox_dl_ex->Clear();
+
+	ComboBox_tout_rd->Items->Add(5);
+	ComboBox_tout_rd->Items->Add(10);
+	ComboBox_tout_rd->Items->Add(20);
+	ComboBox_tout_rd->Items->Add(50);
+	ComboBox_tout_rd->Items->Add(100);
+	ComboBox_tout_rd->Items->Add(500);
+	ComboBox_tout_rd->Items->Add(1000);
+	ComboBox_tout_rd->Items->Add(5000);
+	ComboBox_tout_rd->ItemIndex = 0;
+
+	ComboBox_tout_rd->ItemIndex = 0;
+
+	ComboBox_tout_wr->Items->Add(5);
+	ComboBox_tout_wr->Items->Add(10);
+	ComboBox_tout_wr->Items->Add(20);
+	ComboBox_tout_wr->Items->Add(50);
+	ComboBox_tout_wr->Items->Add(100);
+	ComboBox_tout_wr->Items->Add(500);
+	ComboBox_tout_wr->Items->Add(1000);
+	ComboBox_tout_wr->Items->Add(5000);
+	ComboBox_tout_wr->ItemIndex = 0;
+
+	ComboBox_dl_df->Items->Add(5);
+	ComboBox_dl_df->Items->Add(10);
+	ComboBox_dl_df->Items->Add(15);
+	ComboBox_dl_df->Items->Add(20);
+	ComboBox_dl_df->Items->Add(30);
+	ComboBox_dl_df->ItemIndex = 2;
+
+	ComboBox_dl_ex->Items->Add(5);
+	ComboBox_dl_ex->Items->Add(10);
+	ComboBox_dl_ex->Items->Add(15);
+	ComboBox_dl_ex->Items->Add(20);
+	ComboBox_dl_ex->Items->Add(30);
+	ComboBox_dl_ex->ItemIndex = 1;
+
 	ComboBox_COM->Clear();
 
 	for (int i = 1; i < 255; i++)
@@ -54,6 +95,18 @@ void TForm_Port_adjust::start(TGLPort* pr)
 	  ComboBox_baud->Text = s;
 	  TCHAR* m = port->get_mark();
 	  Memo_mark->Text = port->get_mark();
+
+	  s.printf(L"%d", port->delay_set.tout_rd);
+	  ComboBox_tout_rd->Text = s;
+
+	  s.printf(L"%d", port->delay_set.tout_wr);
+	  ComboBox_tout_wr->Text = s;
+
+	  s.printf(L"%d", port->delay_set.delay_default);
+	  ComboBox_dl_df->Text = s;
+
+	  s.printf(L"%d", port->delay_set.delay_cmd_exec);
+	  ComboBox_dl_ex->Text = s;
 	}
 
 	ShowModal();
@@ -104,6 +157,13 @@ void __fastcall TForm_Port_adjust::Button_okClick(TObject *Sender)
 		port->set_on(CheckBox_on->Checked);
 		port->set_baud(ComboBox_baud->Text.ToInt());
 		port->set_mark(Memo_mark->Text.c_str());
+
+		port->delay_set.tout_rd = ComboBox_tout_rd->Text.ToInt();
+		port->delay_set.tout_wr = ComboBox_tout_wr->Text.ToInt();
+		port->delay_set.delay_default = ComboBox_dl_df->Text.ToInt();
+        port->delay_set.delay_cmd_exec = ComboBox_dl_ex->Text.ToInt();
+
+
 	}
 
 	Close();

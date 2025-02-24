@@ -30,7 +30,11 @@ TGLPort::TGLPort(WideString nm, TTreeNode* nd, int nn, int comtype)
 	delay_set.delay_debug = 100;
 	delay_set.delay_default = 10;
 	delay_set.delay_addr_change = 20;
-	delay_set.delay_cmd_exec = 10;
+	delay_set.delay_cmd_exec = 15;
+	delay_set.tout_rd = 50;
+	delay_set.tout_wr = 50;
+
+
 
 	com = new TCOMPort(115200);
 
@@ -185,11 +189,6 @@ void TGLPort::start_cycle ()
  //extended buffers
  int TGLPort::transact_request_XY_ex(TGLSensor* sn)
  {
-      com->SetTimeouts(10, 10);
-
-	  TDateTime t1 = Now();
-	  TDateTime t2 = Now();
-
 	  int res = 0;
 	  sns_st* sn_state = sn->get_sn_state();
 
@@ -197,6 +196,13 @@ void TGLPort::start_cycle ()
 	  {
 		return -1;// sensor is off
 	  }
+
+	  if (!sn->stream_rate_enable())
+	  {
+			return -2;// rate is waiting
+	  }
+
+	  TDateTime t1 = Now();
 
 	  txidx = 0; rxidx = 0;
 	  memset(buftx, 0, 8448); memset(buftx, 0, 8448);
@@ -233,7 +239,7 @@ void TGLPort::start_cycle ()
 
 	  Sleep(delay_set.delay_cmd_exec);
 
-      if (res == 0)
+	  if (res == 0)
 	  {
           for (int i = 0; i < operation_attempts_tgreshold; i++)
 		  {
@@ -244,7 +250,7 @@ void TGLPort::start_cycle ()
 				 break;
 			 }
           }
-      }
+	  }
 
 	  if (ires == 0)
 	  {
@@ -284,7 +290,7 @@ void TGLPort::start_cycle ()
 
 	  sn->update(g_time_all_data_request);
 
-	  t2 = Now();
+	  TDateTime t2 = Now();
 
 	  sn_state->total_cnt ++;
 	  sn_state->t_req = ((double)t2 - (double)t1)/T_ONE_MSEC;
@@ -302,8 +308,7 @@ bool TGLPort::is_suspended ()
 
 int TGLPort::cycle ()
 {
-	TDateTime t1 = Now();
-	TDateTime t2 = Now();
+	com->Close();
 
 	if (on == false)
 	{
@@ -315,8 +320,6 @@ int TGLPort::cycle ()
 		Sleep(delay_set.delay_default);
 	}
 
-    com->Close();
-
 	if (com->Open(true, sys_port_num) == false)
 	{
 		Sleep(delay_set.delay_default);
@@ -324,19 +327,18 @@ int TGLPort::cycle ()
 	}
 	else
 	{
+		set_com();
 
-		//t2 = Now();
+		TDateTime t1 = Now();
+
 		set_is_open_in_cycle(true);
 
 		for (auto itsn : sensor_list.m_list)
 		{
-
 			transact_request_XY_ex(itsn);
-
-			//Sleep(10);
 		}
 
-		t2 = Now();
+		TDateTime t2 = Now();
 
 		port_state.total_cnt ++;
 		port_state.t_req = ((double)t2 - (double)t1)/T_ONE_MSEC;
@@ -387,6 +389,7 @@ DWORD TGLPort::get_sys_port_num(void)
 void TGLPort::set_baud(DWORD b)
 {
 	baud = b;
+	set_com();
 }
 
 DWORD TGLPort::get_baud(void)
@@ -417,6 +420,7 @@ int TGLPort::get_type(void)
 void TGLPort::set_com(void)
 {
 	com->set_baud(baud);
+	com->SetTimeouts(delay_set.tout_rd, delay_set.tout_wr);
 }
 
 prt_st* TGLPort::get_state(void)
@@ -456,4 +460,16 @@ TCHAR* TGLPort::get_mark(void)
 TListItem* TGLPort::get_list_item(void)
 {
 	return list_item;
+}
+
+bool TGLPort::sensor_exist (BYTE ad)
+{
+	for (auto itsn : sensor_list.m_list)
+	{
+	   if (itsn->get_addr() == ad) {
+		   return true;
+	   }
+	}
+
+	return false;
 }

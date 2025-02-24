@@ -85,6 +85,7 @@ __published:	// IDE-managed Components
 	TListView *ListView_ports;
 	TListView *ListView_sensors;
 	TListView *ListView_data;
+	TToolButton *ToolButton_start;
 	void __fastcall Timer_General_1sTimer(TObject *Sender);
 	void __fastcall Timer_Init_appTimer(TObject *Sender);
 	void __fastcall ToolButton1Click(TObject *Sender);
@@ -107,6 +108,7 @@ __published:	// IDE-managed Components
 	void __fastcall TreeView_BrowserDblClick(TObject *Sender);
 	void __fastcall TreeView_BrowserMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y);
+	void __fastcall ToolButton_startClick(TObject *Sender);
 
 private:	// User declarations
 public:		// User declarations
@@ -126,7 +128,9 @@ private:     //Window property management
 	void AddSensor(void);
 	void AdjustSensor(void);
 	void SetGeneralCaption(void);
-    void AdjustPort(void);
+	void AdjustPort(void);
+	void refresh_system_dashboard(void);
+
 };
 //---------------------------------------------------------------------------
 extern PACKAGE TForm_General *Form_General;

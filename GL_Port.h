@@ -23,6 +23,9 @@ typedef struct {
 	DWORD delay_debug;
 	DWORD delay_default;
 
+	DWORD tout_rd;
+	DWORD tout_wr;
+
 } delays;
 
 typedef struct {
@@ -96,13 +99,18 @@ public:
 	void set_is_open_in_cycle(bool op);
 	bool get_is_open_in_cycle(void);
 	//TCHAR* get_mark(void);
-    TListItem* get_list_item(void);
+	TListItem* get_list_item(void);
+    bool sensor_exist (BYTE ad);
+
+public:
+
+delays delay_set;
 
 private:
 
 	TTreeView* tree;
 	TGLSensor* sns;
-	delays delay_set;
+
 
 	TCOMPort* com;
 

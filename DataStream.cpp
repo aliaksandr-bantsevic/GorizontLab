@@ -13,7 +13,7 @@ TDataStream::TDataStream()
 
 TDataStream::TDataStream(TCHAR* nm,TCHAR* psfx, TCHAR* mark, double* raw, int* uid, TCHAR* units)
 {
-  this->name.printf(L"%03d_%s_%s", *uid, nm, psfx);
+  this->name.printf(L"[%03d] %s %s", *uid, nm, psfx);
   this->uid = uid;
   this->mark = mark;
   this->raw = raw;
@@ -22,6 +22,8 @@ TDataStream::TDataStream(TCHAR* nm,TCHAR* psfx, TCHAR* mark, double* raw, int* u
   item = NULL;
 
   last_update_timestamp = Now();
+  *raw = DATA_LOST_DBL_CONSTANT;
+  val =  DATA_LOST_DBL_CONSTANT;
 
 }
 

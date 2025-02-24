@@ -8,6 +8,7 @@
 
 #include "Protocol_211.h"
 #include "Protocol_AND3.h"
+#include "Protocol_MODBUS_RTU.h"
 
 #include "DataStream_IND3.h"
 
@@ -17,7 +18,11 @@
 #define SENSOR_TYPE_IND3_IND3       0
 #define SENSOR_TYPE_IND3_AND3       1
 #define SENSOR_TYPE_IND3_ASIN       2
-#define SENSOR_TYPE_AND3_AND3       3
+#define SENSOR_TYPE_IND3_RTU        3
+#define SENSOR_TYPE_AND3_AND3       4
+
+#define SENSOR_TYPE_IND3       		0
+#define SENSOR_TYPE_AND3       		1
 
 #define SENSOR_TYPE_UNKN_UNKN       255
 
@@ -99,6 +104,8 @@ private:
 	void set_sensor();
 
 	int type;
+	int protocol_type;
+	int sensor_type;
 
 	/*
 	BYTE* rxbuf;
@@ -113,9 +120,18 @@ private:
 
 
 	//TDataStream* ss;
-    TListItem* list_item;
+	TListItem* list_item;
+
+
+
 
 public:
+
+    int data_stream_rate;
+	int data_stream_rate_cur;
+
+
+    bool refresh_data_flag;
 
 	std::list<TDataStream*> data_stream_list;
 
@@ -144,7 +160,13 @@ public:
 	TCHAR* get_str_ID(void);
 	void set_list_item( TListItem *it);
 	TListItem * get_list_item(void);
-    void data_stream_setup(void);
+	void data_stream_setup(void);
+	int get_protocol_type(void);
+	void set_protocol_type(int pr);
+	int get_sensor_type(void);
+	void set_sensor_type(int pr);
+	int init_sensor(void);
+    bool stream_rate_enable(void);
 };
 
 

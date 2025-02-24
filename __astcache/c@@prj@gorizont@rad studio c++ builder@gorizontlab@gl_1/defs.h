@@ -42,6 +42,7 @@ extern bool b_MessageConfirmParamsetShow;
 */
 
 //#define DEBUG_DEVELOPMENT_MODE
+#define DEBUG_SUBST_SNS_ADDR 7
 
 #define T_ONE_DAY       (1.)
 #define T_ONE_HOUR      (1./24.)

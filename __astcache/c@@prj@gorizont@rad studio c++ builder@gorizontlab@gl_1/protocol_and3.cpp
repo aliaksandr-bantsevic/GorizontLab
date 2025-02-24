@@ -7,6 +7,11 @@
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 
+TProtocol_and3::~TProtocol_and3()
+{
+
+}
+
 void TProtocol_and3::setProtocol(void)
 {
    protocol_type = PROTOCOL_TYPE_AND3;

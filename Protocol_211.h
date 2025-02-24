@@ -76,7 +76,7 @@ public:
 	TProtocol_211();
 	~TProtocol_211();
 
-	void setProtocol(void) override;
+	void setProtocol(void);
 
 	//int request_curr_XY(BYTE addr) override;
 	int request_curr_XY(BYTE addr, BYTE* buf, int* idx, int *exp_response_len, bool* exp_response_regular)  override;

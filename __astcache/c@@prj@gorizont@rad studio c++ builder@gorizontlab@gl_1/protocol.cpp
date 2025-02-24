@@ -13,10 +13,10 @@ TProtocol::TProtocol()
    //setProtocol();
 }
 
-TProtocol::~TProtocol()
-{
-
-}
+//TProtocol::~TProtocol()
+//{
+//
+//}
 
 void TProtocol::clear(void)
 {

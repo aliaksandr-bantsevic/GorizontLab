@@ -24,6 +24,16 @@ __published:	// IDE-managed Components
 	TComboBox *ComboBox_baud;
 	TLabel *Label1;
 	TCheckBox *CheckBox_on;
+	TGroupBox *GroupBox1;
+	TComboBox *ComboBox_tout_rd;
+	TComboBox *ComboBox_tout_wr;
+	TLabel *Label2;
+	TLabel *Label3;
+	TGroupBox *GroupBox2;
+	TComboBox *ComboBox_dl_df;
+	TComboBox *ComboBox_dl_ex;
+	TLabel *Label4;
+	TLabel *Label5;
 	void __fastcall Button_okClick(TObject *Sender);
 	void __fastcall Timer_startTimer(TObject *Sender);
 	void __fastcall Button_cancelClick(TObject *Sender);

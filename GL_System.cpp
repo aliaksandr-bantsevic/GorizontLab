@@ -308,6 +308,18 @@ int TGLSystem::SaveConf(void)
 			spar.printf(L"%d", itpr->get_type());
 			PortNode->AddChild("type")->Text = spar;
 
+			spar.printf(L"%d", itpr->delay_set.tout_rd);
+			PortNode->AddChild("timeout_read")->Text = spar;
+
+			spar.printf(L"%d", itpr->delay_set.tout_wr);
+			PortNode->AddChild("timeout_write")->Text = spar;
+
+			spar.printf(L"%d", itpr->delay_set.delay_default);
+			PortNode->AddChild("delay_default")->Text = spar;
+
+			spar.printf(L"%d", itpr->delay_set.delay_cmd_exec);
+			PortNode->AddChild("delay_cmd_exec")->Text = spar;
+
 			snid = 0;
 
 			_di_IXMLNode SensorsListNode = PortNode->AddChild("sensors_list");
@@ -332,8 +344,19 @@ int TGLSystem::SaveConf(void)
 				s.printf(L"%d", itsn->get_on());
 				SensorNode->AddChild("on")->Text = s;
 
+				s.printf(L"%d", itsn->get_sensor_type());
+				SensorNode->AddChild("sensor_type")->Text = s;
+
+				s.printf(L"%d", itsn->get_protocol_type());
+				SensorNode->AddChild("protocol_type")->Text = s;
+
+				s.printf(L"%d", itsn->data_stream_rate);
+				SensorNode->AddChild("data_stream_rate")->Text = s;
+
 				SensorNode->AddChild("mark")->Text = itsn->get_mark();
 				SensorNode->AddChild("name")->Text = itsn->get_name();
+
+
 			}
 		}
 
@@ -468,7 +491,32 @@ int TGLSystem::LoadConf(void)
 					cur_pr->set_type(PorTypeNode->Text.ToInt());
 				}
 
-                cur_pr->set_com();
+				_di_IXMLNode toutrdNode = PortNode->ChildNodes->FindNode("timeout_read");
+				if ( toutrdNode)
+				{
+					cur_pr->delay_set.tout_rd = toutrdNode->Text.ToInt();
+				}
+
+
+				_di_IXMLNode touwrNode = PortNode->ChildNodes->FindNode("timeout_write");
+				if ( touwrNode)
+				{
+					cur_pr->delay_set.tout_wr = touwrNode->Text.ToInt();
+				}
+
+				_di_IXMLNode dldfNode = PortNode->ChildNodes->FindNode("delay_default");
+				if ( dldfNode)
+				{
+					cur_pr->delay_set.delay_default = dldfNode->Text.ToInt();
+				}
+
+				_di_IXMLNode dlexNode = PortNode->ChildNodes->FindNode("delay_cmd_exec");
+				if (dlexNode)
+				{
+					cur_pr->delay_set.delay_cmd_exec = dlexNode->Text.ToInt();
+				}
+
+				cur_pr->set_com();
 				//load other port attr here
 
 				_di_IXMLNode SensorsListNode = PortNode->ChildNodes->FindNode("sensors_list");
@@ -526,6 +574,26 @@ int TGLSystem::LoadConf(void)
 					{
 						cur_sn->set_name (nameNode->Text.c_str());
 					}
+
+					_di_IXMLNode sensor_typeNode = SensorNode->ChildNodes->FindNode("sensor_type");
+					if (sensor_typeNode)
+					{
+						cur_sn->set_sensor_type (sensor_typeNode->Text.ToInt());
+					}
+
+					_di_IXMLNode protocol_typeNode = SensorNode->ChildNodes->FindNode("protocol_type");
+					if (protocol_typeNode)
+					{
+						cur_sn->set_protocol_type (protocol_typeNode->Text.ToInt());
+					}
+
+					_di_IXMLNode streamrateeNode = SensorNode->ChildNodes->FindNode("data_stream_rate");
+					if (streamrateeNode)
+					{
+						cur_sn->data_stream_rate = streamrateeNode->Text.ToInt();
+					}
+
+                    cur_sn->init_sensor();
 				}
 
 
@@ -749,7 +817,7 @@ int TGLSystem::ReDraw(void)
 		}
 	}
 
-     tree->Visible = true;
+	tree->Visible = true;
 
 	return 0;
 }
@@ -1340,6 +1408,11 @@ void TGLSystem::update_view_sensors_status()
 				 s = L"Включен";
 			  }
 
+			  if (item == NULL) {
+
+                continue;
+			  }
+
 			  item->SubItems->Strings[sub_idx] = s; sub_idx++;
 
 			  s.printf(L"%d", st->err_tou);
@@ -1456,7 +1529,8 @@ void TGLSystem::view_data_status(TListView* list)
 				  s.printf(L"%.02f", *itds->raw);
 				  item->SubItems->Add(s);
 
-				  s.printf(L"%.02f", itds->val);
+				  if (itds->val != DATA_LOST_DBL_CONSTANT) s.printf(L"%.02f", itds->val);
+				  else s = L"no data";
 				  item->SubItems->Add(s);
 
 				  item->SubItems->Add(itds->units);
@@ -1489,6 +1563,8 @@ void TGLSystem::update_view_data_status()
 	  {
 		  for (auto itsn : itpr->sensor_list.m_list)
 		  {
+				if (itsn->refresh_data_flag == true)  {
+
 				for (auto itds : itsn->data_stream_list)
 				{
 
@@ -1510,15 +1586,16 @@ void TGLSystem::update_view_data_status()
 				  s.printf(L"%.02f", *itds->raw);
 				  item->SubItems->Strings[idx] = s; idx++;
 
-				  s.printf(L"%.02f", itds->val);
+				  if (itds->val != DATA_LOST_DBL_CONSTANT) s.printf(L"%.02f", itds->val);
+				  else s = L"no data";
 				  item->SubItems->Strings[idx] = s; idx++;
 
 				  item->SubItems->Strings[idx] = itds->units; idx++;
 
 				  s = FormatDateTime(L"yyyy-mm-dd hh:mm:ss:zzz",itds->last_update_timestamp);
-                  item->SubItems->Strings[idx] = s; idx++;
+				  item->SubItems->Strings[idx] = s; idx++;
 
-				}
+				}  }
 
 		  }
 	  }

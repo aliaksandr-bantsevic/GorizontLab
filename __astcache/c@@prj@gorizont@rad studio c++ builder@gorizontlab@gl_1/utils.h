@@ -9,6 +9,12 @@
 #include <iostream>
 #include <string.h>
 
+#include <sstream>
+#include <vector>
+#include <string>
+#pragma hdrstop
+
+#pragma argsused
 
 /*
 	Set icon for tree item
@@ -62,3 +68,6 @@ extern WideString IntToWstr (int i);
 extern WideString DblToWstr (double d);
 extern WideString DblToEdit_1 (double* d, TEdit* e);
 extern String UnicodeToUTF8____(const WideString& str);
+
+extern void parseRange(const std::wstring& str, std::vector<BYTE>& result);
+extern void parseString(const std::wstring& input, std::vector<BYTE>& result);

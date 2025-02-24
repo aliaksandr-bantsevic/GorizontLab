@@ -102,7 +102,7 @@ void TCOMPort::InitDCB(DCB* PortDCB)
   //PortDCB->BaudRate=19200;
   //PortDCB->BaudRate=38400;
   //PortDCB->BaudRate=57600;
-  PortDCB->BaudRate=115200;
+  PortDCB->BaudRate=9600;//115200;
   //PortDCB->BaudRate=230400;
   //PortDCB->BaudRate=460800;
   //PortDCB->BaudRate=921600;
@@ -259,7 +259,7 @@ bool TCOMPort::Open(bool clr_err, DWORD port)
       TmOpen=Now();TmClose=TmOpen;
 	  eo++;st.run=false;st.res=false;return st.res;
     }
-    st.res=(SetCommState(h,&dcb)&&SetCommTimeouts(h,&(to)));
+	st.res=(SetCommState(h,&dcb)&&SetCommTimeouts(h,&(to)));
     if(st.res)
     {
       st.cmd=1;st.run=false;st.on=true;
@@ -381,9 +381,17 @@ bool TCOMPort::PortNRead(DWORD n,BYTE *b)
   st.run=false;
 
   return st.res;
+
+  //if (st.res)
+  //{
+  //	return Nr;
+  //}
+
 }
 
 void TCOMPort::set_baud(DWORD b)
 {
 	st.baud = b;
+	dcb.BaudRate = b;
+
 }

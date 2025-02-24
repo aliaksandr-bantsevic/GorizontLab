@@ -1,0 +1,42 @@
+//---------------------------------------------------------------------------
+
+#ifndef Protocol_Modbus_RTUH
+#define Protocol_Modbus_RTUH
+//---------------------------------------------------------------------------
+ #include "defs.h"
+ #include "Protocol.h"
+ //#include <modbus/modbus.h>
+
+//---------------------------------------------------------------------------
+
+
+class TProtocol_Modbus_RTU : public TProtocol
+{
+
+public:
+
+	TProtocol_Modbus_RTU();
+	~TProtocol_Modbus_RTU();
+
+public:
+
+
+
+private:
+
+
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+#endif

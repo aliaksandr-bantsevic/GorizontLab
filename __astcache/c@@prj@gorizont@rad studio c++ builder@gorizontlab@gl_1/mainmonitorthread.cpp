@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------------
+﻿//---------------------------------------------------------------------------
 
 #include <System.hpp>
 #pragma hdrstop
@@ -57,7 +57,7 @@ void __fastcall TMainMonitorThread::Execute()
 			Sleep(10);
 		}
 
-		if (cycle_flag)
+		if ((cycle_flag)&&(exit_flag == false))
 		{
 			cycle_flag = false;
 			system->cycle();
@@ -66,7 +66,7 @@ void __fastcall TMainMonitorThread::Execute()
             system->update_view_data_status();
 		}
 
-		Sleep(10);
+		Sleep(1);
 	}
 }
 //---------------------------------------------------------------------------

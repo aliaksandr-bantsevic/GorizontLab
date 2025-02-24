@@ -64,8 +64,8 @@
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
         <UWP_CppLogo44>$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_44.png</UWP_CppLogo44>
         <UWP_CppLogo150>$(BDS)\bin\Artwork\Windows\UWP\cppreg_UwpDefault_150.png</UWP_CppLogo150>
-        <IncludePath>SQLite\;C:\Prj\Gorizont\RAD Studio C++ Builder\GorizontLab\GL_1\;$(IncludePath)</IncludePath>
-        <ILINK_LibraryPath>SQLite\;C:\Prj\Gorizont\RAD Studio C++ Builder\GorizontLab\GL_1\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
+        <IncludePath>Modbus\;SQLite\;C:\Prj\Gorizont\RAD Studio C++ Builder\GorizontLab\GL_1\;$(IncludePath)</IncludePath>
+        <ILINK_LibraryPath>Modbus\;SQLite\;C:\Prj\Gorizont\RAD Studio C++ Builder\GorizontLab\GL_1\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <SanitizedProjectName>GorizontLab</SanitizedProjectName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
@@ -202,6 +202,10 @@
             <DependentOn>MainMonitorThread.h</DependentOn>
             <BuildOrder>24</BuildOrder>
         </CppCompile>
+        <CppCompile Include="Modbus_tiny.cpp">
+            <DependentOn>Modbus_tiny.h</DependentOn>
+            <BuildOrder>26</BuildOrder>
+        </CppCompile>
         <CppCompile Include="PortProcThread.cpp">
             <DependentOn>PortProcThread.h</DependentOn>
             <BuildOrder>16</BuildOrder>
@@ -216,6 +220,10 @@
         </CppCompile>
         <CppCompile Include="Protocol_AND3.cpp">
             <BuildOrder>20</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="Protocol_Modbus_RTU.cpp">
+            <DependentOn>Protocol_Modbus_RTU.h</DependentOn>
+            <BuildOrder>25</BuildOrder>
         </CppCompile>
         <CppCompile Include="SQLite\sqlite3.c">
             <BuildOrder>18</BuildOrder>

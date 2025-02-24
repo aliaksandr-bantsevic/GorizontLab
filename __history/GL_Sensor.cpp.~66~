@@ -1,0 +1,429 @@
+//---------------------------------------------------------------------------
+
+#pragma hdrstop
+
+#include "GL_Sensor.h"
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+
+
+
+TGLSensor::TGLSensor()
+{
+	 name = L"New Sensor";
+	 mark = L"...";
+	 node = NULL;
+	 num = 0;
+     uid = 0;
+}
+
+TGLSensor::TGLSensor(WideString nm, TTreeNode* nd, int nn)
+{
+	name = nm;
+	mark = L"...";
+	node = nd;
+	num = nn;
+
+	addr = 1;
+
+	//type = SENSOR_TYPE_IND3_IND3;
+	//type = SENSOR_TYPE_IND3_AND3;
+	type = SENSOR_TYPE_IND3_RTU;
+
+	protocol = NULL;
+	uid = 0;
+	on = false;
+
+	set_sensor();
+	memset(&sn_state, 0, sizeof(sn_state));
+	list_item = NULL;
+	protocol_type = 0;
+	sensor_type = 0;
+
+}
+
+TGLSensor::~TGLSensor()
+{
+
+}
+
+void TGLSensor::SetTree(TTreeView* t)
+{
+	tree = t;
+}
+
+void TGLSensor::SetNode(TTreeNode* n)
+{
+	node = n;
+}
+
+void TGLSensor::SetPlnum(int n)
+{
+	plnum = n;
+}
+
+void TGLSensor::SetPrnum(int n)
+{
+	prnum = n;
+}
+
+WideString TGLSensor::GetName(void)
+{
+	return name;
+}
+
+BYTE TGLSensor::GetAddr(void)
+{
+	return addr;
+}
+
+void TGLSensor::SetAddr(Byte ad)
+{
+	addr = ad;
+}
+
+int TGLSensor::ReDraw(TTreeNode* n, int plnum, int prnum, int snnum)
+{
+   WideString ss;
+	ss.printf(L"[%03d] %d.%d.%d [", uid, plnum, prnum, snnum);
+	ss = ss + name;
+	ss = ss+L"]";
+	node = tree->Items->AddChild(n, ss); node->ImageIndex = 3; node->SelectedIndex = 3;
+	n->Expand(true);
+
+	this->plnum = plnum;
+	this->prnum = prnum;
+	num = snnum;
+
+
+	return 0;
+}
+
+void TGLSensor::set_sensor()
+{
+    return;//!!!
+
+	 if (type == SENSOR_TYPE_IND3_IND3)
+	 {
+		protocol = new TProtocol_211();
+	 }
+	 else if (type == SENSOR_TYPE_IND3_AND3)
+	 {
+		protocol = new TProtocol_and3();
+	 }
+	 else if (type == SENSOR_TYPE_IND3_ASIN)
+	 {
+		//protocol = new TProtocol_asin();
+	 }
+	 else if (type == SENSOR_TYPE_IND3_RTU)
+	 {
+		protocol = new TProtocol_Modbus_RTU();
+	 }
+	 else if (type == SENSOR_TYPE_AND3_AND3)
+	 {
+		//protocol = new TProtocol_and3();
+	 }
+	 else
+	 {
+		//unknown protocol
+
+		return;
+	 }
+
+	 /*
+	 rxbuf = protocol->getRX();
+	 txbuf = protocol->getTX();
+
+	 rxidx = protocol->getRXidx();
+	 txidx = protocol->getTXidx();
+	 */
+
+	 protocol->set_raw_X(&raw_X);
+	 protocol->set_raw_Y(&raw_Y);
+}
+
+/*
+int TGLSensor::request_curr_XY(BYTE** buf, int** len)
+{
+	 if (protocol->request_curr_XY(addr) == 0)
+	 {
+		 *buf = protocol->getTX();
+		 *len = protocol->getTXidx();
+
+		 return 0;
+	 }
+	 else
+	 {
+		 return -1;
+	 }
+}
+*/
+
+//external buf
+int TGLSensor::request_curr_XY(BYTE* buf, int* len, int *exp_response_len, bool* exp_response_regular)
+{
+	//expectedf response len is regular 22 bytes
+	//*exp_response_len = 22;
+	//*exp_response_regular = true;
+
+	 if (protocol->request_curr_XY(addr, buf, len, exp_response_len, exp_response_regular) == 0)
+	 {
+		 return 0;
+	 }
+	 else
+	 {
+		 return -1;
+	 }
+}
+
+/*
+int TGLSensor::accept_response_curr_XY()
+{
+	 if (protocol->accept_response_curr_XY(addr) ==  0)
+	 {
+		 raw_X = protocol->get_raw_X();
+		 raw_Y = protocol->get_raw_Y();
+
+		 return 0;
+	 }
+	 else
+	 {
+		 return -1;
+	 }
+}
+*/
+
+//external buf
+int TGLSensor::accept_response_curr_XY(BYTE* buf, int* idx)
+{
+	 if (protocol->accept_response_curr_XY(addr, buf, idx) ==  0)
+	 {
+		 //raw_X;// = protocol->get_raw_X();
+		 //raw_Y;// = protocol->get_raw_Y();
+
+		 return 0;
+	 }
+	 else
+	 {
+		 return -1;
+	 }
+}
+
+/*
+BYTE* TGLSensor::getRX(void)
+{
+  //return protocol->getRX();
+  return rxbuf;
+}
+
+BYTE* TGLSensor::getTX(void)
+{
+  //return protocol->getTX();
+  return txbuf;
+}
+
+int* TGLSensor::getRXidx(void)
+{
+   //return protocol->getRXidx();
+   return rxidx;
+}
+
+int* TGLSensor::getTXidx(void)
+{
+  //return protocol->getTXidx();
+  return txidx;
+}
+
+void TGLSensor::clrTX(void)
+{
+    //protocol->clear_tx();
+}
+*/
+
+double TGLSensor::get_rawX(void)
+{
+	return raw_X;
+}
+
+double TGLSensor::get_rawY(void)
+{
+	return raw_Y;
+}
+
+void TGLSensor::subst(double x, double y)
+{
+	raw_X = x;
+	raw_Y = y;
+}
+
+void TGLSensor::set_uid(int id)
+{
+	uid = id;
+}
+
+int TGLSensor::get_uid(void)
+{
+	return uid;
+}
+
+void TGLSensor::set_on(int n)
+{
+	on = (bool)n;
+}
+
+int TGLSensor::get_on(void)
+{
+	return (int)on;
+}
+
+void TGLSensor::set_type(int t)
+{
+	type = t;
+}
+
+int TGLSensor::get_type(void)
+{
+	return type;
+}
+
+void TGLSensor::set_mark(TCHAR* mr)
+{
+   mark = mr;
+}
+
+TCHAR* TGLSensor::get_mark(void)
+{
+	WideString s = this->mark;
+
+   return this->mark.c_bstr();
+}
+
+void TGLSensor::set_addr(BYTE a)
+{
+	addr = a;
+}
+
+BYTE TGLSensor::get_addr(void)
+{
+	return addr;
+}
+
+void TGLSensor::set_name(TCHAR* nm)
+{
+	name = nm;
+}
+
+TCHAR* TGLSensor::get_name(void)
+{
+	return name.c_bstr();
+}
+
+void TGLSensor::reset(void)
+{
+	 raw_X = DATA_LOST_DBL_CONSTANT;
+	 raw_Y = DATA_LOST_DBL_CONSTANT;
+}
+
+void TGLSensor::update(TDateTime timestamp)
+{
+	 for (auto dtst : data_stream_list)
+	 {
+		 dtst->update(timestamp);
+	 }
+}
+
+sns_st* TGLSensor::get_sn_state(void)
+{
+	return &sn_state;
+}
+
+TCHAR* TGLSensor::get_str_ID(void)
+{
+	WideString s;
+	s.printf(L"%d.%d.%d", plnum, prnum, num);
+	return s.c_bstr();
+}
+
+void TGLSensor::set_list_item( TListItem *it)
+{
+	list_item = it;
+}
+
+TListItem * TGLSensor::get_list_item(void)
+{
+	return list_item;
+}
+
+
+void TGLSensor::data_stream_setup(void)
+{
+	data_stream_list.clear();
+
+	TDataStream_IND3* ds = new TDataStream_IND3(name.c_bstr(), L"отклонение X", mark.c_bstr(), &raw_X, &uid, L"Угл. сек.");
+	data_stream_list.push_back(ds);
+	ds = new TDataStream_IND3(name.c_bstr(), L"отклонение Y", mark.c_bstr(), &raw_Y, &uid, L"Угл. сек.");
+	data_stream_list.push_back(ds);
+
+}
+
+int TGLSensor::get_protocol_type(void)
+{
+   return protocol_type;
+}
+
+void TGLSensor::set_protocol_type(int pr)
+{
+   protocol_type = pr;
+}
+
+int TGLSensor::get_sensor_type(void)
+{
+   return sensor_type;
+}
+
+void TGLSensor::set_sensor_type(int tp)
+{
+   sensor_type = tp;
+}
+
+int TGLSensor::init_sensor(void)
+{
+	if (protocol)
+	{
+		delete protocol;
+	}
+
+	if (protocol_type == PROTOCOL_TYPE_IND3)
+	{
+		protocol = new TProtocol_211();
+	}
+	else if (protocol_type == PROTOCOL_TYPE_AND3)
+	{
+		protocol = new TProtocol_and3();
+	}
+	else if (protocol_type == PROTOCOL_TYPE_MODBUS_RTU)
+	{
+		protocol = new TProtocol_Modbus_RTU();
+	}
+	else
+	{
+
+	}
+
+	protocol->set_raw_X(&raw_X);
+	protocol->set_raw_Y(&raw_Y);
+
+
+	if (sensor_type == SENSOR_TYPE_IND3)
+	{
+		name.printf(L"ИН-Д3#%03d", addr);
+	}
+	else if (sensor_type == SENSOR_TYPE_IND3)
+	{
+		name.printf(L"AН-Д3#%03d", addr);
+	}
+	else
+	{
+	   name.printf(L"UNKNOWN#%03d", addr);
+	}
+}

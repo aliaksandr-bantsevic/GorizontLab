@@ -35,6 +35,8 @@ TIMECAPS tc;
 UINT wTimerRes;
 
 TDateTime g_time_all_data_request = Now();
+bool g_system_monitoring_run = false;
+
 //--------------------------------------------------------------------------
 void TForm_General::SetGeneralCaption(void)
 {
@@ -55,7 +57,7 @@ void TForm_General::InitMainWindow(void)
 
     if (timeGetDevCaps(&tc, sizeof(TIMECAPS)) != TIMERR_NOERROR) {
         //std::cerr << "Ошибка при получении возможностей таймера." << std::endl;
-        StatusBar->Panels->Items[3]->Text =
+		StatusBar->Panels->Items[3]->Text =
             L"Ошибка при получении возможностей таймера.";
     } else {
         //wTimerRes = std::min(std::max(tc.wPeriodMin, 1), tc.wPeriodMax);
@@ -246,8 +248,17 @@ void __fastcall TForm_General::N_AddSensorClick(TObject* Sender)
 }
 //---------------------------------------------------------------------------
 
+//#include "Protocol_MODBUS_RTU.h"
+
 void __fastcall TForm_General::ToolButton4Click(TObject* Sender)
 {
+
+	//TProtocol_Modbus_RTU* prt;
+
+	//prt = new TProtocol_Modbus_RTU;
+
+return;
+
    //GLSystem->view_ports_status(ListView_ports);
    //GLSystem->view_sensors_status(ListView_sensors);
    GLSystem->view_data_status(ListView_data);
@@ -330,6 +341,8 @@ void __fastcall TForm_General::ToolButton3Click(TObject* Sender)
 
 void __fastcall TForm_General::FormClose(TObject* Sender, TCloseAction &Action)
 {
+	MainMonitorThread->suspend(); Sleep(100); MainMonitorThread->exit(); Sleep(100);
+
     GLSystem->SaveConf();
     // Восстанавливаем разрешение таймера
     timeEndPeriod(wTimerRes);
@@ -470,4 +483,42 @@ void __fastcall TForm_General::TreeView_BrowserMouseDown(TObject *Sender, TMouse
 
 //---------------------------------------------------------------------------
 
+
+void __fastcall TForm_General::ToolButton_startClick(TObject *Sender)
+{
+        refresh_system_dashboard();
+
+		if (g_system_monitoring_run == false)
+		{
+			g_system_monitoring_run = true;
+			MainMonitorThread->resume();
+			ToolButton_start->ImageIndex = 8;
+			StatusBar->Panels->Items[4]->Text = L"monitoring is running ...";
+			TreeView_Browser->Enabled = false;
+		}
+		else
+		{
+			g_system_monitoring_run = false;
+			MainMonitorThread->suspend();
+			ToolButton_start->ImageIndex = 7;
+			StatusBar->Panels->Items[4]->Text = L"monitoring STOP";
+			TreeView_Browser->Enabled = true;
+        }
+}
+//---------------------------------------------------------------------------
+
+void TForm_General::refresh_system_dashboard(void)
+{
+	GLSystem->ports_list = NULL;
+	GLSystem->sensors_list = NULL;
+	GLSystem->data_list = NULL;
+
+	GLSystem->view_ports_status(ListView_ports);
+	GLSystem->view_sensors_status(ListView_sensors);
+	GLSystem->view_data_status(ListView_data);
+
+	GLSystem->update_view_sensors_status();
+	GLSystem->update_data(Now());
+	GLSystem->update_view_data_status();
+}
 

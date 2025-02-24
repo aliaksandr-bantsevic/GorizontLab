@@ -5,8 +5,9 @@
 //---------------------------------------------------------------------------
 
 #define PROTOCOL_TYPE_IND3          0
-#define PROTOCOL_TYPE_ASIN          1
-#define PROTOCOL_TYPE_AND3          2
+#define PROTOCOL_TYPE_AND3          1
+#define PROTOCOL_TYPE_MODBUS_RTU    2
+#define PROTOCOL_TYPE_ASIN          3
 
 #define PROTOCOL_TYPE_NONE          255
 
@@ -16,7 +17,7 @@ public:
 
 		TProtocol();
 
-		~TProtocol();
+		//~TProtocol();
 
 private:
 
