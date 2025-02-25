@@ -1,0 +1,32 @@
+//---------------------------------------------------------------------------
+
+#ifndef ChartThreadH
+#define ChartThreadH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+
+#include <tchar.h>
+#include <VCLTee.Chart.hpp>
+#include <VclTee.TeeGDIPlus.hpp>
+#include <VCLTee.TeEngine.hpp>
+#include <VCLTee.TeeProcs.hpp>
+#include <VCLTee.Series.hpp>
+
+#include "DataStream.h"
+//---------------------------------------------------------------------------
+class TChartThread : public TThread
+{
+protected:
+	void __fastcall Execute();
+public:
+	__fastcall TChartThread(bool CreateSuspended, TChart* c, TDataStream* ds);
+
+public:
+
+
+public:
+
+
+};
+//---------------------------------------------------------------------------
+#endif

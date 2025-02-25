@@ -1,0 +1,16 @@
+//---------------------------------------------------------------------------
+
+#ifndef ChartThreadH
+#define ChartThreadH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+//---------------------------------------------------------------------------
+class TChartThread : public TThread
+{
+protected:
+	void __fastcall Execute();
+public:
+	__fastcall TChartThread(bool CreateSuspended);
+};
+//---------------------------------------------------------------------------
+#endif

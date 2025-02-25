@@ -37,7 +37,7 @@ void TForm_Port_adjust::start(TGLPort* pr)
 	ComboBox_tout_rd->Items->Add(5000);
 	ComboBox_tout_rd->ItemIndex = 0;
 
-	ComboBox_tout_rd->ItemIndex = 0;
+	ComboBox_tout_rd->ItemIndex = 1;
 
 	ComboBox_tout_wr->Items->Add(5);
 	ComboBox_tout_wr->Items->Add(10);
@@ -47,21 +47,21 @@ void TForm_Port_adjust::start(TGLPort* pr)
 	ComboBox_tout_wr->Items->Add(500);
 	ComboBox_tout_wr->Items->Add(1000);
 	ComboBox_tout_wr->Items->Add(5000);
-	ComboBox_tout_wr->ItemIndex = 0;
+	ComboBox_tout_wr->ItemIndex = 1;
 
 	ComboBox_dl_df->Items->Add(5);
 	ComboBox_dl_df->Items->Add(10);
 	ComboBox_dl_df->Items->Add(15);
 	ComboBox_dl_df->Items->Add(20);
 	ComboBox_dl_df->Items->Add(30);
-	ComboBox_dl_df->ItemIndex = 2;
+	ComboBox_dl_df->ItemIndex = 1;
 
 	ComboBox_dl_ex->Items->Add(5);
 	ComboBox_dl_ex->Items->Add(10);
 	ComboBox_dl_ex->Items->Add(15);
 	ComboBox_dl_ex->Items->Add(20);
 	ComboBox_dl_ex->Items->Add(30);
-	ComboBox_dl_ex->ItemIndex = 1;
+	ComboBox_dl_ex->ItemIndex = 3;
 
 	ComboBox_COM->Clear();
 

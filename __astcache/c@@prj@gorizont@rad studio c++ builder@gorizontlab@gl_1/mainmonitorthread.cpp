@@ -5,6 +5,8 @@
 
 #include "MainMonitorThread.h"
 #pragma package(smart_init)
+
+#include "ChartThread.h"
 //---------------------------------------------------------------------------
 
 //   Important: Methods and properties of objects in VCL can only be
@@ -21,6 +23,10 @@
 //---------------------------------------------------------------------------
 
 extern TDateTime g_monitor_second_timer;
+//extern TChartThread* tcx;
+//extern TChartThread* tcy;
+
+extern std::list<TChartThread*> g_tc_list;
 
 __fastcall TMainMonitorThread::TMainMonitorThread(bool CreateSuspended, TGLSystem* sys)
 	: TThread(CreateSuspended)
@@ -29,6 +35,7 @@ __fastcall TMainMonitorThread::TMainMonitorThread(bool CreateSuspended, TGLSyste
 	cycle_flag = false;
 	suspended = true;
 	exit_flag = false;
+    Priority = tpHigher;
 }
 //---------------------------------------------------------------------------
 void __fastcall TMainMonitorThread::Execute()
@@ -67,6 +74,12 @@ void __fastcall TMainMonitorThread::Execute()
 		}
 
 		Sleep(1);
+
+		for (auto ittc : g_tc_list) {
+
+            ittc->update_data();
+
+		}
 	}
 }
 //---------------------------------------------------------------------------

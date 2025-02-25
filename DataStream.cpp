@@ -21,7 +21,7 @@ TDataStream::TDataStream(TCHAR* nm,TCHAR* psfx, TCHAR* mark, double* raw, int* u
 
   item = NULL;
 
-  last_update_timestamp = Now();
+  last_update_timestamp = 0.;
   *raw = DATA_LOST_DBL_CONSTANT;
   val =  DATA_LOST_DBL_CONSTANT;
 
@@ -50,6 +50,6 @@ void TDataStream::update(TDateTime timestamp)
    else
    {
 	   data_lost_cnt = 0;
-	   calculate();
+	   this->calculate();
    }
 }

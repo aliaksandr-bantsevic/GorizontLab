@@ -1,0 +1,46 @@
+//---------------------------------------------------------------------------
+
+#ifndef ChartThreadH
+#define ChartThreadH
+//---------------------------------------------------------------------------
+#include <System.Classes.hpp>
+
+#include <tchar.h>
+#include <VCLTee.Chart.hpp>
+#include <VclTee.TeeGDIPlus.hpp>
+#include <VCLTee.TeEngine.hpp>
+#include <VCLTee.TeeProcs.hpp>
+#include <VCLTee.Series.hpp>
+
+#include "DataStream.h"
+//---------------------------------------------------------------------------
+#define CHART_BUFFER_SIZE_DEFAULT 2000
+
+class TChartThread : public TThread
+{
+protected:
+	void __fastcall Execute();
+public:
+	__fastcall TChartThread(bool CreateSuspended, TChart* c, TDataStream* d);
+
+public:
+
+	TChart* chart;
+	bool exit_flag;
+	bool draw_flag;
+	TDataStream* ds;
+
+	double buf [CHART_BUFFER_SIZE_DEFAULT];
+	int idx;
+
+public:
+
+	void init_chart();
+	void draw(void);
+	void  __fastcall draw_chart(void);
+	void accept_data(double* d, int len);
+	void exit(void);
+
+};
+//---------------------------------------------------------------------------
+#endif

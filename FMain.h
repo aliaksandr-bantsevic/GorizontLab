@@ -18,6 +18,11 @@
 #include <Xml.xmldom.hpp>
 #include <Xml.XMLIntf.hpp>
 #include <Vcl.Dialogs.hpp>
+#include <VCLTee.Chart.hpp>
+#include <VclTee.TeeGDIPlus.hpp>
+#include <VCLTee.TeEngine.hpp>
+#include <VCLTee.TeeProcs.hpp>
+#include <VCLTee.Series.hpp>
 #include <list>
 
 #include "defs.h"
@@ -33,6 +38,8 @@
 
 #define SYS_MODE_ADJ 0
 #define SYS_MODE_RUN 1
+
+#include "ChartThread.h"
 
 //---------------------------------------------------------------------------
 class TForm_General : public TForm
@@ -86,6 +93,17 @@ __published:	// IDE-managed Components
 	TListView *ListView_sensors;
 	TListView *ListView_data;
 	TToolButton *ToolButton_start;
+	TTabSheet *TabSheet_charts;
+	TPanel *Panel_charts;
+	TToolBar *ToolBar_chart;
+	TPanel *Panel_ch1;
+	TPanel *Panel_ch2;
+	TToolButton *ToolButton7;
+	TChart *Chart1;
+	TChart *Chart2;
+	TToolButton *ToolButton8;
+	TLineSeries *Series1;
+	TLineSeries *Series2;
 	void __fastcall Timer_General_1sTimer(TObject *Sender);
 	void __fastcall Timer_Init_appTimer(TObject *Sender);
 	void __fastcall ToolButton1Click(TObject *Sender);
@@ -109,6 +127,7 @@ __published:	// IDE-managed Components
 	void __fastcall TreeView_BrowserMouseDown(TObject *Sender, TMouseButton Button,
           TShiftState Shift, int X, int Y);
 	void __fastcall ToolButton_startClick(TObject *Sender);
+	void __fastcall ToolButton8Click(TObject *Sender);
 
 private:	// User declarations
 public:		// User declarations

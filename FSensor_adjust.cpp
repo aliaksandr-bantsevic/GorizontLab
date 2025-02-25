@@ -50,9 +50,9 @@ void TForm_Sensor_adjust::start(TGLSensor* sn)
 	ComboBox_prt->Items->Add(L"IND3");
 	ComboBox_prt->Items->Add(L"AND3");
 	ComboBox_prt->Items->Add(L"Modbus RTU");
-	ComboBox_prt->ItemIndex = 0;
+	ComboBox_prt->ItemIndex = 2;
 
-	Memo_mark->Text = L"Датчик сбора данных";
+	Memo_mark->Text = L"Инклинометр";
 	CheckBox_on->Checked = false;
 
 	ComboBox_addr1->Visible = true;

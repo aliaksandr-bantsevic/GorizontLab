@@ -58,7 +58,7 @@
         <ILINK_TranslatedLibraryPath>$(BDSLIB)\$(PLATFORM)\release\$(LANGDIR);$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
         <ProjectType>CppVCLApplication</ProjectType>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
-        <AllPackageLibs>rtl.lib;vcl.lib;xmlrtl.lib</AllPackageLibs>
+        <AllPackageLibs>rtl.lib;vcl.lib;xmlrtl.lib;Tee.lib;vclimg.lib</AllPackageLibs>
         <_TCHARMapping>wchar_t</_TCHARMapping>
         <Multithreaded>true</Multithreaded>
         <Icon_MainIcon>$(BDS)\bin\cbuilder_PROJECTICON.ico</Icon_MainIcon>
@@ -110,10 +110,12 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <BCC_UseClassicCompiler>false</BCC_UseClassicCompiler>
         <ILINK_LibraryPath>$(BDSLIB)\$(PLATFORM)$(CC_SUFFIX)\debug;$(ILINK_LibraryPath)</ILINK_LibraryPath>
-        <LinkPackageImports>rtl.bpi;vcl.bpi;xmlrtl.bpi</LinkPackageImports>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Icon_MainIcon>GorizontLab_Icon.ico</Icon_MainIcon>
+        <DynamicRTL>false</DynamicRTL>
+        <LinkPackageStatics>rtl.lib;vcl.lib;xmlrtl.lib;Tee.lib;vclimg.lib</LinkPackageStatics>
+        <UsePackages>false</UsePackages>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>
@@ -127,6 +129,10 @@
         <CppCompile Include="BBFMgr.cpp">
             <DependentOn>BBFMgr.h</DependentOn>
             <BuildOrder>19</BuildOrder>
+        </CppCompile>
+        <CppCompile Include="ChartThread.cpp">
+            <DependentOn>ChartThread.h</DependentOn>
+            <BuildOrder>27</BuildOrder>
         </CppCompile>
         <CppCompile Include="COMPort.cpp">
             <DependentOn>COMPort.h</DependentOn>

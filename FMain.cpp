@@ -18,7 +18,7 @@ TForm_General* Form_General;
 //---------------------------------------------------------------------------
 __fastcall TForm_General::TForm_General(TComponent* Owner) : TForm(Owner)
 {
-    InitMainWindow();
+    //InitMainWindow();
 }
 //---------------------GLOBALS-----------------------------------------------
 
@@ -37,6 +37,16 @@ UINT wTimerRes;
 TDateTime g_time_all_data_request = Now();
 bool g_system_monitoring_run = false;
 
+/*
+TDataStream* dsx = NULL;
+TDataStream* dsy = NULL;
+TGLSensor* sn_0 = NULL;
+TChartThread* tcx = NULL;
+TChartThread* tcy = NULL;
+*/
+
+std::list<TChartThread*> g_tc_list;
+
 //--------------------------------------------------------------------------
 void TForm_General::SetGeneralCaption(void)
 {
@@ -48,10 +58,10 @@ void TForm_General::SetGeneralCaption(void)
 
 void TForm_General::InitMainWindow(void)
 {
-    this->WindowState = wsMaximized;
-    DevideMainWindow(30, 85);
+	this->WindowState = wsMaximized;
+	DevideMainWindow(20, 70);
 
-    // Запрашиваем разрешение таймера 1 мс
+	// Запрашиваем разрешение таймера 1 мс
     TIMECAPS tc;
     UINT wTimerRes;
 
@@ -65,25 +75,33 @@ void TForm_General::InitMainWindow(void)
         // Устанавливаем разрешение таймера
         timeBeginPeriod(wTimerRes);
         StatusBar->Panels->Items[3]->Text =
-            L"Системный таймер установлен на разрешение 1 мс.";
-    }
+			L"Системный таймер установлен на разрешение 1 мс.";
+	}
+
 }
 
 void TForm_General::DevideMainWindow(int browser_part, int data_part)
 {
-    int hor_res = Form_General->Width;
-    int ver_res = Form_General->Height;
+	Panel_charts->Visible = true;
 
-    int browser_width = hor_res * browser_part / 100;
-    int data_height = ver_res * data_part / 100;
+	int hor_res = Form_General->Width;
+	int ver_res = Form_General->Height;
 
-    this->Panel_Browser->Width = browser_width;
-    this->Panel_Data->Height = data_height;
+	int browser_width = hor_res * browser_part / 100;
+	int data_height = ver_res * data_part / 100;
+
+	this->Panel_Browser->Width = browser_width;
+	this->Panel_Data->Height = data_height;
+
+	Panel_ch1->Height = (Panel_charts->Height - ToolBar_chart->Height)/2;
+	//Panel_ch1->Height = (Panel_charts->Height)/2;
+
+    Panel_charts->Visible = false;
 }
 
 void __fastcall TForm_General::Timer_General_1sTimer(TObject* Sender)
 {
-    WideString smonsectime = FormatDateTime(L"yyyy-mm-dd hh:mm:ss:zzz", g_monitor_second_timer);
+	WideString smonsectime = FormatDateTime(L"yyyy-mm-dd hh:mm:ss:zzz", g_monitor_second_timer);
 
 	//Show Current time
     StatusBar->Panels->Items[0]->Text = smonsectime;//GetCurrentTimeStr();
@@ -91,6 +109,7 @@ void __fastcall TForm_General::Timer_General_1sTimer(TObject* Sender)
 	//Show global time
 	StatusBar->Panels->Items[1]->Text =
 		GetGlobalSecondTimerStr(&g_global_second_timer);
+
 }
 //---------------------------------------------------------------------------
 
@@ -128,6 +147,15 @@ void __fastcall TForm_General::Timer_Init_appTimer(TObject* Sender)
 	GLSystem->view_ports_status(ListView_ports);
 	GLSystem->view_sensors_status(ListView_sensors);
 	GLSystem->view_data_status(ListView_data);
+	InitMainWindow();
+
+	/*
+		if (tcx == NULL) {
+
+	tcx = new TChartThread(true, Chart1, dsx);
+	tcy = new TChartThread(true, Chart2, dsy);
+
+	} */
 }
 //---------------------------------------------------------------------------
 
@@ -486,7 +514,7 @@ void __fastcall TForm_General::TreeView_BrowserMouseDown(TObject *Sender, TMouse
 
 void __fastcall TForm_General::ToolButton_startClick(TObject *Sender)
 {
-        refresh_system_dashboard();
+		refresh_system_dashboard();
 
 		if (g_system_monitoring_run == false)
 		{
@@ -495,6 +523,7 @@ void __fastcall TForm_General::ToolButton_startClick(TObject *Sender)
 			ToolButton_start->ImageIndex = 8;
 			StatusBar->Panels->Items[4]->Text = L"monitoring is running ...";
 			TreeView_Browser->Enabled = false;
+            Panel_charts->Visible = true;
 		}
 		else
 		{
@@ -520,5 +549,67 @@ void TForm_General::refresh_system_dashboard(void)
 	GLSystem->update_view_sensors_status();
 	GLSystem->update_data(Now());
 	GLSystem->update_view_data_status();
+
+
+	TGLSensor* sn;
+	TDataStream* dsx = NULL;
+	TDataStream* dsy = NULL;
+	int idx = 0;
+
+
+   if (sn = GLSystem->GetCurSn()) {
+
+    	for (auto itds : sn->data_stream_list) {
+
+			if (idx++ == 0)
+			{
+				dsx = itds;
+			}
+			else
+			{
+				dsy = itds;
+			}
+		}  }
+
+		TChartThread* tcx = new TChartThread(false, Chart1, dsx);
+		TChartThread* tcy = new TChartThread(false, Chart2, dsy);
+
+		g_tc_list.clear();
+		g_tc_list.push_back(tcx);
+		g_tc_list.push_back(tcy);
+
 }
+
+
+void __fastcall TForm_General::ToolButton8Click(TObject *Sender)
+{
+	TGLSensor* sn;
+	TDataStream* dsx = NULL;
+	TDataStream* dsy = NULL;
+	int idx = 0;
+
+
+   if (sn = GLSystem->GetCurSn()) {
+
+		for (auto itds : sn->data_stream_list) {
+
+			if (idx++ == 0)
+			{
+				dsx = itds;
+			}
+			else
+			{
+				dsy = itds;
+			}
+		}
+
+		TChartThread* tcx = new TChartThread(false, Chart1, dsx);
+		//TChartThread* tcy = new TChartThread(false, Chart2, dsy);
+
+		g_tc_list.clear();
+		g_tc_list.push_back(tcx);
+		//g_tc_list.push_back(tcy);
+   }
+}
+//---------------------------------------------------------------------------
 

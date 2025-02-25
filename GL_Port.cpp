@@ -30,9 +30,9 @@ TGLPort::TGLPort(WideString nm, TTreeNode* nd, int nn, int comtype)
 	delay_set.delay_debug = 100;
 	delay_set.delay_default = 10;
 	delay_set.delay_addr_change = 20;
-	delay_set.delay_cmd_exec = 15;
-	delay_set.tout_rd = 50;
-	delay_set.tout_wr = 50;
+	delay_set.delay_cmd_exec = 20;
+	delay_set.tout_rd = 10;
+	delay_set.tout_wr = 10;
 
 
 

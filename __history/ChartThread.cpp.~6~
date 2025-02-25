@@ -1,0 +1,145 @@
+//---------------------------------------------------------------------------
+
+#include <System.hpp>
+#pragma hdrstop
+
+#include "ChartThread.h"
+#pragma package(smart_init)
+//---------------------------------------------------------------------------
+
+//   Important: Methods and properties of objects in VCL can only be
+//   used in a method called using Synchronize, for example:
+//
+//      Synchronize(&UpdateCaption);
+//
+//   where UpdateCaption could look like:
+//
+//      void __fastcall TChartThread::UpdateCaption()
+//      {
+//        Form1->Caption = "Updated in a thread";
+//      }
+//---------------------------------------------------------------------------
+
+__fastcall TChartThread::TChartThread(bool CreateSuspended, TChart* c, TDataStream* d)
+	: TThread(CreateSuspended)
+{
+	chart = c;
+	ds = d;
+	exit_flag = false;
+	draw_flag = false;
+
+	idx = 0;
+
+	for (int i = 0; i < CHART_BUFFER_SIZE_DEFAULT; i++) {
+
+		buf[i] = DATA_LOST_DBL_CONSTANT;
+	}
+
+	chart->View3D = false;
+
+    // Заголовок
+	chart->Title->Text->Clear();
+	chart->Title->Text->Add(ds->name.c_bstr());
+
+    // Настройка нижней оси (X-Axis)
+	chart->BottomAxis->Title->Caption = "Дата-время";
+	chart->BottomAxis->DateTimeFormat = "dd/mm/yyyy hh:nn:ss";
+	chart->BottomAxis->SetMinMax(Now(), Now() + 2000.0 / 86400.0); // 2000 секунд = 2000/86400 дней
+	//chart->BottomAxis->TickInner = true;
+	//chart->BottomAxis->Labels->Angle = 90;
+
+	// Настройка левой оси (Y-Axis)
+	chart->LeftAxis->Title->Caption = "Угловые секунды";
+	chart->LeftAxis->SetMinMax(-3600, 3600);
+	//chart->LeftAxis->TickInner = true;
+
+	// Настройка правой оси (Y-Axis)
+	//chart->RightAxis->Labels->Visible = true;
+	//chart->RightAxis->TickInner = true;
+
+	//---line
+
+	TLineSeries * Ser = new TLineSeries(chart);
+
+	Ser->Pointer->Style = psRectangle;
+	Ser->Pointer->Size = 2;
+
+	Ser->DrawStyle = dsSegments;
+	Ser->Active = true;
+
+	Ser->Pointer->Visible = true;
+
+	Ser->Legend->Text = L" ";
+	Ser->Legend->Visible = false;
+	Ser->Pen->Width = 1;
+
+	Ser->YValues->Order = loDescending;
+	Ser->XValues->Order = loNone;
+
+	Ser->Color = clBlue;
+
+	chart->AddSeries(Ser);
+
+	ser = Ser;
+
+}
+//---------------------------------------------------------------------------
+void __fastcall TChartThread::Execute()
+{
+	NameThreadForDebugging(System::String(L"ChartThread"));
+	//---- Place thread code here ----
+
+	while (exit_flag == false)
+	{
+		Sleep(10);
+
+		if (draw_flag) {
+
+			Synchronize(draw_chart);
+		}
+
+		Sleep(10);
+    }
+
+}
+//---------------------------------------------------------------------------
+
+void  __fastcall TChartThread::draw_chart(void)
+{
+	draw_flag = false;
+
+	for (int i = 0; i < CHART_BUFFER_SIZE_DEFAULT; i ++)
+	{
+		ser->AddXY(Now(), buf[i]);
+	}
+
+}
+
+void TChartThread::accept_data(double* d, int len)
+{
+	for (int i = 0; i < len; i++)
+	{
+		buf[idx++] = d [i];
+
+		if (idx == CHART_BUFFER_SIZE_DEFAULT) {
+
+			idx = CHART_BUFFER_SIZE_DEFAULT - 1;
+
+			for (int j = 1; j < CHART_BUFFER_SIZE_DEFAULT; j++) {
+
+				buf [j-1] = buf [j];
+			}
+
+		}
+	}
+}
+
+void TChartThread::exit(void)
+{
+	exit_flag = true;
+}
+
+void TChartThread::draw(void)
+{
+	draw_flag = true;
+}

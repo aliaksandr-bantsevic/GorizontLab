@@ -362,15 +362,25 @@ TListItem * TGLSensor::get_list_item(void)
 	return list_item;
 }
 
+//extern TDataStream* dsx;
+//extern TDataStream* dsy;
+//extern TGLSensor* sn_0;
 
 void TGLSensor::data_stream_setup(void)
 {
+	//if (sn_0 == NULL) sn_0 = this;
+
 	data_stream_list.clear();
 
 	TDataStream_IND3* ds = new TDataStream_IND3(name.c_bstr(), L"отклонение X", mark.c_bstr(), &raw_X, &uid, L"Угл. сек.");
 	data_stream_list.push_back(ds);
+	//if (dsx == NULL)
+		 //dsx = ds;
+
 	ds = new TDataStream_IND3(name.c_bstr(), L"отклонение Y", mark.c_bstr(), &raw_Y, &uid, L"Угл. сек.");
 	data_stream_list.push_back(ds);
+	//if (dsy == NULL)
+		//dsy = ds;
 
 }
 

@@ -101,16 +101,16 @@ int TProtocol_Modbus_RTU::accept_response_curr_XY(BYTE addr, BYTE* buf, int* idx
 					(static_cast<int32_t>(buf[5]) << 8) |
 					 static_cast<int32_t>(buf[6]);
 
-	*raw_Y = valueY/1000.;
+	*raw_Y = valueY/(double)1000.;
 
 	int x32 = *((int*)(&buf[7]));
 
 	int32_t		valueX = (static_cast<int32_t>(buf[7]) << 24) |
 					(static_cast<int32_t>(buf[8]) << 16) |
-					(static_cast<int32_t>(buf[8]) << 8) |
-					 static_cast<int32_t>(buf[9]);
+					(static_cast<int32_t>(buf[9]) << 8) |
+					 static_cast<int32_t>(buf[10]);
 
-	*raw_X = valueX/1000.;
+	*raw_X = valueX/(double)1000.;
 
 	return 0;
 }
