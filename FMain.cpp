@@ -99,6 +99,10 @@ void TForm_General::DevideMainWindow(int browser_part, int data_part)
     Panel_charts->Visible = false;
 }
 
+#include <windows.h>
+#include <psapi.h>
+#include <iostream>
+
 void __fastcall TForm_General::Timer_General_1sTimer(TObject* Sender)
 {
 	WideString smonsectime = FormatDateTime(L"yyyy-mm-dd hh:mm:ss:zzz", g_monitor_second_timer);
@@ -110,12 +114,22 @@ void __fastcall TForm_General::Timer_General_1sTimer(TObject* Sender)
 	StatusBar->Panels->Items[1]->Text =
 		GetGlobalSecondTimerStr(&g_global_second_timer);
 
+	WideString ss("");
+
+	PROCESS_MEMORY_COUNTERS pmc;
+	if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc)))
+	{
+		double dm = ((double)pmc.WorkingSetSize) / 1048576.;
+		ss.printf(L"mem = %.2f Mb", dm);
+		StatusBar->Panels->Items[5]->Text = ss;
+	}
+
 }
 //---------------------------------------------------------------------------
 
 void TForm_General::InitApplication(void)
 {
-    // FMaincaptionPointer& = Form_General->Caption;
+	// FMaincaptionPointer& = Form_General->Caption;
 
 	GLSystem = new TGLSystem(TreeView_Browser, XMLDocument_conf);
 	MainMonitorThread = new TMainMonitorThread(false , GLSystem);

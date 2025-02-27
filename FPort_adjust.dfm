@@ -76,6 +76,8 @@ object Form_Port_adjust: TForm_Port_adjust
     Width = 49
     Height = 17
     Caption = #1042#1082#1083'.'
+    Checked = True
+    State = cbChecked
     TabOrder = 6
   end
   object GroupBox1: TGroupBox

@@ -79,10 +79,12 @@
   end
   object CheckBox_on: TCheckBox
     Left = 23
-    Top = 316
+    Top = 315
     Width = 49
     Height = 17
     Caption = #1042#1082#1083'.'
+    Checked = True
+    State = cbChecked
     TabOrder = 5
   end
   object ComboBox_prt: TComboBox

@@ -188,10 +188,18 @@ void  __fastcall TChartThread::draw_chart(void)
 	calc_limits();
 
 	String s("");
-	TDateTime t = t_start;
+
 	ser->Clear();
 
-	if (over) chart->BottomAxis->Maximum = data_stream->last_update_timestamp - T_ONE_SEC*10;
+	if (over)
+	{
+		chart->BottomAxis->Maximum = data_stream->last_update_timestamp - T_ONE_SEC*1;
+		chart->BottomAxis->Minimum = data_stream->last_update_timestamp - (CHART_BUFFER_SIZE_DEFAULT - 1) * T_ONE_SEC;// - T_ONE_SEC*5;
+	}
+
+
+	t_start = chart->BottomAxis->Minimum;
+	TDateTime t = chart->BottomAxis->Minimum;
 
 	//chart->BottomAxis->Minimum = 0;
 	//chart->BottomAxis->Maximum = t + T_ONE_SEC*CHART_BUFFER_SIZE_DEFAULT;

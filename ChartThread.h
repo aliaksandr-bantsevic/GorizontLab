@@ -14,7 +14,7 @@
 
 #include "DataStream.h"
 //---------------------------------------------------------------------------
-#define CHART_BUFFER_SIZE_DEFAULT (60*5)
+#define CHART_BUFFER_SIZE_DEFAULT (30*10)
 
 class TChartThread : public TThread
 {

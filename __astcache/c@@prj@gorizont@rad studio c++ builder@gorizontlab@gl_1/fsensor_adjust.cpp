@@ -53,7 +53,7 @@ void TForm_Sensor_adjust::start(TGLSensor* sn)
 	ComboBox_prt->ItemIndex = 2;
 
 	Memo_mark->Text = L"Инклинометр";
-	CheckBox_on->Checked = false;
+	CheckBox_on->Checked = true;
 
 	ComboBox_addr1->Visible = true;
 	Edit_list->Visible = true;

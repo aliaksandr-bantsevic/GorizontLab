@@ -82,7 +82,7 @@ void TForm_Port_adjust::start(TGLPort* pr)
 	ComboBox_baud->Items->Add(9600);
 	ComboBox_baud->ItemIndex = 0;
 
-	CheckBox_on->Checked= false;
+	CheckBox_on->Checked= true;
 
     Memo_mark->Text = L"Порт опроса датчиков";
 

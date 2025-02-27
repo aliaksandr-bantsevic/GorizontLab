@@ -10,6 +10,8 @@ TDateTime  g_current_time = 0.;
 WideString s_current_time = "";
 WideString s_global_timer = "";
 
+extern bool g_system_monitoring_run;
+
 WideString GetCurrentTimeStr(void)
 {
 	WideString stime(L"");
@@ -21,7 +23,7 @@ WideString GetCurrentTimeStr(void)
 
 WideString GetGlobalSecondTimerStr(TDateTime* t)
 {
-	*t += T_ONE_SEC;
+	if (g_system_monitoring_run == true) *t += T_ONE_SEC;
 
 	WideString stime(L"");
 
